@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HENU OS — Settings &amp; Preferences</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e9e6f6",
+            "primary-fixed": "#e6deff",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#cbbefe",
+            "on-tertiary-fixed": "#271900",
+            "primary": "#5e548c",
+            "surface-variant": "#e3e1f0",
+            "on-primary-fixed": "#1d1147",
+            "secondary-fixed": "#acedf6",
+            "secondary-container": "#acedf6",
+            "on-background": "#1b1b25",
+            "on-secondary": "#ffffff",
+            "outline": "#797580",
+            "on-primary": "#ffffff",
+            "secondary-fixed-dim": "#91d1da",
+            "surface-container-low": "#f5f2ff",
+            "background": "#fcf8ff",
+            "on-primary-container": "#fffbff",
+            "on-tertiary-container": "#fffbff",
+            "surface-container-highest": "#e3e1f0",
+            "inverse-on-surface": "#f2efff",
+            "surface-container": "#efecfc",
+            "error": "#ba1a1a",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#001f23",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#dbd8e8",
+            "on-error": "#ffffff",
+            "surface": "#fcf8ff",
+            "outline-variant": "#c9c4d0",
+            "on-surface-variant": "#48454f",
+            "on-surface": "#1b1b25",
+            "tertiary-fixed-dim": "#f5bd58",
+            "on-secondary-container": "#2a6d75",
+            "error-container": "#ffdad6",
+            "inverse-primary": "#cbbefe",
+            "tertiary-fixed": "#ffdeaa",
+            "on-primary-fixed-variant": "#493f75",
+            "surface-bright": "#fcf8ff",
+            "on-tertiary-fixed-variant": "#5f4100",
+            "primary-container": "#776da6",
+            "on-secondary-fixed-variant": "#004f56",
+            "secondary": "#22676f",
+            "tertiary": "#7a5500",
+            "surface-tint": "#61578f",
+            "tertiary-container": "#996c04",
+            "inverse-surface": "#302f3b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter-mobile": "0.75rem",
+            "margin-mobile": "1rem",
+            "space-xl": "1.5rem",
+            "margin": "1.25rem",
+            "gutter": "1rem",
+            "space-md": "0.75rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen pb-32">
+<!-- Shared TopAppBar -->
+<header class="sticky top-0 z-40 bg-surface dark:bg-surface border-b border-outline-variant/20 dark:border-outline-variant/10">
+<div class="flex justify-between items-center w-full px-space-lg py-space-sm max-w-4xl mx-auto">
+<div class="flex items-center space-x-3">
+<!-- Leading Avatar / Brand Mark -->
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-title-md text-title-md ring-2 ring-primary/20">
+          H
+        </div>
+<div>
+<span class="text-caption font-caption text-secondary font-semibold tracking-wider uppercase block">Client Folio OS</span>
+<h1 class="text-title-md font-title-md font-semibold text-on-surface dark:text-on-surface tracking-tight">Settings &amp; Preferences</h1>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<button class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Canvas Container -->
+<main class="max-w-4xl mx-auto px-margin-mobile md:px-margin pt-6 space-y-6">
+<!-- Client Verification Meta Banner -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-space-lg flex items-center justify-between shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<div class="flex items-center space-x-2">
+<h2 class="font-title-md text-title-md text-on-surface">HENU Prime Executive Suite</h2>
+<span class="px-2.5 py-0.5 rounded-full text-caption font-caption bg-secondary-container text-on-secondary-container">Tier 1 Folio</span>
+</div>
+<p class="font-caption text-caption text-outline">Account UID: <span class="text-on-surface font-medium font-mono">HN-9082-ALPHA</span> · Architecture CLM 2025</p>
+</div>
+</div>
+<span class="hidden sm:inline-flex items-center font-caption text-caption text-secondary font-medium">
+        Encrypted Node
+        <span class="material-symbols-outlined ml-1 text-sm" data-icon="lock">lock</span>
+</span>
+</div>
+<!-- 1. Account & Security -->
+<section class="space-y-2">
+<div class="flex items-center space-x-2 px-1">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="security">security</span>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-xs">Account &amp; Security</h3>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)] overflow-hidden divide-y divide-outline-variant/15">
+<!-- Change Master Password -->
+<a class="w-full flex items-center justify-between p-space-lg hover:bg-surface-container-low transition-colors duration-150 group active:scale-[0.99]" href="#master-password">
+<div class="flex items-center space-x-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+</div>
+<div class="text-left">
+<p class="font-title-md text-title-md text-on-surface">Change Master Password</p>
+<p class="font-caption text-caption text-on-surface-variant">Last updated 42 days ago via hardware key</p>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="font-caption text-caption text-outline">Rotated Quarterly</span>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-0.5 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</a>
+<!-- Two-Factor Authentication -->
+<div class="flex items-center justify-between p-space-lg hover:bg-surface-container-low/50 transition-colors">
+<div class="flex items-center space-x-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="fingerprint">fingerprint</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Two-Factor Authentication</p>
+<p class="font-caption text-caption text-on-surface-variant">Hardware Biometric &amp; Apple FaceID Gateway</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Active Sessions -->
+<a class="w-full flex items-center justify-between p-space-lg hover:bg-surface-container-low transition-colors duration-150 group active:scale-[0.99]" href="#sessions">
+<div class="flex items-center space-x-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="devices">devices</span>
+</div>
+<div class="text-left">
+<p class="font-title-md text-title-md text-on-surface">Active Sessions</p>
+<p class="font-caption text-caption text-on-surface-variant">2 active nodes currently authorized</p>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="px-2.5 py-1 rounded-full text-caption font-caption bg-secondary-container text-on-secondary-container font-medium">iOS &amp; Admin Web</span>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-0.5 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</a>
+<!-- Client ID & Verification Folio -->
+<a class="w-full flex items-center justify-between p-space-lg hover:bg-surface-container-low transition-colors duration-150 group active:scale-[0.99]" href="#folio-verification">
+<div class="flex items-center space-x-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+</div>
+<div class="text-left">
+<p class="font-title-md text-title-md text-on-surface">Client ID &amp; Verification Folio</p>
+<p class="font-caption text-caption text-on-surface-variant">KYC Master Certificate #DOC-992-01A</p>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="px-2.5 py-0.5 rounded-full text-caption font-caption bg-surface-container-high text-primary font-medium">Verified Active</span>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-0.5 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</a>
+</div>
+</section>
+<!-- 2. Notification Controls (Admin Sync) -->
+<section class="space-y-2">
+<div class="flex items-center space-x-2 px-1">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="tune">tune</span>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-xs">Notification Controls (Admin Sync)</h3>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)] divide-y divide-outline-variant/15">
+<!-- Invoices & Payment Reminders -->
+<div class="flex items-center justify-between p-space-lg">
+<div class="pr-4">
+<p class="font-title-md text-title-md text-on-surface">Invoices &amp; Payment Reminders</p>
+<p class="font-caption text-caption text-on-surface-variant">High-priority dispatch for escrow milestones &amp; settlement tranches</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Architecture Milestone Sprints -->
+<div class="flex items-center justify-between p-space-lg">
+<div class="pr-4">
+<p class="font-title-md text-title-md text-on-surface">Architecture Milestone Sprints</p>
+<p class="font-caption text-caption text-on-surface-variant">Real-time status updates when engineers approve technical stage gates</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Quote Approvals & Revisions -->
+<div class="flex items-center justify-between p-space-lg">
+<div class="pr-4">
+<p class="font-title-md text-title-md text-on-surface">Quote Approvals &amp; Revisions</p>
+<p class="font-caption text-caption text-on-surface-variant">Instant alerts when executive partners publish project estimation revisions</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Strategic Marketing & Offers -->
+<div class="flex items-center justify-between p-space-lg">
+<div class="pr-4">
+<p class="font-title-md text-title-md text-on-surface">Strategic Marketing &amp; Offers</p>
+<p class="font-caption text-caption text-on-surface-variant">Seasonal advisory digests and ecosystem expansion packages</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- 3. Visual & Performance Experience -->
+<section class="space-y-2">
+<div class="flex items-center space-x-2 px-1">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="palette">palette</span>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-xs">Visual &amp; Performance Experience</h3>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)] p-space-lg space-y-5">
+<!-- Theme Selection Segmented Control -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<p class="font-title-md text-title-md text-on-surface">Theme Selection</p>
+<span class="font-caption text-caption text-outline">Runtime Engine CSS-v3</span>
+</div>
+<div class="grid grid-cols-3 p-1 bg-surface-container rounded-xl gap-1">
+<button class="py-2 rounded-lg bg-surface-container-lowest shadow-sm font-label-md text-label-md text-primary flex items-center justify-center space-x-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-base" data-icon="light_mode">light_mode</span>
+<span>Light (Active)</span>
+</button>
+<button class="py-2 rounded-lg hover:bg-surface-container-low font-label-md text-label-md text-on-surface-variant flex items-center justify-center space-x-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-base" data-icon="dark_mode">dark_mode</span>
+<span>Dark</span>
+</button>
+<button class="py-2 rounded-lg hover:bg-surface-container-low font-label-md text-label-md text-on-surface-variant flex items-center justify-center space-x-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-base" data-icon="settings_brightness">settings_brightness</span>
+<span>System</span>
+</button>
+</div>
+</div>
+<div class="border-t border-outline-variant/15 pt-4 space-y-2">
+<div class="flex justify-between items-center">
+<div>
+<p class="font-title-md text-title-md text-on-surface">3D Visual Experience</p>
+<p class="font-caption text-caption text-on-surface-variant">Atmospheric Dragon Animation &amp; WebGL Shaders</p>
+</div>
+<span class="px-2 py-0.5 text-caption font-caption rounded-md bg-tertiary-fixed text-on-tertiary-fixed font-semibold">60 FPS</span>
+</div>
+<!-- Segmented Modes -->
+<div class="grid grid-cols-3 gap-2 pt-1">
+<button class="border-2 border-primary bg-primary-fixed/20 p-2.5 rounded-lg text-left transition-all">
+<span class="font-label-md text-label-md text-on-surface font-semibold block">Full 3D</span>
+<span class="font-caption text-caption text-primary">GPU Accelerated</span>
+</button>
+<button class="border border-outline-variant/30 hover:border-outline p-2.5 rounded-lg text-left bg-surface-container-lowest transition-all">
+<span class="font-label-md text-label-md text-on-surface font-semibold block">Optimized</span>
+<span class="font-caption text-caption text-outline">Battery Conscious</span>
+</button>
+<button class="border border-outline-variant/30 hover:border-outline p-2.5 rounded-lg text-left bg-surface-container-lowest transition-all">
+<span class="font-label-md text-label-md text-on-surface font-semibold block">Static Fallback</span>
+<span class="font-caption text-caption text-outline">Zero Animation</span>
+</button>
+</div>
+</div>
+<!-- Reduced Motion Toggle -->
+<div class="border-t border-outline-variant/15 pt-4 flex items-center justify-between">
+<div>
+<p class="font-title-md text-title-md text-on-surface">Reduced Motion</p>
+<p class="font-caption text-caption text-on-surface-variant">Suppress camera drifts, spatial shifts, and micro-particle flows</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- 4. Payment Preferences -->
+<section class="space-y-2">
+<div class="flex items-center space-x-2 px-1">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="account_balance_wallet">account_balance_wallet</span>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-xs">Payment Preferences</h3>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)] divide-y divide-outline-variant/15">
+<!-- Default Settlement -->
+<div class="p-space-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div>
+<p class="font-title-md text-title-md text-on-surface">Default Settlement Gateway</p>
+<p class="font-caption text-caption text-on-surface-variant">Automated milestone escrow allocation for active architecture contracts</p>
+</div>
+<div class="flex items-center space-x-2 shrink-0">
+<button class="px-3.5 py-1.5 rounded-lg border border-primary text-primary bg-primary-fixed/20 font-label-md text-label-md flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-base" data-icon="shield">shield</span>
+<span>Cashfree Escrow</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-lg border border-outline-variant/40 text-on-surface hover:bg-surface-container font-label-md text-label-md flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-base" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>Razorpay UPI</span>
+</button>
+</div>
+</div>
+<!-- Currency Switcher -->
+<div class="p-space-lg flex items-center justify-between">
+<div>
+<p class="font-title-md text-title-md text-on-surface">Folio Ledger Currency</p>
+<p class="font-caption text-caption text-on-surface-variant">Global client billing and quotation calculation benchmark</p>
+</div>
+<div class="inline-flex rounded-lg border border-outline-variant/30 p-1 bg-surface-container">
+<button class="px-3 py-1 rounded-md bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-semibold">USD ($)</button>
+<button class="px-3 py-1 rounded-md text-on-surface-variant hover:text-on-surface font-label-md text-label-md">INR (₹)</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Support & Legal -->
+<section class="space-y-2">
+<div class="flex items-center space-x-2 px-1">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="support_agent">support_agent</span>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-xs">Support &amp; Legal</h3>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)] overflow-hidden divide-y divide-outline-variant/15">
+<!-- In-App Support Chat with Architect -->
+<a class="w-full flex items-center justify-between p-space-lg hover:bg-surface-container-low transition-colors duration-150 group active:scale-[0.99]" href="#support-chat">
+<div class="flex items-center space-x-3">
+<div class="w-9 h-9 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">In-App Support Chat with Architect</p>
+<p class="font-caption text-caption text-on-surface-variant">Direct encrypted wire with Lead Partner (Avg reply: ~4 mins)</p>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-0.5 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</a>
+<!-- Privacy Policy & Terms of Service -->
+<a class="w-full flex items-center justify-between p-space-lg hover:bg-surface-container-low transition-colors duration-150 group active:scale-[0.99]" href="#legal">
+<div class="flex items-center space-x-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="policy">policy</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Privacy Policy &amp; Terms of Service</p>
+<p class="font-caption text-caption text-on-surface-variant">Opens in HENU In-App Secure Browser</p>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-outline group-hover:translate-x-0.5 transition-transform" data-icon="open_in_new">open_in_new</span>
+</div>
+</a>
+<!-- Version & Architecture Runtime -->
+<div class="p-space-lg flex items-center justify-between bg-surface-container-low/40">
+<div class="flex items-center space-x-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">HENU OS Antigravity Runtime</p>
+<p class="font-caption text-caption text-outline">Build 408 · Continuous Kernel 2025.04</p>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-md text-caption font-caption bg-surface-container font-mono text-on-surface-variant">v2.4.1</span>
+</div>
+</div>
+</section>
+<!-- 6. Session Management -->
+<section class="pt-2 space-y-4">
+<button class="w-full py-3.5 px-space-lg rounded-xl border border-error/30 bg-surface-container-lowest hover:bg-error-container/30 text-error flex items-center justify-center space-x-2 font-label-md text-label-md transition-all active:scale-[0.98]" onclick="document.getElementById('signout-modal').classList.remove('hidden')">
+<span class="material-symbols-outlined text-xl" data-icon="logout">logout</span>
+<span>Sign Out of HENU OS</span>
+</button>
+<p class="text-center font-caption text-caption text-outline">
+        Signing out invalidates cryptographic tokens and unbinds this client terminal.
+      </p>
+</section>
+</main>
+<!-- Sign Out Confirmation Modal Preview -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm" id="signout-modal">
+<div class="bg-surface-container-lowest max-w-sm w-full rounded-2xl p-space-xl border border-outline-variant/20 shadow-2xl space-y-4">
+<div class="w-12 h-12 rounded-full bg-error-container text-on-error-container flex items-center justify-center mx-auto">
+<span class="material-symbols-outlined text-2xl" data-icon="power_settings_new">power_settings_new</span>
+</div>
+<div class="text-center space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Terminate Session?</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Are you sure you want to sign out from HENU OS on this terminal? Unsaved draft annotations will remain in local cache.</p>
+</div>
+<div class="grid grid-cols-2 gap-3 pt-2">
+<button class="py-2.5 px-4 rounded-full border border-outline-variant/40 text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors" onclick="document.getElementById('signout-modal').classList.add('hidden')">
+          Cancel
+        </button>
+<button class="py-2.5 px-4 rounded-full bg-error text-on-error font-label-md text-label-md shadow-sm transition-transform active:scale-[0.98]" onclick="document.getElementById('signout-modal').classList.add('hidden')">
+          Sign Out
+        </button>
+</div>
+</div>
+</div>
+<!-- Shared BottomNavBar (Docked Full Width) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-sm py-space-xs bg-surface-container-lowest dark:bg-surface-container-low border-t border-outline-variant/15 dark:border-outline-variant/10 shadow-[0_-2px_8px_rgba(32,32,43,0.04)]">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]" href="#home">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-caption font-caption">Home</span>
+</a>
+<!-- Portfolio -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]" href="#portfolio">
+<span class="material-symbols-outlined" data-icon="folder_managed">folder_managed</span>
+<span class="text-caption font-caption">Portfolio</span>
+</a>
+<!-- Services -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]" href="#services">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-caption font-caption">Services</span>
+</a>
+<!-- Finance -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]" href="#finance">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="text-caption font-caption">Finance</span>
+</a>
+<!-- Hub (Settings / Preferences Active Destination) -->
+<a class="flex flex-col items-center justify-center bg-primary-fixed dark:bg-primary-container text-on-primary-fixed dark:text-on-primary-container rounded-full px-space-md py-space-xs active:scale-[0.98] transition-transform duration-150" href="#hub">
+<span class="material-symbols-outlined" data-icon="widgets">widgets</span>
+<span class="text-caption font-caption">Hub</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HENU OS — Registration &amp; Client ID Generation</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e9e6f6",
+            "primary-fixed": "#e6deff",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#cbbefe",
+            "on-tertiary-fixed": "#271900",
+            "primary": "#5e548c",
+            "surface-variant": "#e3e1f0",
+            "on-primary-fixed": "#1d1147",
+            "secondary-fixed": "#acedf6",
+            "secondary-container": "#acedf6",
+            "on-background": "#1b1b25",
+            "on-secondary": "#ffffff",
+            "outline": "#797580",
+            "on-primary": "#ffffff",
+            "secondary-fixed-dim": "#91d1da",
+            "surface-container-low": "#f5f2ff",
+            "background": "#fcf8ff",
+            "on-primary-container": "#fffbff",
+            "on-tertiary-container": "#fffbff",
+            "surface-container-highest": "#e3e1f0",
+            "inverse-on-surface": "#f2efff",
+            "surface-container": "#efecfc",
+            "error": "#ba1a1a",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#001f23",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#dbd8e8",
+            "on-error": "#ffffff",
+            "surface": "#fcf8ff",
+            "outline-variant": "#c9c4d0",
+            "on-surface-variant": "#48454f",
+            "on-surface": "#1b1b25",
+            "tertiary-fixed-dim": "#f5bd58",
+            "on-secondary-container": "#2a6d75",
+            "error-container": "#ffdad6",
+            "inverse-primary": "#cbbefe",
+            "tertiary-fixed": "#ffdeaa",
+            "on-primary-fixed-variant": "#493f75",
+            "surface-bright": "#fcf8ff",
+            "on-tertiary-fixed-variant": "#5f4100",
+            "primary-container": "#776da6",
+            "on-secondary-fixed-variant": "#004f56",
+            "secondary": "#22676f",
+            "tertiary": "#7a5500",
+            "surface-tint": "#61578f",
+            "tertiary-container": "#996c04",
+            "inverse-surface": "#302f3b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter-mobile": "0.75rem",
+            "margin-mobile": "1rem",
+            "space-xl": "1.5rem",
+            "margin": "1.25rem",
+            "gutter": "1rem",
+            "space-md": "0.75rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"],
+            "mono": ["JetBrains Mono", "monospace"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar Component (from Shared Components JSON) -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant/20 dark:border-outline-variant/10 flat no shadows sticky top-0 z-40">
+<div class="flex justify-between items-center w-full px-space-lg py-space-sm max-w-7xl mx-auto">
+<div class="flex items-center space-x-3">
+<!-- Leading Avatar: HENU monogram client profile avatar -->
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-title-md text-title-md font-bold shadow-sm ring-1 ring-primary/20" title="HENU monogram client profile avatar">
+          H
+        </div>
+<span class="text-title-md font-title-md font-semibold text-on-surface dark:text-on-surface tracking-tight">HENU OS</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-caption font-caption bg-secondary-container text-on-secondary-container">
+          CLM • Identity Node
+        </span>
+<button aria-label="Notifications" class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="notifications">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Progressive Canvas (Transactional Registration Flow - BottomNavBar suppressed per Semantic Shell rules) -->
+<main class="max-w-5xl mx-auto px-margin-mobile md:px-margin py-8 md:py-12">
+<!-- Breadcrumb & Architecture Folio Signifier -->
+<div class="flex items-center space-x-2 mb-6 text-caption font-caption text-on-surface-variant">
+<span>Operational Gateway</span>
+<span class="text-outline-variant">/</span>
+<span>Client Lifecycle Management</span>
+<span class="text-outline-variant">/</span>
+<span class="text-primary font-semibold">Provision Identity</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Card 1: Registration & Password Strength (Form Section) -->
+<section class="lg:col-span-7 bg-surface-container-lowest rounded-xl p-space-xl border border-outline-variant/30 shadow-[0_2px_8px_rgba(32,32,43,0.04)] relative">
+<div class="flex items-center justify-between mb-2">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-caption font-caption bg-surface-container text-primary font-semibold">
+            Stage 01 • Master Record
+          </span>
+<span class="text-caption font-caption text-outline">Secure 256-bit Link</span>
+</div>
+<h1 class="text-headline-md font-headline-md text-on-surface mt-2 tracking-tight">Create your HENU OS account</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1 mb-6">
+          Everything you need to manage your services, purchases, and payments in one place.
+        </p>
+<form class="space-y-4" onsubmit="event.preventDefault();">
+<!-- Full Name -->
+<div>
+<label class="block text-caption font-caption text-on-surface-variant mb-1 font-semibold" for="fullname">
+              Full Legal / Entity Representative Name
+            </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]" data-icon="person">person</span>
+<input class="w-full pl-9 pr-3 py-2 bg-surface-container-lowest text-on-surface text-body-md font-body-md rounded-lg border border-outline-variant/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition duration-150 outline-none" id="fullname" placeholder="Full Name" type="text" value="Siddharth Roy"/>
+</div>
+</div>
+<!-- Mobile Number with country code -->
+<div>
+<label class="block text-caption font-caption text-on-surface-variant mb-1 font-semibold" for="mobile">
+              Mobile Number (2FA Verified)
+            </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]" data-icon="phone_iphone">phone_iphone</span>
+<input class="w-full pl-9 pr-3 py-2 bg-surface-container-lowest text-on-surface text-body-md font-body-md rounded-lg border border-outline-variant/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition duration-150 outline-none" id="mobile" placeholder="+1 (555) 000-0000" type="text" value="+91 98401 22390"/>
+</div>
+</div>
+<!-- Email Address -->
+<div>
+<label class="block text-caption font-caption text-on-surface-variant mb-1 font-semibold" for="email">
+              Enterprise Email Address
+            </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]" data-icon="mail">mail</span>
+<input class="w-full pl-9 pr-3 py-2 bg-surface-container-lowest text-on-surface text-body-md font-body-md rounded-lg border border-outline-variant/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition duration-150 outline-none" id="email" placeholder="representative@firm.com" type="email" value="siddharth@archetype.studio"/>
+</div>
+</div>
+<!-- Password with Interactive Strength Meter -->
+<div class="pt-1">
+<div class="flex items-center justify-between mb-1">
+<label class="block text-caption font-caption text-on-surface-variant font-semibold" for="password">
+                Authentication Passphrase
+              </label>
+<span class="text-caption font-caption text-secondary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="shield">shield</span>
+                Strong (85%)
+              </span>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]" data-icon="lock">lock</span>
+<input class="w-full pl-9 pr-10 py-2 bg-surface-container-lowest text-on-surface text-body-md font-body-md rounded-lg border border-outline-variant/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition duration-150 outline-none" id="password" type="password" value="HenU_Arch#2026!kL"/>
+<button class="material-symbols-outlined absolute right-3 top-2.5 text-outline hover:text-on-surface transition-colors text-[18px]" data-icon="visibility" type="button">visibility</button>
+</div>
+<!-- 4-Stage Strength Bar -->
+<div class="grid grid-cols-4 gap-1.5 mt-2.5">
+<div class="h-1.5 rounded-full bg-secondary"></div>
+<div class="h-1.5 rounded-full bg-secondary"></div>
+<div class="h-1.5 rounded-full bg-secondary"></div>
+<div class="h-1.5 rounded-full bg-outline-variant/40"></div>
+</div>
+<!-- 4 Criteria Chips -->
+<div class="grid grid-cols-2 gap-2 mt-3 pt-1">
+<div class="flex items-center space-x-1.5 text-caption font-caption text-secondary">
+<span class="material-symbols-outlined text-[15px]" data-icon="check_circle">check_circle</span>
+<span>Length (min. 12 chars)</span>
+</div>
+<div class="flex items-center space-x-1.5 text-caption font-caption text-secondary">
+<span class="material-symbols-outlined text-[15px]" data-icon="check_circle">check_circle</span>
+<span>Uppercase &amp; Lowercase</span>
+</div>
+<div class="flex items-center space-x-1.5 text-caption font-caption text-secondary">
+<span class="material-symbols-outlined text-[15px]" data-icon="check_circle">check_circle</span>
+<span>At least 1 Number</span>
+</div>
+<div class="flex items-center space-x-1.5 text-caption font-caption text-secondary">
+<span class="material-symbols-outlined text-[15px]" data-icon="check_circle">check_circle</span>
+<span>Special Character (!@#$)</span>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="text-caption font-caption text-outline">CLM Cryptographic Verification: Passed</span>
+<span class="inline-flex items-center text-caption font-caption text-secondary font-semibold">
+<span class="material-symbols-outlined text-[16px] mr-1" data-icon="verified">verified</span>
+              Identity Ready
+            </span>
+</div>
+</form>
+</section>
+<!-- Card 2: Generated Client ID Card (Success State Preview) -->
+<section class="lg:col-span-5 flex flex-col space-y-4">
+<div class="bg-surface-container-lowest rounded-xl p-space-xl border border-outline-variant/30 shadow-[0_8px_24px_rgba(32,32,43,0.08)] relative overflow-hidden">
+<!-- Ambient Architectural Accent Pill -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-tertiary-fixed/30 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
+<div class="absolute bottom-0 left-0 w-32 h-32 bg-primary-fixed/40 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
+<!-- Header pill & status -->
+<div class="flex items-center justify-between mb-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-caption font-caption bg-tertiary-fixed text-on-tertiary-fixed font-semibold tracking-wide">
+              Provisioning Active
+            </span>
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-fixed-dim opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary-container"></span>
+</span>
+</div>
+<p class="text-caption font-caption text-on-surface-variant uppercase tracking-wider font-semibold">
+            HENU OS Client Identity Provisioned
+          </p>
+<!-- Monospace Identifier Badge -->
+<div class="mt-3 p-space-md bg-surface-container rounded-lg border border-outline-variant/30 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-caption font-caption text-outline">Unique Client Identifier</span>
+<span class="font-mono text-title-md font-bold text-on-surface tracking-wider" id="clientIdValue">
+                HENU-CL-2026-000001
+              </span>
+</div>
+<!-- One-tap Copy Button -->
+<button class="flex items-center gap-1 px-3 py-2 rounded-lg bg-surface-container-lowest border border-outline-variant/40 hover:bg-surface-container-high transition-colors active:scale-[0.98] text-primary font-semibold text-caption font-caption shadow-sm" id="copyBtn" onclick="copyClientId()" title="Copy Client ID">
+<span class="material-symbols-outlined text-[16px]" data-icon="content_copy">content_copy</span>
+<span>Copy</span>
+</button>
+</div>
+<!-- Feedback Pill (Controlled by JS) -->
+<div class="hidden mt-2 items-center space-x-1.5 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-caption font-caption w-max transition-all" id="copyFeedback">
+<span class="material-symbols-outlined text-[14px]" data-icon="done">done</span>
+<span>Copied to clipboard</span>
+</div>
+<!-- Legal & Architectural Deliverables Notice -->
+<div class="mt-5 p-3 rounded-lg bg-surface-container-low border border-outline-variant/20">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[18px]" data-icon="policy">policy</span>
+<p class="text-caption font-caption text-on-surface-variant leading-relaxed">
+                This system-generated identifier links all your invoices, quotes, and NDA-backed architectural deliverables. It cannot be manually altered.
+              </p>
+</div>
+</div>
+<!-- Client Ledger Summary Bento Elements -->
+<div class="grid grid-cols-2 gap-2 mt-4 pt-2">
+<div class="p-2.5 rounded-lg bg-surface border border-outline-variant/20">
+<span class="block text-caption font-caption text-outline">Ledger Authority</span>
+<span class="block text-body-md font-body-md font-semibold text-on-surface">Archetype Studio</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface border border-outline-variant/20">
+<span class="block text-caption font-caption text-outline">Provision Date</span>
+<span class="block text-body-md font-body-md font-semibold text-tertiary-container">Oct 24, 2026</span>
+</div>
+</div>
+<!-- Primary Action Button -->
+<div class="mt-6">
+<button class="w-full flex items-center justify-center space-x-2 bg-primary hover:bg-primary-container text-on-primary py-3 px-space-lg rounded-full font-label-md text-label-md transition duration-150 active:scale-[0.98] shadow-sm">
+<span>Proceed to Executive Dashboard</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Secondary Note -->
+<div class="mt-4 text-center">
+<a class="text-caption font-caption text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">
+              Already registered? <span class="font-semibold text-primary underline underline-offset-2">Sign in with your HENU OS ID</span>
+</a>
+</div>
+</div>
+<!-- Architectural Trust & Compliance Footnote -->
+<div class="px-space-md py-space-sm bg-surface-container-low rounded-lg border border-outline-variant/20 flex items-center justify-between text-caption font-caption text-outline">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock_clock">lock_clock</span>
+            Encrypted Session: TLS 1.3
+          </span>
+<span>ISO/IEC 27001 Certified</span>
+</div>
+</section>
+</div>
+</main>
+<script>
+    function copyClientId() {
+      const clientId = document.getElementById('clientIdValue').innerText.trim();
+      navigator.clipboard.writeText(clientId).then(() => {
+        const feedback = document.getElementById('copyFeedback');
+        feedback.classList.remove('hidden');
+        feedback.classList.add('inline-flex');
+        
+        const copyBtn = document.getElementById('copyBtn');
+        copyBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+        
+        setTimeout(() => {
+          feedback.classList.add('hidden');
+          feedback.classList.remove('inline-flex');
+          copyBtn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+        }, 2200);
+      });
+    }
+  </script>
+</body></html>

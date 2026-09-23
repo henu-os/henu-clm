@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HENU OS — Client Profile</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e9e6f6",
+            "primary-fixed": "#e6deff",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#cbbefe",
+            "on-tertiary-fixed": "#271900",
+            "primary": "#5e548c",
+            "surface-variant": "#e3e1f0",
+            "on-primary-fixed": "#1d1147",
+            "secondary-fixed": "#acedf6",
+            "secondary-container": "#acedf6",
+            "on-background": "#1b1b25",
+            "on-secondary": "#ffffff",
+            "outline": "#797580",
+            "on-primary": "#ffffff",
+            "secondary-fixed-dim": "#91d1da",
+            "surface-container-low": "#f5f2ff",
+            "background": "#fcf8ff",
+            "on-primary-container": "#fffbff",
+            "on-tertiary-container": "#fffbff",
+            "surface-container-highest": "#e3e1f0",
+            "inverse-on-surface": "#f2efff",
+            "surface-container": "#efecfc",
+            "error": "#ba1a1a",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#001f23",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#dbd8e8",
+            "on-error": "#ffffff",
+            "surface": "#fcf8ff",
+            "outline-variant": "#c9c4d0",
+            "on-surface-variant": "#48454f",
+            "on-surface": "#1b1b25",
+            "tertiary-fixed-dim": "#f5bd58",
+            "on-secondary-container": "#2a6d75",
+            "error-container": "#ffdad6",
+            "inverse-primary": "#cbbefe",
+            "tertiary-fixed": "#ffdeaa",
+            "on-primary-fixed-variant": "#493f75",
+            "surface-bright": "#fcf8ff",
+            "on-tertiary-fixed-variant": "#5f4100",
+            "primary-container": "#776da6",
+            "on-secondary-fixed-variant": "#004f56",
+            "secondary": "#22676f",
+            "tertiary": "#7a5500",
+            "surface-tint": "#61578f",
+            "tertiary-container": "#996c04",
+            "inverse-surface": "#302f3b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter-mobile": "0.75rem",
+            "margin-mobile": "1rem",
+            "space-xl": "1.5rem",
+            "margin": "1.25rem",
+            "gutter": "1rem",
+            "space-md": "0.75rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col pb-24 selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md px-space-lg py-space-sm flex justify-between items-center w-full shadow-sm">
+<div class="flex items-center gap-space-md">
+<button aria-label="Go Back" class="p-space-xs rounded-full hover:bg-surface-container active:scale-[0.98] transition-all duration-150 flex items-center justify-center text-on-surface" type="button">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<div class="flex items-center gap-space-xs">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-title-md font-title-md font-semibold text-on-surface tracking-tight">HENU OS</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<button aria-label="Notifications" class="p-space-xs rounded-full hover:bg-surface-container text-on-surface-variant active:scale-[0.98] transition-all duration-150 relative" type="button">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-tertiary-container rounded-full ring-2 ring-surface"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-title-md text-caption shadow-xs">
+        SR
+      </div>
+</div>
+</header>
+<!-- Main Viewport Canvas -->
+<main class="w-full max-w-4xl mx-auto px-margin-mobile md:px-margin pt-space-lg space-y-space-lg flex-1">
+<!-- Executive Client Profile Bento Card -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl border border-outline-variant/30 shadow-[0_2px_8px_rgba(32,32,43,0.04)] relative overflow-hidden">
+<div class="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-primary-fixed/40 filter blur-3xl pointer-events-none"></div>
+<div class="flex flex-col md:flex-row items-start md:items-center gap-space-lg relative z-10">
+<!-- Client Initials Avatar with online status -->
+<div class="relative shrink-0">
+<div class="w-20 h-20 rounded-full bg-primary text-on-primary flex items-center justify-center font-headline-md tracking-tight shadow-sm">
+            SR
+          </div>
+<span class="absolute bottom-1 right-1 w-4 h-4 bg-secondary border-2 border-surface-container-lowest rounded-full ring-1 ring-secondary/30" title="Online Status"></span>
+</div>
+<!-- Identity Hierarchy -->
+<div class="flex-1 space-y-space-xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<h1 class="text-headline-md font-headline-md text-on-surface tracking-tight">Siddharth Roy</h1>
+<span class="inline-flex items-center gap-1 bg-secondary-fixed text-on-secondary-fixed text-caption font-caption px-space-md py-0.5 rounded-full font-medium">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+              Verified Enterprise
+            </span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant font-medium">
+            Managing Director · Archetype Studio Inc.
+          </p>
+<div class="pt-space-xs flex flex-wrap items-center gap-space-sm text-caption font-caption text-outline">
+<span>Client since March 2024</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-primary font-semibold">Enterprise Tier</span>
+</div>
+</div>
+<!-- Copyable Client ID Capsule -->
+<div class="w-full md:w-auto flex md:flex-col items-end justify-between pt-space-xs md:pt-0">
+<button class="group flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container transition-colors duration-150 px-space-md py-1.5 rounded-full border border-outline-variant/40 active:scale-[0.98]" id="copyIdBtn" type="button">
+<span class="material-symbols-outlined text-outline group-hover:text-primary text-[16px] transition-colors">fingerprint</span>
+<span class="text-caption font-caption font-semibold tracking-wider text-on-surface-variant" id="clientIdValue">HENU-CL-2026-000001</span>
+<span class="material-symbols-outlined text-outline text-[16px] ml-1" id="copyIcon">content_copy</span>
+</button>
+<span class="text-caption font-caption text-secondary opacity-0 transition-opacity duration-200 mt-1" id="copyFeedback">Copied to clipboard</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Section: Contact, Folio, & Security -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-lg">
+<!-- Section 1: Contact & Folio Information (Col 7) -->
+<section class="md:col-span-7 bg-surface-container-lowest rounded-xl p-space-lg border border-outline-variant/30 shadow-[0_2px_8px_rgba(32,32,43,0.04)] flex flex-col justify-between space-y-space-md">
+<div>
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant/20">
+<h2 class="text-title-md font-title-md text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">contacts</span>
+              Contact &amp; Folio Information
+            </h2>
+<span class="text-caption font-caption text-outline">Primary Folio</span>
+</div>
+<!-- Contact Matrix Details -->
+<div class="divide-y divide-outline-variant/15 mt-space-sm">
+<!-- Email Item -->
+<div class="py-space-sm flex items-center justify-between">
+<div class="space-y-0.5">
+<span class="text-caption font-caption text-outline uppercase tracking-wider block">Direct Email</span>
+<span class="text-body-md font-body-md text-on-surface font-medium">siddharth@archetype.studio</span>
+</div>
+<span class="inline-flex items-center gap-1 bg-secondary-fixed text-on-secondary-fixed px-space-sm py-0.5 rounded-full text-caption font-caption">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> Verified
+              </span>
+</div>
+<!-- Mobile Phone Item -->
+<div class="py-space-sm flex items-center justify-between">
+<div class="space-y-0.5">
+<span class="text-caption font-caption text-outline uppercase tracking-wider block">Secured Line</span>
+<span class="text-body-md font-body-md text-on-surface font-medium">+91 98401 22390</span>
+</div>
+<span class="inline-flex items-center gap-1 bg-primary-fixed text-on-primary-fixed px-space-sm py-0.5 rounded-full text-caption font-caption font-medium">
+<span class="material-symbols-outlined text-[13px]">shield</span> 2FA Active
+              </span>
+</div>
+<!-- Preferred Channel -->
+<div class="py-space-sm flex items-center justify-between">
+<div class="space-y-0.5">
+<span class="text-caption font-caption text-outline uppercase tracking-wider block">Dispatch Channel</span>
+<span class="text-body-md font-body-md text-on-surface font-medium">Encrypted In-App Chat &amp; WhatsApp</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-[20px]">lock</span>
+</div>
+</div>
+</div>
+<!-- Quick Action CTA -->
+<div class="pt-space-sm">
+<button class="w-full py-2.5 px-space-lg rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-low font-label-md text-label-md active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+            Edit Profile Information
+          </button>
+</div>
+</section>
+<!-- Section 2: Folio Allocation Snapshot (Col 5) -->
+<section class="md:col-span-5 bg-surface-container-lowest rounded-xl p-space-lg border border-outline-variant/30 shadow-[0_2px_8px_rgba(32,32,43,0.04)] flex flex-col justify-between space-y-space-md">
+<div>
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant/20">
+<h2 class="text-title-md font-title-md text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary-container text-[20px]">account_balance_wallet</span>
+              Allocation Snapshot
+            </h2>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<div class="mt-space-md space-y-space-md">
+<!-- Settled Metric Card -->
+<div class="bg-surface-container-low p-space-md rounded-xl border border-outline-variant/20">
+<span class="text-caption font-caption text-outline block">Total Settled Value</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="text-headline-lg font-headline-lg font-semibold text-tertiary tracking-tight">$48,250</span>
+<span class="text-caption font-caption font-semibold text-tertiary uppercase">USD</span>
+</div>
+<span class="text-caption font-caption text-secondary mt-1 block">Full Escrow Discharged · 0 Delinquency</span>
+</div>
+<!-- Engagements Counter -->
+<div class="space-y-1">
+<div class="flex justify-between items-center">
+<span class="text-caption font-caption text-outline">Active Engagements</span>
+<span class="text-caption font-caption font-semibold text-primary">2 Active Contracts</span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center gap-space-xs text-body-md font-body-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">arrow_right_alt</span>
+<span>Phase II Sync Pipeline</span>
+</div>
+<div class="flex items-center gap-space-xs text-body-md font-body-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">arrow_right_alt</span>
+<span>Web Platform</span>
+</div>
+</div>
+</div>
+<!-- Lead Architect Assigned -->
+<div class="pt-space-xs border-t border-outline-variant/20">
+<span class="text-caption font-caption text-outline block">Assigned Lead Architect</span>
+<div class="flex items-center gap-space-sm mt-1.5">
+<div class="w-7 h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-caption font-semibold">
+                  ER
+                </div>
+<div>
+<p class="text-body-md font-body-md font-semibold text-on-surface">Elena Rostova</p>
+<p class="text-caption font-caption text-outline">Sr. Solutions Architect</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Account Security & Gateways (Col 12 - Full Width Horizontal Bento) -->
+<section class="md:col-span-12 bg-surface-container-lowest rounded-xl p-space-lg border border-outline-variant/30 shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-sm border-b border-outline-variant/20">
+<h2 class="text-title-md font-title-md text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">security</span>
+            Account Status &amp; Protocol Assurance
+          </h2>
+<span class="text-caption font-caption text-secondary font-medium flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Operational Grade Verified
+          </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg mt-space-md">
+<!-- Escrow Protocol Box -->
+<div class="flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-low border border-outline-variant/20">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center shrink-0 text-primary">
+<span class="material-symbols-outlined text-[22px]">enhanced_encryption</span>
+</div>
+<div>
+<span class="text-caption font-caption text-outline block uppercase tracking-wider">Security Architecture</span>
+<p class="text-body-lg font-body-lg font-semibold text-on-surface mt-0.5">Tier-1 Cryptographic Escrow</p>
+<p class="text-caption font-caption text-on-surface-variant mt-1">Multi-signature authorization enabled on all tranche liquidations with state logging.</p>
+</div>
+</div>
+<!-- Linked Gateways -->
+<div class="flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-low border border-outline-variant/20">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center shrink-0 text-tertiary-container">
+<span class="material-symbols-outlined text-[22px]">account_tree</span>
+</div>
+<div class="flex-1">
+<span class="text-caption font-caption text-outline block uppercase tracking-wider">Linked Settlement Gateways</span>
+<div class="mt-space-xs space-y-1">
+<div class="flex items-center justify-between">
+<span class="text-body-md font-body-md font-medium text-on-surface">Razorpay Corporate</span>
+<span class="text-caption font-caption text-secondary font-medium">Synchronized</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-body-md font-body-md font-medium text-on-surface">Cashfree Virtual Escrow</span>
+<span class="text-caption font-caption text-secondary font-medium">Synchronized</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Semantic Shell Shared Component - Hub Tab Active) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-sm py-space-xs bg-surface-container-lowest border-t border-outline-variant/15 shadow-[0_-2px_8px_rgba(32,32,43,0.04)]">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[22px]">dashboard</span>
+<span class="text-caption font-caption mt-0.5">Home</span>
+</a>
+<!-- Portfolio -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[22px]">folder_managed</span>
+<span class="text-caption font-caption mt-0.5">Portfolio</span>
+</a>
+<!-- Services -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[22px]">inventory_2</span>
+<span class="text-caption font-caption mt-0.5">Services</span>
+</a>
+<!-- Finance -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[22px]">receipt_long</span>
+<span class="text-caption font-caption mt-0.5">Finance</span>
+</a>
+<!-- Hub (Active Tab for Client Profile/Executive Identity) -->
+<a class="flex flex-col items-center justify-center bg-primary-fixed text-on-primary-fixed rounded-full px-space-md py-space-xs active:scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">widgets</span>
+<span class="text-caption font-caption mt-0.5 font-semibold">Hub</span>
+</a>
+</nav>
+<!-- Client Interaction Logic -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyBtn = document.getElementById('copyIdBtn');
+      const copyIcon = document.getElementById('copyIcon');
+      const copyFeedback = document.getElementById('copyFeedback');
+      const clientIdValue = document.getElementById('clientIdValue').innerText;
+
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(clientIdValue);
+          copyIcon.innerText = 'check';
+          copyIcon.classList.add('text-secondary');
+          copyFeedback.classList.remove('opacity-0');
+
+          setTimeout(() => {
+            copyIcon.innerText = 'content_copy';
+            copyIcon.classList.remove('text-secondary');
+            copyFeedback.classList.add('opacity-0');
+          }, 2000);
+        } catch (err) {
+          // Fallback if clipboard API restricted
+          copyFeedback.innerText = 'Selected';
+          copyFeedback.classList.remove('opacity-0');
+          setTimeout(() => copyFeedback.classList.add('opacity-0'), 2000);
+        }
+      });
+    });
+  </script>
+</body></html>

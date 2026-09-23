@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HENU OS — System Initializing</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Plus Jakarta Sans Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e9e6f6",
+            "primary-fixed": "#e6deff",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#cbbefe",
+            "on-tertiary-fixed": "#271900",
+            "primary": "#5e548c",
+            "surface-variant": "#e3e1f0",
+            "on-primary-fixed": "#1d1147",
+            "secondary-fixed": "#acedf6",
+            "secondary-container": "#acedf6",
+            "on-background": "#1b1b25",
+            "on-secondary": "#ffffff",
+            "outline": "#797580",
+            "on-primary": "#ffffff",
+            "secondary-fixed-dim": "#91d1da",
+            "surface-container-low": "#f5f2ff",
+            "background": "#fcf8ff",
+            "on-primary-container": "#fffbff",
+            "on-tertiary-container": "#fffbff",
+            "surface-container-highest": "#e3e1f0",
+            "inverse-on-surface": "#f2efff",
+            "surface-container": "#efecfc",
+            "error": "#ba1a1a",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#001f23",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#dbd8e8",
+            "on-error": "#ffffff",
+            "surface": "#fcf8ff",
+            "outline-variant": "#c9c4d0",
+            "on-surface-variant": "#48454f",
+            "on-surface": "#1b1b25",
+            "tertiary-fixed-dim": "#f5bd58",
+            "on-secondary-container": "#2a6d75",
+            "error-container": "#ffdad6",
+            "inverse-primary": "#cbbefe",
+            "tertiary-fixed": "#ffdeaa",
+            "on-primary-fixed-variant": "#493f75",
+            "surface-bright": "#fcf8ff",
+            "on-tertiary-fixed-variant": "#5f4100",
+            "primary-container": "#776da6",
+            "on-secondary-fixed-variant": "#004f56",
+            "secondary": "#22676f",
+            "tertiary": "#7a5500",
+            "surface-tint": "#61578f",
+            "tertiary-container": "#996c04",
+            "inverse-surface": "#302f3b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter-mobile": "0.75rem",
+            "margin-mobile": "1rem",
+            "space-xl": "1.5rem",
+            "margin": "1.25rem",
+            "gutter": "1rem",
+            "space-md": "0.75rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+    
+    @keyframes subtleDrift {
+      0% { transform: translateY(0px) rotate(0deg) scale(1); }
+      50% { transform: translateY(-8px) rotate(0.4deg) scale(1.01); }
+      100% { transform: translateY(0px) rotate(0deg) scale(1); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.45; filter: drop-shadow(0 0 4px #887DB8); }
+      50% { opacity: 0.95; filter: drop-shadow(0 0 12px #887DB8); }
+    }
+
+    @keyframes streamProgress {
+      0% { width: 4%; transform: translateX(0%); }
+      50% { width: 58%; }
+      100% { width: 92%; }
+    }
+
+    .dragon-drift {
+      animation: subtleDrift 8s ease-in-out infinite;
+    }
+
+    .pulse-glow {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    .progress-bar-fill {
+      animation: streamProgress 4.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#11131A] text-[#F5F1EA] font-body-md text-body-md min-h-screen overflow-hidden flex flex-col justify-between select-none relative antialiased">
+<!-- Background Ambient Depth Lighting & Noise Grid -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[480px] h-[480px] bg-[#236870]/20 rounded-full blur-[110px]"></div>
+<div class="absolute top-1/4 right-[-10%] w-[380px] h-[380px] bg-[#887DB8]/20 rounded-full blur-[130px]"></div>
+<div class="absolute bottom-10 left-[-15%] w-[420px] h-[420px] bg-[#181B24] rounded-full blur-[90px]"></div>
+<!-- Fine-grain architectural alignment reticle -->
+<div class="absolute inset-0 opacity-[0.04] bg-[radial-gradient(#F5F1EA_1px,transparent_1px)] [background-size:24px_24px]"></div>
+</div>
+<!-- Top System Micro-Header -->
+<header class="relative z-10 w-full px-space-lg pt-space-lg flex justify-between items-center text-[#F5F1EA]/60 font-caption text-caption">
+<div class="flex items-center space-x-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#236870] animate-ping"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#236870] -ml-3.5"></span>
+<span class="font-semibold tracking-wider text-[#F5F1EA]/80">CLIENT LIFECYCLE OS</span>
+</div>
+<div class="flex items-center space-x-1.5 bg-[#181B24]/80 border border-[#F5F1EA]/10 px-2.5 py-1 rounded-full backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px] text-[#887DB8]" data-icon="terminal">terminal</span>
+<span class="tracking-widest uppercase text-[10px]">PROD_RUNTIME</span>
+</div>
+</header>
+<!-- 3D Cinematic Dragon Canvas Container (Hero Visual Anchor) -->
+<main class="relative z-10 flex-1 flex flex-col items-center justify-center px-space-lg w-full max-w-md mx-auto">
+<div class="w-full relative flex items-center justify-center">
+<!-- Mist Aura Ring Behind Dragon -->
+<div class="absolute w-72 h-72 rounded-full border border-[#887DB8]/15 pulse-glow pointer-events-none"></div>
+<div class="absolute w-60 h-60 rounded-full border border-[#236870]/20 pointer-events-none"></div>
+<!-- Sinuous 3D Dragon Cinematic Visual Asset -->
+<div class="dragon-drift w-full aspect-[4/3] max-w-[340px] relative flex items-center justify-center">
+<img class="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]" data-alt="A majestic 3D cinematic dragon creature representing architectural precision flying serenely through atmospheric midnight mist. The dragon features sculpted metallic wings with iridescent deep teal and royal iris violet highlights glistening along its sinuous cybernetic scales. Volumetric lighting gently illuminates the obsidian and indigo atmosphere with soft, high-craft scientific visualization aesthetics. The mood is calm, executive, and profoundly technologically advanced." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2PiNWfbXPrb_ExSBOKKgk-CQT23i6jEOtt7qDkKPlE0tBhMZ_4isGXYANeqehBgsP3kX-IsHVfgSMgDGkaypA9H9amtWQFLIHTu6q-kapnRDl6iDM5uaFpTBmXCj_uci7VKIX5igYjfI4tfYv_3TNEH8QhILv99PTfu7hkUGLj3fHDXeou4YdqGtv5lbQWWBT-9Q-8ZlCNvYcjbbR2_oVShKHDJqmmxXdTJSsg0Z6VRIlAel7Gjw2OQ"/>
+<!-- Precision coordinates indicator overlay -->
+<div class="absolute top-2 left-2 flex flex-col font-caption text-[9px] text-[#F5F1EA]/40 space-y-0.5 tracking-mono">
+<span>LAT_SYM // 04.9928</span>
+<span>ORBIT // 48.20° AZ</span>
+</div>
+<div class="absolute bottom-2 right-2 font-caption text-[9px] text-[#236870] font-medium tracking-widest uppercase">
+          RENDER: BIOMETRIC_MESH
+        </div>
+</div>
+</div>
+</main>
+<!-- Lower Third: Architectural Identity, Monogram & Calibration Line -->
+<footer class="relative z-10 w-full max-w-md mx-auto px-space-lg pb-space-lg flex flex-col items-center text-center">
+<!-- Monogram HENU Emblem with Geometric Precision -->
+<div class="mb-4 relative group">
+<div class="w-14 h-14 rounded-2xl bg-gradient-to-b from-[#1E222D] to-[#141720] border border-[#F5F1EA]/15 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-md">
+<!-- Geometric SVG Monogram -->
+<svg class="w-7 h-7 text-[#F5F1EA]" fill="none" viewbox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+<!-- Geometric H & E Structural Interlock -->
+<path d="M5 4V24M11 4V24M5 14H11" stroke="#F5F1EA" stroke-linecap="round" stroke-width="1.75"></path>
+<path d="M17 4H23M17 14H21M17 24H23M17 4V24" stroke="#887DB8" stroke-linecap="round" stroke-width="1.75"></path>
+<circle cx="23" cy="4" fill="#236870" r="1.25"></circle>
+</svg>
+</div>
+<!-- Subtle underglow for the emblem -->
+<div class="absolute inset-0 rounded-2xl bg-[#887DB8]/20 blur-lg -z-10"></div>
+</div>
+<!-- Title & Brand Anchor -->
+<div class="space-y-1 mb-6">
+<h1 class="font-headline-lg text-headline-lg font-bold tracking-tight text-[#F5F1EA]">
+        HENU OS
+      </h1>
+<p class="font-body-md text-body-md text-[#F5F1EA]/70 tracking-normal font-normal">
+        Simple systems. Real progress.
+      </p>
+</div>
+<!-- Subtle Minimalist Loading Progress Line in Royal Iris with Glowing Pulse -->
+<div class="w-full max-w-xs space-y-2 mb-5">
+<div class="w-full h-[2px] bg-[#1E222D] rounded-full overflow-hidden relative">
+<div class="h-full bg-gradient-to-r from-[#236870] via-[#887DB8] to-[#D9A441] progress-bar-fill rounded-full relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#887DB8] rounded-full blur-[2px] opacity-80"></div>
+</div>
+</div>
+<div class="flex justify-between items-center text-[11px] font-caption text-[#F5F1EA]/50 tracking-wider">
+<span class="flex items-center space-x-1">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-[#887DB8] animate-pulse"></span>
+<span>CALIBRATING KERNEL</span>
+</span>
+<span class="font-medium text-[#F5F1EA]/80" id="percentCounter">84%</span>
+</div>
+</div>
+<!-- Performance & Accessibility Indicator Tag -->
+<div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#181B24]/90 border border-[#F5F1EA]/08 mb-4 shadow-sm backdrop-blur-sm">
+<span class="material-symbols-outlined text-[13px] text-[#236870]" data-icon="speed">speed</span>
+<span class="font-caption text-[11px] text-[#F5F1EA]/65 font-medium tracking-wide">Atmospheric 3D · 60fps · Reduced motion supported</span>
+</div>
+<!-- Bottom Status Bar -->
+<div class="pt-2 border-t border-[#F5F1EA]/06 w-full flex items-center justify-center space-x-1.5 text-[11px] font-caption text-[#F5F1EA]/40">
+<span class="material-symbols-outlined text-[13px] text-[#236870]" data-icon="lock">lock</span>
+<span>Initializing secure client runtime v2.4</span>
+</div>
+</footer>
+<script>
+    // Smooth micro-increment on the splash screen percentage counter
+    document.addEventListener('DOMContentLoaded', () => {
+      const counter = document.getElementById('percentCounter');
+      let currentVal = 12;
+      const interval = setInterval(() => {
+        if (currentVal < 92) {
+          currentVal += Math.floor(Math.random() * 4) + 1;
+          if (currentVal > 92) currentVal = 92;
+          if (counter) counter.innerText = `${currentVal}%`;
+        } else {
+          clearInterval(interval);
+        }
+      }, 120);
+    });
+  </script>
+</body></html>

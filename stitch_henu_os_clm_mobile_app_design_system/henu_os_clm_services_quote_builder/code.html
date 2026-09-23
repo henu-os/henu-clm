@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HENU OS — Services Catalogue &amp; Custom Quote Builder</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e9e6f6",
+            "secondary-fixed": "#acedf6",
+            "secondary": "#22676f",
+            "surface": "#fcf8ff",
+            "outline": "#797580",
+            "tertiary": "#7a5500",
+            "outline-variant": "#c9c4d0",
+            "surface-container": "#efecfc",
+            "surface-container-low": "#f5f2ff",
+            "tertiary-container": "#996c04",
+            "secondary-container": "#acedf6",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#dbd8e8",
+            "surface-tint": "#61578f",
+            "on-surface": "#1b1b25",
+            "primary-fixed-dim": "#cbbefe",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#f5bd58",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#48454f",
+            "on-secondary-fixed": "#001f23",
+            "on-primary-container": "#fffbff",
+            "on-primary-fixed-variant": "#493f75",
+            "on-tertiary-fixed": "#271900",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "inverse-on-surface": "#f2efff",
+            "on-tertiary-fixed-variant": "#5f4100",
+            "primary-container": "#776da6",
+            "secondary-fixed-dim": "#91d1da",
+            "on-error": "#ffffff",
+            "inverse-primary": "#cbbefe",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#004f56",
+            "on-tertiary-container": "#fffbff",
+            "surface-variant": "#e3e1f0",
+            "tertiary-fixed": "#ffdeaa",
+            "surface-container-highest": "#e3e1f0",
+            "primary": "#5e548c",
+            "surface-bright": "#fcf8ff",
+            "inverse-surface": "#302f3b",
+            "on-secondary-container": "#2a6d75",
+            "background": "#fcf8ff",
+            "on-primary-fixed": "#1d1147",
+            "on-background": "#1b1b25",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#e6deff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-md": "0.75rem",
+            "margin": "1.25rem",
+            "space-xl": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter": "1rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+            "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "display": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md selection:bg-primary-fixed selection:text-on-primary-fixed pb-24">
+<!-- TOP APP BAR -->
+<header class="bg-surface sticky top-0 z-40 w-full flex justify-between items-center px-space-lg py-space-sm border-b border-outline-variant/20">
+<div class="flex items-center gap-space-md">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-caption font-caption font-semibold tracking-tight shadow-sm">
+        HN
+      </div>
+<div>
+<span class="text-title-md font-title-md font-semibold text-on-surface tracking-tight block">HENU OS</span>
+<span class="text-caption font-caption text-on-surface-variant block">Client Lifecycle Management</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<button aria-label="Notifications" class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 w-full max-w-md mx-auto px-margin-mobile py-space-lg space-y-space-xl">
+<!-- PAGE HEADER -->
+<section class="space-y-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex items-center text-caption font-caption text-secondary font-semibold bg-secondary-container/40 px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5"></span>
+          Folio 2025 · Engineering Services
+        </span>
+</div>
+<h1 class="text-headline-md font-headline-md text-on-surface tracking-tight">Services &amp; Custom Quotations</h1>
+<p class="text-body-md font-body-md text-on-surface-variant">Engineering, automation, and digital intelligence systems designed for mission-critical client operations.</p>
+</section>
+<!-- SEARCH & FILTER BAR -->
+<section class="space-y-space-md">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline text-body-lg pointer-events-none" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl pl-10 pr-4 py-2.5 text-body-md font-body-md text-on-surface placeholder:text-outline outline-none transition-all duration-150 shadow-[0_2px_8px_rgba(32,32,43,0.03)]" placeholder="Search systems, capabilities, or SLAs..." type="text"/>
+</div>
+<!-- FILTER CHIPS -->
+<div class="flex items-center gap-space-xs overflow-x-auto pb-1 no-scrollbar">
+<button class="bg-primary text-on-primary px-3.5 py-1.5 rounded-full text-caption font-caption font-semibold whitespace-nowrap active:scale-[0.98] transition-transform" type="button">
+          All
+        </button>
+<button class="bg-surface-container-lowest border border-outline-variant/60 text-on-surface-variant hover:bg-surface-container px-3.5 py-1.5 rounded-full text-caption font-caption font-medium whitespace-nowrap active:scale-[0.98] transition-all" type="button">
+          AI Automation
+        </button>
+<button class="bg-surface-container-lowest border border-outline-variant/60 text-on-surface-variant hover:bg-surface-container px-3.5 py-1.5 rounded-full text-caption font-caption font-medium whitespace-nowrap active:scale-[0.98] transition-all" type="button">
+          Custom Software
+        </button>
+<button class="bg-surface-container-lowest border border-outline-variant/60 text-on-surface-variant hover:bg-surface-container px-3.5 py-1.5 rounded-full text-caption font-caption font-medium whitespace-nowrap active:scale-[0.98] transition-all" type="button">
+          Web Development
+        </button>
+<button class="bg-surface-container-lowest border border-outline-variant/60 text-on-surface-variant hover:bg-surface-container px-3.5 py-1.5 rounded-full text-caption font-caption font-medium whitespace-nowrap active:scale-[0.98] transition-all" type="button">
+          Mobile Apps
+        </button>
+</div>
+</section>
+<!-- FEATURED SERVICE CARD (Bento / Architectural Highlight) -->
+<section class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="text-caption font-caption font-semibold tracking-wider text-outline uppercase">Flagship System</span>
+<span class="inline-flex items-center gap-1 text-caption font-caption font-semibold text-tertiary-container bg-tertiary-fixed/40 px-2.5 py-0.5 rounded-full border border-tertiary-fixed-dim/40">
+<span class="material-symbols-outlined text-caption" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+          Most Requested
+        </span>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-space-lg shadow-[0_2px_8px_rgba(32,32,43,0.04)] relative overflow-hidden space-y-space-md">
+<div class="flex justify-between items-start gap-space-md">
+<div class="space-y-1">
+<h2 class="text-title-md font-title-md text-on-surface">AI Workflow Automation Engine</h2>
+<p class="text-body-md font-body-md text-on-surface-variant leading-snug">
+              Autonomous multi-agent workflows and real-time operational sync across enterprise ERP and CRM matrices.
+            </p>
+</div>
+<div class="p-2.5 rounded-xl bg-surface-container text-primary flex-shrink-0">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-sm py-space-sm border-y border-outline-variant/20 bg-surface-container-low/50 -mx-space-lg px-space-lg">
+<div>
+<span class="text-caption font-caption text-outline block">Starting Capital</span>
+<span class="text-title-md font-title-md text-tertiary font-bold tracking-tight">From $4,500</span>
+</div>
+<div>
+<span class="text-caption font-caption text-outline block">Delivery Horizon</span>
+<span class="text-body-md font-body-md text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-caption text-secondary" data-icon="schedule">schedule</span>
+              3–4 Weeks
+            </span>
+</div>
+</div>
+<div class="space-y-space-xs pt-1">
+<div class="flex items-center justify-between text-caption font-caption text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-caption text-secondary" data-icon="verified">verified</span> Zero-downtime integration</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-caption text-secondary" data-icon="terminal">terminal</span> Custom LLM Fine-tuning</span>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-on-primary py-3 px-space-lg rounded-full text-label-md font-label-md flex items-center justify-center gap-space-xs transition-all duration-150 active:scale-[0.98] shadow-sm" type="button">
+<span>Configure &amp; Request Quote</span>
+<span class="material-symbols-outlined text-label-md" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- INTERACTIVE QUOTE BUILDER SECTION / ARCHITECTURAL FOLIO -->
+<section class="space-y-space-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-space-lg shadow-[0_4px_16px_rgba(32,32,43,0.03)]">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="p-1 rounded-md bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-title-md" data-icon="tune">tune</span>
+</span>
+<div>
+<h3 class="text-title-md font-title-md text-on-surface">Interactive Quote Builder</h3>
+<span class="text-caption font-caption text-outline">Custom Scope Formulation</span>
+</div>
+</div>
+<span class="text-caption font-caption font-semibold text-secondary px-2.5 py-1 rounded-full bg-secondary-container/50">
+          Active Draft
+        </span>
+</div>
+<!-- STEP 1: SELECTED SERVICE -->
+<div class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="text-caption font-caption text-outline font-semibold">Step 01 · Base Architecture</span>
+<button class="text-caption font-caption text-primary font-semibold hover:underline" type="button">Change</button>
+</div>
+<div class="flex items-center justify-between p-space-md rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs">
+<span class="material-symbols-outlined" data-icon="devices">devices</span>
+</div>
+<div>
+<span class="text-label-md font-label-md text-on-surface block">Web &amp; Mobile Architecture</span>
+<span class="text-caption font-caption text-on-surface-variant">Core multi-tenant infrastructure</span>
+</div>
+</div>
+<span class="text-label-md font-label-md text-tertiary font-semibold">$4,500</span>
+</div>
+</div>
+<!-- STEP 2: CONFIGURABLE ADD-ONS -->
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="text-caption font-caption text-outline font-semibold">Step 02 · System Add-ons &amp; Modules</span>
+<span class="text-caption font-caption text-on-surface-variant">Select specifications</span>
+</div>
+<div class="space-y-space-xs">
+<!-- Item 1 -->
+<label class="flex items-center justify-between p-space-md rounded-xl border border-outline-variant/40 hover:bg-surface-container-low/60 transition-colors cursor-pointer group">
+<div class="flex items-center gap-space-sm">
+<input checked="" class="w-5 h-5 rounded text-primary focus:ring-primary/20 border-outline-variant transition" type="checkbox"/>
+<div>
+<span class="text-body-md font-body-md text-on-surface font-semibold block">SEO &amp; Structured Data</span>
+<span class="text-caption font-caption text-on-surface-variant">JSON-LD, edge prerendering &amp; meta engines</span>
+</div>
+</div>
+<span class="text-caption font-caption font-semibold text-tertiary bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">+ $800</span>
+</label>
+<!-- Item 2 -->
+<label class="flex items-center justify-between p-space-md rounded-xl border border-outline-variant/40 hover:bg-surface-container-low/60 transition-colors cursor-pointer group">
+<div class="flex items-center gap-space-sm">
+<input checked="" class="w-5 h-5 rounded text-primary focus:ring-primary/20 border-outline-variant transition" type="checkbox"/>
+<div>
+<span class="text-body-md font-body-md text-on-surface font-semibold block">Analytics &amp; Telemetry</span>
+<span class="text-caption font-caption text-on-surface-variant">Privacy-first clickstream &amp; event pipelines</span>
+</div>
+</div>
+<span class="text-caption font-caption font-semibold text-tertiary bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">+ $650</span>
+</label>
+<!-- Item 3 -->
+<label class="flex items-center justify-between p-space-md rounded-xl border border-outline-variant/40 hover:bg-surface-container-low/60 transition-colors cursor-pointer group">
+<div class="flex items-center gap-space-sm">
+<input checked="" class="w-5 h-5 rounded text-primary focus:ring-primary/20 border-outline-variant transition" type="checkbox"/>
+<div>
+<span class="text-body-md font-body-md text-on-surface font-semibold block">WhatsApp Business Integration</span>
+<span class="text-caption font-caption text-on-surface-variant">Automated transactional messaging webhook</span>
+</div>
+</div>
+<span class="text-caption font-caption font-semibold text-tertiary bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">+ $400</span>
+</label>
+<!-- Item 4 -->
+<label class="flex items-center justify-between p-space-md rounded-xl border border-outline-variant/40 hover:bg-surface-container-low/60 transition-colors cursor-pointer group">
+<div class="flex items-center gap-space-sm">
+<input checked="" class="w-5 h-5 rounded text-primary focus:ring-primary/20 border-outline-variant transition" type="checkbox"/>
+<div>
+<span class="text-body-md font-body-md text-on-surface font-semibold block">Dedicated SLA Maintenance</span>
+<span class="text-caption font-caption text-on-surface-variant">24/7 incident triaging &amp; patch monitoring</span>
+</div>
+</div>
+<span class="text-caption font-caption font-semibold text-secondary bg-secondary-container/40 px-2 py-0.5 rounded-full">+ $1,200/mo</span>
+</label>
+</div>
+</div>
+<!-- ESTIMATED SUMMARY BOX -->
+<div class="p-space-md rounded-xl bg-surface-container-high/60 border border-outline-variant/30 space-y-space-xs">
+<div class="flex items-baseline justify-between">
+<span class="text-caption font-caption text-on-surface-variant font-semibold">Estimated Allocation</span>
+<div class="text-right">
+<span class="text-headline-sm font-headline-sm text-tertiary font-bold tracking-tight">$7,550</span>
+<span class="text-caption font-caption text-outline block">+ $1,200/mo recurring SLA</span>
+</div>
+</div>
+<div class="flex items-start gap-1.5 pt-1 border-t border-outline-variant/20 text-caption font-caption text-on-surface-variant">
+<span class="material-symbols-outlined text-caption text-secondary flex-shrink-0 mt-0.5" data-icon="info">info</span>
+<p class="leading-relaxed">
+            Your final quotation will be reviewed by HENU OS engineers before confirmation. Pricing reflects architectural tiers and may adapt to custom payload limits.
+          </p>
+</div>
+</div>
+<!-- ACTION BUTTONS -->
+<div class="space-y-space-xs pt-1">
+<button class="w-full bg-primary hover:bg-primary/90 text-on-primary py-3 px-space-lg rounded-full text-label-md font-label-md font-semibold flex items-center justify-center gap-space-xs transition-all active:scale-[0.98] shadow-sm" type="button">
+<span class="material-symbols-outlined text-label-md" data-icon="send">send</span>
+<span>Submit Quotation Request</span>
+</button>
+<button class="w-full bg-transparent border border-outline-variant/60 hover:bg-surface-container text-on-surface py-2.5 px-space-lg rounded-full text-label-md font-label-md transition-all active:scale-[0.98]" type="button">
+          Save Draft
+        </button>
+</div>
+</section>
+<!-- SECONDARY SERVICE LIST -->
+<section class="space-y-space-md">
+<div class="flex items-center justify-between">
+<h3 class="text-title-md font-title-md text-on-surface tracking-tight">Available Enterprise Modules</h3>
+<span class="text-caption font-caption text-outline">2 Additional Catalogs</span>
+</div>
+<div class="space-y-space-sm">
+<!-- Service 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-space-md shadow-[0_2px_8px_rgba(32,32,43,0.03)] space-y-space-xs hover:border-primary/40 transition-colors">
+<div class="flex justify-between items-start">
+<div class="space-y-0.5">
+<span class="inline-block text-caption font-caption font-semibold text-secondary bg-secondary-container/30 px-2 py-0.5 rounded-full">Core Web</span>
+<h4 class="text-title-md font-title-md text-on-surface">High-Performance Web Platform</h4>
+</div>
+<span class="text-label-md font-label-md text-tertiary font-bold">$3,800+</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">
+            SSR-first Next.js/Remix architectures with edge database replica clustering and sub-100ms LCP scores.
+          </p>
+<div class="flex items-center justify-between pt-space-xs border-t border-outline-variant/15 text-caption font-caption text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-caption" data-icon="speed">speed</span> 99+ Lighthouse Target</span>
+<button class="text-primary font-semibold hover:underline flex items-center gap-0.5" type="button">
+              Review Specs
+              <span class="material-symbols-outlined text-caption" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Service 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-space-md shadow-[0_2px_8px_rgba(32,32,43,0.03)] space-y-space-xs hover:border-primary/40 transition-colors">
+<div class="flex justify-between items-start">
+<div class="space-y-0.5">
+<span class="inline-block text-caption font-caption font-semibold text-primary bg-primary-fixed/40 px-2 py-0.5 rounded-full">Mobile Architecture</span>
+<h4 class="text-title-md font-title-md text-on-surface">Enterprise Mobile Client</h4>
+</div>
+<span class="text-label-md font-label-md text-tertiary font-bold">$5,200+</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">
+            Unified Flutter/React Native applications with offline-first synchronization, biometrics, and secure enclaves.
+          </p>
+<div class="flex items-center justify-between pt-space-xs border-t border-outline-variant/15 text-caption font-caption text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-caption" data-icon="security">security</span> Hardware-level encryption</span>
+<button class="text-primary font-semibold hover:underline flex items-center gap-0.5" type="button">
+              Review Specs
+              <span class="material-symbols-outlined text-caption" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- OPERATIONAL PROTOCOL BANNER -->
+<div class="rounded-xl border border-outline-variant/30 bg-surface-container-high/40 p-space-md flex items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="handshake">handshake</span>
+<div class="text-caption font-caption">
+<span class="font-semibold text-on-surface block">Advisory Consultation</span>
+<span class="text-on-surface-variant">Schedule technical discovery with a lead architect</span>
+</div>
+</div>
+<button class="text-caption font-caption font-semibold text-primary hover:underline whitespace-nowrap" type="button">
+        Book Call
+      </button>
+</div>
+</main>
+<!-- DOCKED BOTTOM NAVIGATION BAR (Shared Component Execution) -->
+<!-- Context: Services screen is active -> item 'Services' receives style_active_navigation -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-sm py-space-xs bg-surface-container-lowest shadow-[0_-2px_8px_rgba(32,32,43,0.04)]">
+<!-- Item 1: Home -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-caption font-caption mt-0.5">Home</span>
+</button>
+<!-- Item 2: Portfolio -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined" data-icon="folder_managed">folder_managed</span>
+<span class="text-caption font-caption mt-0.5">Portfolio</span>
+</button>
+<!-- Item 3: Services (ACTIVE MATCH) -->
+<button class="flex flex-col items-center justify-center bg-primary-fixed text-on-primary-fixed rounded-full px-space-md py-space-xs transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined" data-icon="inventory_2" data-weight="fill" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="text-caption font-caption font-semibold mt-0.5">Services</span>
+</button>
+<!-- Item 4: Finance -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="text-caption font-caption mt-0.5">Finance</span>
+</button>
+<!-- Item 5: Hub -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined" data-icon="widgets">widgets</span>
+<span class="text-caption font-caption mt-0.5">Hub</span>
+</button>
+</nav>
+</body></html>

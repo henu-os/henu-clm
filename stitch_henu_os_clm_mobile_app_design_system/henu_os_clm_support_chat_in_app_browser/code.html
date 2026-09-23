@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HENU OS - In-App Support &amp; Integrated Browser</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e9e6f6",
+            "secondary-fixed": "#acedf6",
+            "secondary": "#22676f",
+            "surface": "#fcf8ff",
+            "outline": "#797580",
+            "tertiary": "#7a5500",
+            "outline-variant": "#c9c4d0",
+            "surface-container": "#efecfc",
+            "surface-container-low": "#f5f2ff",
+            "tertiary-container": "#996c04",
+            "secondary-container": "#acedf6",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#dbd8e8",
+            "surface-tint": "#61578f",
+            "on-surface": "#1b1b25",
+            "primary-fixed-dim": "#cbbefe",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#f5bd58",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#48454f",
+            "on-secondary-fixed": "#001f23",
+            "on-primary-container": "#fffbff",
+            "on-primary-fixed-variant": "#493f75",
+            "on-tertiary-fixed": "#271900",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "inverse-on-surface": "#f2efff",
+            "on-tertiary-fixed-variant": "#5f4100",
+            "primary-container": "#776da6",
+            "secondary-fixed-dim": "#91d1da",
+            "on-error": "#ffffff",
+            "inverse-primary": "#cbbefe",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#004f56",
+            "on-tertiary-container": "#fffbff",
+            "surface-variant": "#e3e1f0",
+            "tertiary-fixed": "#ffdeaa",
+            "surface-container-highest": "#e3e1f0",
+            "primary": "#5e548c",
+            "surface-bright": "#fcf8ff",
+            "inverse-surface": "#302f3b",
+            "on-secondary-container": "#2a6d75",
+            "background": "#fcf8ff",
+            "on-primary-fixed": "#1d1147",
+            "on-background": "#1b1b25",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#e6deff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-md": "0.75rem",
+            "margin": "1.25rem",
+            "space-xl": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter": "1rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+            "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "display": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #c9c4d0;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar (Shared Component) -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant/20 dark:border-outline-variant/10 docked full-width top-0 z-40 sticky">
+<div class="flex justify-between items-center w-full px-space-lg py-space-sm max-w-[1720px] mx-auto">
+<div class="flex items-center gap-space-md">
+<!-- Leading Avatar / Monogram -->
+<div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-on-primary font-title-md text-caption shadow-sm ring-2 ring-primary-fixed">
+          H
+        </div>
+<div class="flex flex-col">
+<span class="text-title-md font-title-md font-semibold text-on-surface dark:text-on-surface tracking-tight">HENU OS</span>
+<span class="text-caption font-caption text-on-surface-variant">Lifecycle Advisory &amp; Execution Folio</span>
+</div>
+</div>
+<!-- Desktop Nav Hub items -->
+<div class="hidden md:flex items-center gap-space-lg bg-surface-container-low px-space-lg py-1.5 rounded-full border border-outline-variant/20">
+<span class="flex items-center gap-1.5 text-caption font-caption text-secondary font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+          Direct Protocol Active
+        </span>
+<div class="h-3 w-px bg-outline-variant/40"></div>
+<span class="text-caption font-caption text-on-surface-variant font-medium">Session #HS-9941</span>
+<div class="h-3 w-px bg-outline-variant/40"></div>
+<span class="text-caption font-caption text-tertiary font-medium bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">Siddharth K. (Tier 1 Partner)</span>
+</div>
+<!-- Trailing Notification & Action -->
+<div class="flex items-center gap-space-sm">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-full border border-outline-variant/30 text-on-surface text-caption font-caption font-medium hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="shield">shield</span>
+<span>Encrypted</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Canvas: Dual Screen Architecture (Support Chat + In-App Secure Browser) -->
+<main class="flex-1 w-full max-w-[1720px] mx-auto p-2 sm:p-4 lg:p-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-stretch">
+<!-- LEFT PANEL: Real-time Client Support Chat (5 Columns on Desktop) -->
+<section class="lg:col-span-5 flex flex-col bg-surface-container-lowest rounded-2xl border border-on-surface/5 shadow-[0_2px_8px_rgba(32,32,43,0.04)] overflow-hidden h-[760px] lg:h-[calc(100vh-140px)]">
+<!-- Support Chat Header -->
+<div class="p-space-lg border-b border-outline-variant/20 bg-surface-bright flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="relative">
+<div class="w-11 h-11 rounded-full bg-surface-container-high ring-2 ring-primary/20 flex items-center justify-center text-primary font-title-md font-semibold text-body-lg overflow-hidden">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="account_circle">account_circle</span>
+</div>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-secondary border-2 border-surface-container-lowest"></span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-title-md font-title-md text-on-surface tracking-tight">Elena Rostova</h2>
+<span class="bg-secondary-container/40 text-secondary text-[11px] font-caption font-semibold px-2 py-0.5 rounded-full">Sr. Architect</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<p class="text-caption font-caption text-secondary font-medium">Active · Average response &lt; 10 mins</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-caption font-caption font-semibold text-primary bg-primary-fixed/40 px-2.5 py-1 rounded-full border border-primary-container/30">
+            #HENU-SUP-482
+          </span>
+<span class="text-[11px] font-caption text-outline mt-1">High Priority CLM</span>
+</div>
+</div>
+<!-- Ticket Meta Bar -->
+<div class="px-space-lg py-2 bg-surface-container-low/70 border-b border-outline-variant/15 flex items-center justify-between text-caption font-caption text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-tertiary" data-icon="inventory_2">inventory_2</span>
+<span>API Revamp &amp; Webhook Deployment</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-tertiary font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Pending Client Sign-Off
+          </span>
+</div>
+</div>
+<!-- Conversation Stream -->
+<div class="flex-1 p-space-lg overflow-y-auto custom-scrollbar flex flex-col gap-4 bg-gradient-to-b from-surface to-surface-container-lowest">
+<!-- Timestamp divider -->
+<div class="flex items-center justify-center my-1">
+<span class="text-[11px] font-caption text-outline bg-surface-container px-3 py-0.5 rounded-full border border-outline-variant/20">Today, 2:42 PM</span>
+</div>
+<!-- Admin / HENU OS Message 1 -->
+<div class="flex items-start gap-3 max-w-[90%] self-start">
+<div class="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed text-caption font-semibold flex-shrink-0 mt-1">
+            ER
+          </div>
+<div class="flex flex-col gap-1.5">
+<div class="bg-surface-container-low border border-outline-variant/25 rounded-2xl rounded-tl-sm p-3.5 shadow-sm">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                Good afternoon Siddharth, the revised API quotation <span class="font-semibold text-primary">#QT-104</span> and statement have been uploaded to your portal.
+              </p>
+</div>
+<!-- Quick Document Reference Attachment inside Chat -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex items-center justify-between gap-3 shadow-sm hover:border-primary/40 transition-colors cursor-pointer group">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-error-container/40 text-error flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]" data-icon="description">description</span>
+</div>
+<div>
+<p class="text-caption font-caption font-semibold text-on-surface group-hover:text-primary transition-colors">audit-report.pdf</p>
+<p class="text-[11px] font-caption text-outline">1.8 MB · Cryptographically Verified</p>
+</div>
+</div>
+<button class="p-1.5 rounded-full bg-surface-container text-primary hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+<span class="text-[11px] font-caption text-outline pl-1">2:43 PM · Delivered</span>
+</div>
+</div>
+<!-- Client Message -->
+<div class="flex items-start gap-2.5 max-w-[85%] self-end flex-row-reverse">
+<div class="w-7 h-7 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed text-caption font-semibold flex-shrink-0 mt-1">
+            SK
+          </div>
+<div class="flex flex-col items-end gap-1">
+<div class="bg-primary text-on-primary rounded-2xl rounded-tr-sm p-3.5 shadow-sm">
+<p class="text-body-md font-body-md leading-relaxed text-on-primary">
+                Thank you! Does this include the automated webhook sync add-on?
+              </p>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] font-caption text-outline pr-1">
+<span>2:45 PM</span>
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="done_all" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Admin / HENU OS Message 2 -->
+<div class="flex items-start gap-3 max-w-[92%] self-start">
+<div class="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed text-caption font-semibold flex-shrink-0 mt-1">
+            ER
+          </div>
+<div class="flex flex-col gap-1.5">
+<div class="bg-surface-container-low border border-outline-variant/25 rounded-2xl rounded-tl-sm p-3.5 shadow-sm space-y-2">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                Yes, that is fully covered under <span class="font-semibold text-secondary">section 3.2</span>. You can review the attached PDF or pay directly via Cashfree/Razorpay.
+              </p>
+<!-- Action Card for Instant Payment Integration -->
+<div class="bg-surface-container-lowest rounded-xl p-2.5 border border-outline-variant/30 flex items-center justify-between gap-2 mt-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed/40 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]" data-icon="payments">payments</span>
+</div>
+<div>
+<span class="text-[11px] font-caption uppercase tracking-wider text-outline block">Quotation #QT-104</span>
+<span class="text-body-md font-body-md font-bold text-tertiary">₹1,85,000 INR</span>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="bg-secondary hover:bg-secondary/90 text-on-secondary text-caption font-caption font-semibold px-3 py-1.5 rounded-full transition-all active:scale-[0.98]">
+                    Pay Now
+                  </button>
+</div>
+</div>
+</div>
+<span class="text-[11px] font-caption text-outline pl-1">2:46 PM · Read</span>
+</div>
+</div>
+<!-- Live Typing Indicator -->
+<div class="flex items-center gap-2 self-start pl-10 text-on-surface-variant">
+<div class="bg-surface-container-high px-3.5 py-2 rounded-full flex items-center gap-1.5 shadow-sm border border-outline-variant/20">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:0.2s]"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:0.4s]"></span>
+<span class="text-[11px] font-caption text-outline ml-1">Elena is preparing payment token...</span>
+</div>
+</div>
+</div>
+<!-- Modern Chat Input Bar -->
+<div class="p-space-md bg-surface-bright border-t border-outline-variant/20">
+<div class="flex items-center gap-2 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-1.5 shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15 transition-all">
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors" title="Attach File">
+<span class="material-symbols-outlined text-[20px]" data-icon="attach_file">attach_file</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors" title="Take Photo or Voice Memo">
+<span class="material-symbols-outlined text-[20px]" data-icon="mic">mic</span>
+</button>
+<input class="flex-1 bg-transparent border-0 text-body-md font-body-md text-on-surface focus:ring-0 placeholder:text-outline px-2 py-1 outline-none" placeholder="Type a message to HENU OS..." type="text" value="Checking section 3.2 now in the live browser preview..."/>
+<!-- Send Action Button (Royal Iris) -->
+<button class="bg-primary hover:bg-primary/90 text-on-primary w-9 h-9 rounded-full flex items-center justify-center shadow-md active:scale-[0.98] transition-all flex-shrink-0">
+<span class="material-symbols-outlined text-[18px]" data-icon="send">send</span>
+</button>
+</div>
+<div class="flex items-center justify-between px-2 pt-2 text-[11px] font-caption text-outline">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary" data-icon="verified_user">verified_user</span>
+            Zero-knowledge CLM transmission
+          </span>
+<span>Press Enter to send</span>
+</div>
+</div>
+</section>
+<!-- RIGHT PANEL: In-App HENU OS Browser Modal / View (7 Columns on Desktop) -->
+<section class="lg:col-span-7 flex flex-col bg-surface-container-lowest rounded-2xl border border-on-surface/5 shadow-[0_4px_20px_rgba(32,32,43,0.06)] overflow-hidden h-[760px] lg:h-[calc(100vh-140px)]">
+<!-- In-App Browser Navigation Header -->
+<div class="bg-surface-container-low border-b border-outline-variant/30 p-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-2 sm:gap-4 select-none">
+<!-- Controls: Back, Forward, Reload -->
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95" title="Back">
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_back">arrow_back</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-outline/50 cursor-not-allowed" title="Forward">
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95" title="Reload Page">
+<span class="material-symbols-outlined text-[18px]" data-icon="refresh">refresh</span>
+</button>
+</div>
+<!-- Secure SSL Lock & Address Bar -->
+<div class="flex-1 max-w-xl mx-auto flex items-center bg-surface-container-lowest border border-outline-variant/40 rounded-full px-3 py-1.5 shadow-inner group">
+<span class="material-symbols-outlined text-secondary text-[16px] mr-1.5 flex-shrink-0" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="text-caption font-caption text-secondary font-semibold">https://</span>
+<span class="text-caption font-caption text-on-surface truncate font-medium">henu.os/deliverables/audit-report.pdf</span>
+<div class="ml-auto flex items-center gap-1.5 pl-2">
+<span class="hidden sm:inline-block bg-secondary-fixed text-on-secondary-fixed text-[10px] font-caption font-semibold px-2 py-0.5 rounded-full">
+              Verified TLS 1.3
+            </span>
+<button class="text-outline hover:text-primary transition-colors" title="Bookmark">
+<span class="material-symbols-outlined text-[16px]" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+</div>
+<!-- Trailing Actions: Share & Close -->
+<div class="flex items-center gap-1.5 sm:gap-2">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95" title="Share Document">
+<span class="material-symbols-outlined text-[20px]" data-icon="share">share</span>
+</button>
+<button class="w-8 h-8 rounded-lg hidden sm:flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95" title="Download Copy">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+</button>
+<div class="h-4 w-px bg-outline-variant/40 mx-1"></div>
+<!-- Direct 'Close' Button to return seamlessly to HENU OS CLM without external apps -->
+<button class="flex items-center gap-1 bg-surface-container hover:bg-error-container hover:text-error text-on-surface-variant text-caption font-caption font-semibold px-3 py-1.5 rounded-full transition-all active:scale-[0.98]" title="Close browser view">
+<span class="material-symbols-outlined text-[16px]" data-icon="close">close</span>
+<span class="hidden sm:inline">Close</span>
+</button>
+</div>
+</div>
+<!-- In-App Web View Document Canvas -->
+<div class="flex-1 bg-surface-container-high/40 overflow-y-auto custom-scrollbar p-3 sm:p-6 flex flex-col items-center">
+<!-- Live Embedded Web/Document Preview Sheet -->
+<div class="w-full max-w-3xl bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant/30 overflow-hidden flex flex-col">
+<!-- In-Doc Top Bar / PDF Viewer Ribbon -->
+<div class="px-5 py-3 bg-surface-bright border-b border-outline-variant/20 flex flex-wrap items-center justify-between gap-3 text-caption font-caption">
+<div class="flex items-center gap-2">
+<span class="bg-primary/10 text-primary font-bold px-2 py-0.5 rounded text-[11px]">PDF PREVIEW</span>
+<span class="text-on-surface font-semibold">API Quotation &amp; Milestone Architecture Specification</span>
+</div>
+<div class="flex items-center gap-3 text-outline">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="layers">layers</span>
+                Page 3 of 12
+              </span>
+<div class="h-3 w-px bg-outline-variant"></div>
+<button class="hover:text-primary transition-colors flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[16px]" data-icon="zoom_in">zoom_in</span> 100%
+              </button>
+</div>
+</div>
+<!-- Document Content Area -->
+<div class="p-6 sm:p-10 space-y-6">
+<!-- Document Brand Header -->
+<div class="flex justify-between items-start border-b border-outline-variant/20 pb-6">
+<div>
+<h1 class="text-headline-sm font-headline-sm text-on-surface font-bold tracking-tight">HENU CLIENT LIFECYCLE ADVISORY</h1>
+<p class="text-caption font-caption text-outline mt-0.5">Automated Sync Protocol &amp; Architecture Specification</p>
+<div class="mt-2 inline-flex items-center gap-1.5 bg-surface-container px-2 py-1 rounded text-caption text-on-surface-variant font-mono">
+                  REF: QT-104-SYNCSPEC-2024
+                </div>
+</div>
+<div class="text-right">
+<span class="text-title-md font-title-md font-bold text-tertiary block">₹1,85,000 INR</span>
+<span class="text-[11px] font-caption text-secondary font-medium">Valid through 30 Nov 2024</span>
+</div>
+</div>
+<!-- Milestone Snapshot Bento Box -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/20">
+<span class="text-[11px] font-caption text-outline block">Delivery Sprint</span>
+<span class="text-body-md font-body-md font-semibold text-on-surface mt-0.5 block">Phase II: Sync Pipeline</span>
+<span class="text-[11px] font-caption text-secondary font-semibold">ETA: 6 Business Days</span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/20">
+<span class="text-[11px] font-caption text-outline block">Gateway Provider</span>
+<span class="text-body-md font-body-md font-semibold text-on-surface mt-0.5 block">Razorpay / Cashfree</span>
+<span class="text-[11px] font-caption text-tertiary font-semibold">Multi-Currency Escrow</span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/20">
+<span class="text-[11px] font-caption text-outline block">Service SLA</span>
+<span class="text-body-md font-body-md font-semibold text-on-surface mt-0.5 block">99.98% High Availability</span>
+<span class="text-[11px] font-caption text-primary font-semibold">Tier 1 Dedicated Pod</span>
+</div>
+</div>
+<!-- Highlighted Section 3.2 (Referenced in chat) -->
+<div class="p-4 rounded-xl bg-secondary-fixed/20 border-2 border-secondary/40 relative">
+<div class="absolute -top-3 left-4 bg-secondary text-on-secondary px-2.5 py-0.5 rounded-full text-[10px] font-caption font-bold uppercase tracking-wider">
+                Referenced in Active Chat (Section 3.2)
+              </div>
+<h3 class="text-title-md font-title-md text-secondary font-bold mb-1 mt-1">3.2 Automated Webhook Event Bus &amp; Reconciliation Sync</h3>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed">
+                Client shall receive unlimited bidirectional webhook endpoints with automatic fallback replay queues, idempotency verification keys, and zero-drop transactional auditing. Integrates natively with client CRM pipelines.
+              </p>
+<div class="mt-3 pt-3 border-t border-secondary/20 flex flex-wrap items-center justify-between gap-2 text-caption font-caption text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Included in Base Agreement #QT-104</span>
+</div>
+<span class="font-mono text-[11px] text-outline font-semibold">MD5: 8f4b0021c4...e9</span>
+</div>
+</div>
+<!-- Section 3.3 Financial Breakdown -->
+<div class="border border-outline-variant/20 rounded-xl overflow-hidden">
+<table class="w-full text-left border-collapse text-body-md font-body-md">
+<thead>
+<tr class="bg-surface-container-low text-caption font-caption text-outline border-b border-outline-variant/20">
+<th class="p-3 font-semibold">Component</th>
+<th class="p-3 font-semibold">Architecture Scope</th>
+<th class="p-3 text-right font-semibold">Fee (INR)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/15 text-on-surface">
+<tr>
+<td class="p-3 font-medium">Core API Engine Revamp</td>
+<td class="p-3 text-outline text-caption">Dual-region clustered endpoints</td>
+<td class="p-3 text-right font-semibold text-tertiary">₹1,15,000</td>
+</tr>
+<tr>
+<td class="p-3 font-medium">Webhook Real-Time Sync Bus</td>
+<td class="p-3 text-outline text-caption">Fully configured under Section 3.2</td>
+<td class="p-3 text-right font-semibold text-tertiary">₹45,000</td>
+</tr>
+<tr>
+<td class="p-3 font-medium">Security Audits &amp; Verification</td>
+<td class="p-3 text-outline text-caption">Automated cryptographic proofs</td>
+<td class="p-3 text-right font-semibold text-tertiary">₹25,000</td>
+</tr>
+<tr class="bg-surface-container-low font-bold">
+<td class="p-3 text-right font-title-md" colspan="2">Total Quoted Amount:</td>
+<td class="p-3 text-right text-title-md text-tertiary">₹1,85,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Digital Signatures & Validation -->
+<div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-between flex-wrap gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]" data-icon="draw">draw</span>
+</div>
+<div>
+<span class="text-caption font-caption text-outline block">Authorized Architectural Sign-off</span>
+<span class="text-body-md font-body-md font-semibold text-on-surface">Elena Rostova, Lead Partner</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="bg-secondary text-on-secondary hover:bg-secondary/90 text-caption font-caption font-semibold px-4 py-2 rounded-full transition-all active:scale-[0.98]">
+                  Authorize Deliverable
+                </button>
+</div>
+</div>
+</div>
+<!-- In-Doc Live Bar / Status Footer -->
+<div class="bg-surface-container-low border-t border-outline-variant/20 px-6 py-3 flex items-center justify-between text-caption font-caption text-outline">
+<span>HENU OS Cryptographic Document Engine v4.2</span>
+<span class="flex items-center gap-1 text-secondary font-medium">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+              Secure Browser Handshake Live
+            </span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Shared Component) - Active Destination: Hub (Support & Browser Integration) -->
+<nav class="bg-surface-container-lowest dark:bg-surface-container-low shadow-[0_-2px_8px_rgba(32,32,43,0.04)] fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-sm py-space-xs border-t border-outline-variant/15 dark:border-outline-variant/10">
+<!-- Destination 1: Home (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[22px]" data-icon="dashboard">dashboard</span>
+<span class="text-caption font-caption mt-0.5">Home</span>
+</button>
+<!-- Destination 2: Portfolio (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[22px]" data-icon="folder_managed">folder_managed</span>
+<span class="text-caption font-caption mt-0.5">Portfolio</span>
+</button>
+<!-- Destination 3: Services (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[22px]" data-icon="inventory_2">inventory_2</span>
+<span class="text-caption font-caption mt-0.5">Services</span>
+</button>
+<!-- Destination 4: Finance (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[22px]" data-icon="receipt_long">receipt_long</span>
+<span class="text-caption font-caption mt-0.5">Finance</span>
+</button>
+<!-- Destination 5: Hub (ACTIVE - Direct semantic match for In-App Support Chat & Integrated Browser Tooling) -->
+<button class="flex flex-col items-center justify-center bg-primary-fixed dark:bg-primary-container text-on-primary-fixed dark:text-on-primary-container rounded-full px-space-md py-space-xs active:scale-[0.98] transition-transform duration-150">
+<span class="material-symbols-outlined text-[22px]" data-icon="widgets" style="font-variation-settings: 'FILL' 1;">widgets</span>
+<span class="text-caption font-caption font-semibold mt-0.5">Hub</span>
+</button>
+</nav>
+</body></html>

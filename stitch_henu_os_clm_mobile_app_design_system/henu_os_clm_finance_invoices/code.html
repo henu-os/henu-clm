@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HENU OS - Financial Hub</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e9e6f6",
+            "secondary-fixed": "#acedf6",
+            "secondary": "#22676f",
+            "surface": "#fcf8ff",
+            "outline": "#797580",
+            "tertiary": "#7a5500",
+            "outline-variant": "#c9c4d0",
+            "surface-container": "#efecfc",
+            "surface-container-low": "#f5f2ff",
+            "tertiary-container": "#996c04",
+            "secondary-container": "#acedf6",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#dbd8e8",
+            "surface-tint": "#61578f",
+            "on-surface": "#1b1b25",
+            "primary-fixed-dim": "#cbbefe",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#f5bd58",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#48454f",
+            "on-secondary-fixed": "#001f23",
+            "on-primary-container": "#fffbff",
+            "on-primary-fixed-variant": "#493f75",
+            "on-tertiary-fixed": "#271900",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "inverse-on-surface": "#f2efff",
+            "on-tertiary-fixed-variant": "#5f4100",
+            "primary-container": "#776da6",
+            "secondary-fixed-dim": "#91d1da",
+            "on-error": "#ffffff",
+            "inverse-primary": "#cbbefe",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#004f56",
+            "on-tertiary-container": "#fffbff",
+            "surface-variant": "#e3e1f0",
+            "tertiary-fixed": "#ffdeaa",
+            "surface-container-highest": "#e3e1f0",
+            "primary": "#5e548c",
+            "surface-bright": "#fcf8ff",
+            "inverse-surface": "#302f3b",
+            "on-secondary-container": "#2a6d75",
+            "background": "#fcf8ff",
+            "on-primary-fixed": "#1d1147",
+            "on-background": "#1b1b25",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#e6deff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-md": "0.75rem",
+            "margin": "1.25rem",
+            "space-xl": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter": "1rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen pb-28 flex flex-col items-center selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Outer Mobile Container -->
+<div class="w-full max-w-md mx-auto flex flex-col min-h-screen">
+<!-- TopAppBar (Mapped from Shared Components JSON) -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant/20 dark:border-outline-variant/10 docked full-width top-0 z-40 sticky">
+<div class="flex justify-between items-center w-full px-space-lg py-space-sm">
+<div class="flex items-center gap-2">
+<!-- Leading Avatar Monogram -->
+<div aria-label="HENU monogram client profile avatar" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-title-md text-caption font-semibold tracking-tight shadow-sm">
+            H
+          </div>
+<span class="text-title-md font-title-md font-semibold text-on-surface dark:text-on-surface tracking-tight">HENU OS</span>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Notifications" class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Context Header & Screen Title -->
+<section class="px-margin-mobile pt-space-lg pb-space-sm">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="text-caption font-caption text-on-surface-variant tracking-wider uppercase">Folio Registry</span>
+<!-- HENU OS ID Chip -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-caption text-[11px] font-semibold border border-outline-variant/30">
+<span class="material-symbols-outlined text-[13px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+          HENU-CL-2026-000001
+        </span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">Billing &amp; Financial Records</h1>
+<p class="text-caption font-caption text-on-surface-variant mt-0.5">Audited executive accounts ledger for FY 2026</p>
+<!-- Category Navigation Tabs -->
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar pt-space-md pb-space-xs border-b border-outline-variant/15">
+<button class="px-3.5 py-1.5 rounded-full bg-primary text-on-primary text-caption font-caption font-semibold shadow-sm transition-transform active:scale-[0.98]" type="button">
+          Invoices
+        </button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high text-caption font-caption font-medium transition-colors" type="button">
+          Payments
+        </button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high text-caption font-caption font-medium transition-colors" type="button">
+          Statements
+        </button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high text-caption font-caption font-medium transition-colors" type="button">
+          Sales Orders
+        </button>
+</div>
+</section>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile space-y-space-lg mt-space-sm">
+<!-- 1. Financial Summary Overview Bento Card -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant/15">
+<span class="text-caption font-caption text-on-surface-variant font-medium">Fiscal Summary · 2026</span>
+<span class="inline-flex items-center gap-1 text-[11px] font-caption text-secondary font-semibold bg-secondary-container/40 px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Reconciled
+          </span>
+</div>
+<div class="grid grid-cols-2 gap-3 pt-space-md">
+<!-- Total Paid -->
+<div class="flex flex-col">
+<span class="text-caption font-caption text-on-surface-variant">Total Settled</span>
+<div class="text-headline-md font-headline-md text-on-surface mt-0.5 tracking-tight">
+              $35,750
+            </div>
+<span class="text-[11px] font-caption text-secondary font-medium mt-0.5 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+              Settled in FY 2026
+            </span>
+</div>
+<!-- Pending Clearance -->
+<div class="flex flex-col border-l border-outline-variant/20 pl-3">
+<span class="text-caption font-caption text-on-surface-variant">Pending Clearance</span>
+<div class="text-headline-md font-headline-md text-tertiary-container mt-0.5 tracking-tight">
+              $12,500
+            </div>
+<span class="text-[11px] font-caption text-tertiary-container font-semibold mt-0.5 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+              Due May 18
+            </span>
+</div>
+</div>
+<!-- Opening & Closing Ledger Indicators -->
+<div class="mt-space-md pt-space-sm border-t border-outline-variant/15 grid grid-cols-2 gap-2 text-caption font-caption">
+<div class="flex items-center justify-between pr-2 text-on-surface-variant">
+<span>Opening Balance</span>
+<span class="font-semibold text-on-surface">$0.00</span>
+</div>
+<div class="flex items-center justify-between pl-2 border-l border-outline-variant/15 text-on-surface-variant">
+<span>Closing Projected</span>
+<span class="font-semibold text-on-surface">$48,250</span>
+</div>
+</div>
+</section>
+<!-- 2. Direct Payment Gateway Action Card / Embedded Modal -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg border border-primary/25 shadow-[0_8px_24px_rgba(32,32,43,0.06)] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary-fixed/20 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none"></div>
+<div class="flex items-start justify-between">
+<div>
+<div class="inline-flex items-center gap-1 text-[11px] font-caption font-semibold uppercase text-tertiary-container bg-tertiary-fixed/40 px-2 py-0.5 rounded-full mb-1.5">
+              Immediate Settlement
+            </div>
+<h2 class="text-title-md font-title-md text-on-surface">Outstanding Invoice #INV-2026-092</h2>
+<p class="text-caption font-caption text-on-surface-variant">Architecture Sprint · Milestone 3 Delivery</p>
+</div>
+<div class="text-right">
+<span class="text-caption font-caption text-on-surface-variant block">Payable</span>
+<span class="text-title-md font-title-md font-bold text-tertiary-container">$12,500</span>
+</div>
+</div>
+<!-- Gateway Selector Section -->
+<div class="mt-space-md pt-space-sm border-t border-outline-variant/15">
+<span class="text-caption font-caption font-semibold text-on-surface block mb-2">Select Secure Payment Channel</span>
+<div class="grid grid-cols-2 gap-2.5">
+<!-- Razorpay Option -->
+<label class="relative flex flex-col p-3 rounded-lg border-2 border-primary bg-primary-fixed/10 cursor-pointer">
+<input checked="" class="sr-only" name="payment_channel" type="radio" value="razorpay"/>
+<div class="flex items-center justify-between w-full mb-1">
+<span class="text-caption font-caption font-semibold text-on-surface">Razorpay</span>
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="text-[11px] font-caption text-on-surface-variant">Corporate UPI / NEFT</span>
+</label>
+<!-- Cashfree Option -->
+<label class="relative flex flex-col p-3 rounded-lg border border-outline-variant/40 bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input class="sr-only" name="payment_channel" type="radio" value="cashfree"/>
+<div class="flex items-center justify-between w-full mb-1">
+<span class="text-caption font-caption font-semibold text-on-surface">Cashfree</span>
+<span class="material-symbols-outlined text-[18px] text-outline">radio_button_unchecked</span>
+</div>
+<span class="text-[11px] font-caption text-on-surface-variant">Virtual Escrow Account</span>
+</label>
+</div>
+<!-- Bank-grade Encryption Trust Badge -->
+<div class="flex items-center gap-2 mt-space-sm px-2.5 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant text-[11px] font-caption">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+<span>256-Bit Bank Grade Encryption · Zero Credential Exposure</span>
+</div>
+<!-- High-contrast Royal Iris CTA -->
+<button class="w-full mt-space-md py-3 px-4 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-transform" type="button">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+            Proceed to Secure Payment
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- 3. Invoice Records List -->
+<section class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<h2 class="text-title-md font-title-md text-on-surface">Invoice Records</h2>
+<button class="text-caption font-caption font-semibold text-primary flex items-center gap-0.5 hover:underline" type="button">
+            View All (12)
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</button>
+</div>
+<!-- Card 1: #INV-2026-092 -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-tertiary-fixed/30 flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined text-[20px]">pending_actions</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-body-md font-body-md font-semibold text-on-surface">#INV-2026-092</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-caption font-semibold bg-tertiary-fixed/40 text-tertiary-container">Pending</span>
+</div>
+<span class="text-caption font-caption text-on-surface-variant">Due May 18, 2026</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-body-lg font-body-lg font-bold text-tertiary-container">$12,500</span>
+<span class="text-[11px] font-caption text-on-surface-variant block">Net 15</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-space-md pt-space-sm border-t border-outline-variant/15">
+<button class="flex-1 py-1.5 px-3 rounded-full bg-primary text-on-primary text-caption font-caption font-semibold active:scale-[0.98] transition-transform flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[15px]">credit_card</span>
+              Pay Now
+            </button>
+<button class="py-1.5 px-3 rounded-full border border-outline-variant/40 hover:bg-surface-container text-on-surface text-caption font-caption font-medium active:scale-[0.98] transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[15px]">download</span>
+              Download PDF
+            </button>
+</div>
+</article>
+<!-- Card 2: #INV-2026-081 -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-secondary-container/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">task_alt</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-body-md font-body-md font-semibold text-on-surface">#INV-2026-081</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-caption font-semibold bg-secondary-container/50 text-secondary">Paid</span>
+</div>
+<span class="text-caption font-caption text-on-surface-variant">Paid Apr 28, 2026 · Wire #9024</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-body-lg font-body-lg font-bold text-on-surface">$14,200</span>
+<span class="text-[11px] font-caption text-secondary block font-medium">Cleared</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-space-md pt-space-sm border-t border-outline-variant/15">
+<button class="flex-1 py-1.5 px-3 rounded-full border border-outline-variant/40 hover:bg-surface-container text-on-surface text-caption font-caption font-medium active:scale-[0.98] transition-colors flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[15px]">receipt</span>
+              View Receipt
+            </button>
+<button class="py-1.5 px-3 rounded-full border border-outline-variant/40 hover:bg-surface-container text-on-surface text-caption font-caption font-medium active:scale-[0.98] transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[15px]">share</span>
+              Share
+            </button>
+</div>
+</article>
+<!-- Card 3: #INV-2026-074 -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-secondary-container/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">task_alt</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-body-md font-body-md font-semibold text-on-surface">#INV-2026-074</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-caption font-semibold bg-secondary-container/50 text-secondary">Paid</span>
+</div>
+<span class="text-caption font-caption text-on-surface-variant">Paid Apr 02, 2026 · Automated Clearing</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-body-lg font-body-lg font-bold text-on-surface">$9,050</span>
+<span class="text-[11px] font-caption text-secondary block font-medium">Archived</span>
+</div>
+</div>
+</article>
+</section>
+<!-- 4. Financial Statement Timeline Breakdown -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg border border-outline-variant/20 shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant/15">
+<div>
+<h2 class="text-title-md font-title-md text-on-surface">Statement Timeline</h2>
+<span class="text-caption font-caption text-on-surface-variant">Current Quarter Reconciliation</span>
+</div>
+<button class="text-caption font-caption font-semibold text-primary hover:underline" type="button">
+            Export CSV
+          </button>
+</div>
+<!-- Ledger Line Items -->
+<div class="divide-y divide-outline-variant/10 text-caption font-caption mt-space-sm">
+<div class="py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-on-surface font-medium">Invoices Billed</span>
+</div>
+<span class="font-semibold text-on-surface">$48,250.00</span>
+</div>
+<div class="py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-on-surface font-medium">Payments Credited</span>
+</div>
+<span class="font-semibold text-secondary">-$35,750.00</span>
+</div>
+<div class="py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span class="text-on-surface font-medium">TDS Withheld (10%)</span>
+</div>
+<span class="font-semibold text-on-surface-variant">-$3,575.00</span>
+</div>
+<div class="py-2.5 flex items-center justify-between bg-surface-container-low/60 px-2 rounded-lg mt-1">
+<span class="font-semibold text-on-surface">Net Due Balance</span>
+<span class="font-bold text-tertiary-container text-body-md font-body-md">$8,925.00</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mapped from Shared Components JSON with Finance Tab Active) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-sm py-space-xs bg-surface-container-lowest dark:bg-surface-container-low shadow-[0_-2px_8px_rgba(32,32,43,0.04)] border-t border-outline-variant/15 dark:border-outline-variant/10">
+<!-- Tab 1: Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]" href="#home">
+<span class="material-symbols-outlined text-[22px]">dashboard</span>
+<span class="text-caption font-caption mt-0.5">Home</span>
+</a>
+<!-- Tab 2: Portfolio -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]" href="#portfolio">
+<span class="material-symbols-outlined text-[22px]">folder_managed</span>
+<span class="text-caption font-caption mt-0.5">Portfolio</span>
+</a>
+<!-- Tab 3: Services -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]" href="#services">
+<span class="material-symbols-outlined text-[22px]">inventory_2</span>
+<span class="text-caption font-caption mt-0.5">Services</span>
+</a>
+<!-- Tab 4: Finance (ACTIVE) -->
+<a aria-current="page" class="flex flex-col items-center justify-center bg-primary-fixed dark:bg-primary-container text-on-primary-fixed dark:text-on-primary-container rounded-full px-space-md py-space-xs active:scale-[0.98] transition-transform duration-150 shadow-sm" href="#finance">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="text-caption font-caption mt-0.5 font-semibold">Finance</span>
+</a>
+<!-- Tab 5: Hub -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-space-md py-space-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150 active:scale-[0.98]" href="#hub">
+<span class="material-symbols-outlined text-[22px]">widgets</span>
+<span class="text-caption font-caption mt-0.5">Hub</span>
+</a>
+</nav>
+</div>
+</body></html>

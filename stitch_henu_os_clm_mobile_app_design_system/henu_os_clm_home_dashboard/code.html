@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HENU OS — Client Lifecycle Management</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e9e6f6",
+            "secondary-fixed": "#acedf6",
+            "secondary": "#22676f",
+            "surface": "#fcf8ff",
+            "outline": "#797580",
+            "tertiary": "#7a5500",
+            "outline-variant": "#c9c4d0",
+            "surface-container": "#efecfc",
+            "surface-container-low": "#f5f2ff",
+            "tertiary-container": "#996c04",
+            "secondary-container": "#acedf6",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#dbd8e8",
+            "surface-tint": "#61578f",
+            "on-surface": "#1b1b25",
+            "primary-fixed-dim": "#cbbefe",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#f5bd58",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#48454f",
+            "on-secondary-fixed": "#001f23",
+            "on-primary-container": "#fffbff",
+            "on-primary-fixed-variant": "#493f75",
+            "on-tertiary-fixed": "#271900",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "inverse-on-surface": "#f2efff",
+            "on-tertiary-fixed-variant": "#5f4100",
+            "primary-container": "#776da6",
+            "secondary-fixed-dim": "#91d1da",
+            "on-error": "#ffffff",
+            "inverse-primary": "#cbbefe",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#004f56",
+            "on-tertiary-container": "#fffbff",
+            "surface-variant": "#e3e1f0",
+            "tertiary-fixed": "#ffdeaa",
+            "surface-container-highest": "#e3e1f0",
+            "primary": "#5e548c",
+            "surface-bright": "#fcf8ff",
+            "inverse-surface": "#302f3b",
+            "on-secondary-container": "#2a6d75",
+            "background": "#fcf8ff",
+            "on-primary-fixed": "#1d1147",
+            "on-background": "#1b1b25",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#e6deff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-md": "0.75rem",
+            "margin": "1.25rem",
+            "space-xl": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter": "1rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "caption": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+      vertical-align: middle;
+    }
+    body {
+      background-color: #F5F1EA;
+      color: #1b1b25;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TOP APP BAR -->
+<header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-outline-variant/20">
+<div class="max-w-md mx-auto px-space-lg py-space-sm flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<!-- Leading Avatar Monogram -->
+<div aria-label="HENU monogram client profile avatar" class="w-9 h-9 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-sm tracking-tight ring-1 ring-outline-variant/30 shadow-sm">
+          HN
+        </div>
+<div>
+<span class="text-caption font-caption text-outline block leading-none mb-0.5">Operating System</span>
+<span class="text-title-md font-title-md font-semibold text-on-surface tracking-tight leading-none">HENU OS</span>
+</div>
+</div>
+<!-- Trailing Notification & Status -->
+<div class="flex items-center space-x-2">
+<button aria-label="Notifications" class="relative w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container active:scale-[0.98] transition duration-150">
+<span class="material-symbols-outlined text-[22px]" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 max-w-md mx-auto w-full px-space-lg pt-4 pb-28 space-y-6">
+<!-- GREETING & IDENTITY STRIP -->
+<div class="space-y-2 pt-1">
+<div class="flex items-baseline justify-between">
+<h1 class="text-headline-md font-headline-md text-on-surface tracking-tight">Good morning, Siddharth</h1>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">Simple systems. Real progress.</p>
+<!-- Client ID Pill -->
+<div class="pt-1 flex items-center">
+<div class="inline-flex items-center space-x-2 bg-surface-container-lowest/80 border border-outline-variant/40 rounded-full px-3 py-1 shadow-[0_1px_3px_rgba(32,32,43,0.03)] backdrop-blur-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="text-caption font-caption font-semibold text-on-surface tracking-wide">HENU-CL-2026-000001</span>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center pl-1" title="Copy Client ID">
+<span class="material-symbols-outlined text-[15px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 1. EDITORIAL HERO CARD -->
+<section class="relative overflow-hidden rounded-2xl bg-surface-container-lowest border border-outline-variant/30 p-5 shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<!-- Iris Architectural Accent Graphic -->
+<div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-gradient-to-br from-primary-fixed/60 via-surface-container/30 to-transparent blur-2xl pointer-events-none"></div>
+<div class="relative z-10 space-y-4">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-caption font-caption bg-primary-fixed text-on-primary-fixed font-semibold tracking-wide">
+<span class="w-1 h-1 rounded-full bg-primary"></span>
+<span>Priority Milestone</span>
+</span>
+<span class="text-caption font-caption text-outline">Q2 Roadmap</span>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface leading-snug">
+            Quarterly Growth Advisory &amp; Systems Audit
+          </h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1.5">
+            Active strategic roadmap for Q2 2026
+          </p>
+</div>
+<div class="pt-1 flex items-center justify-between gap-3">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-3 px-5 rounded-full flex items-center justify-center space-x-2 active:scale-[0.98] transition-all duration-150 shadow-sm">
+<span>Review Deliverables</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 2. ACTIVE WORK / PROJECT PROGRESS -->
+<section class="rounded-2xl bg-surface-container-lowest border border-outline-variant/30 p-5 shadow-[0_2px_8px_rgba(32,32,43,0.04)] space-y-4">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-caption font-caption text-secondary font-semibold uppercase tracking-wider">Milestone 4 of 6</span>
+</div>
+<h3 class="text-title-md font-title-md text-on-surface">Enterprise Platform Transformation</h3>
+</div>
+<span class="text-title-md font-title-md text-secondary font-bold">72%</span>
+</div>
+<!-- Linear Progress Bar with Precision Indicator -->
+<div class="space-y-1.5">
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full rounded-full bg-secondary transition-all duration-500" style="width: 72%;"></div>
+</div>
+</div>
+<div class="pt-2 border-t border-outline-variant/15 flex items-center justify-between text-caption font-caption">
+<div class="flex items-center space-x-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary" data-icon="event_upcoming">event_upcoming</span>
+<span>Next: <strong class="text-on-surface font-semibold">Staging Deployment · May 14</strong></span>
+</div>
+<button class="text-secondary font-semibold hover:underline flex items-center">
+          Specs
+          <span class="material-symbols-outlined text-[14px] ml-0.5" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- 3. DYNAMIC QUICK ACTIONS GRID (4 columns) -->
+<section class="space-y-2.5">
+<div class="flex items-center justify-between px-1">
+<h4 class="text-caption font-caption font-semibold text-outline uppercase tracking-wider">Operational Portals</h4>
+<span class="text-caption font-caption text-outline">8 Hubs</span>
+</div>
+<div class="grid grid-cols-4 gap-2.5">
+<!-- Action 1: Quotes -->
+<button class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 active:scale-[0.98] transition-all duration-150 shadow-[0_1px_4px_rgba(32,32,43,0.02)] group">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="request_quote">request_quote</span>
+</div>
+<span class="text-caption font-caption font-medium text-on-surface mt-2 text-center">Quotes</span>
+</button>
+<!-- Action 2: Invoices -->
+<button class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 active:scale-[0.98] transition-all duration-150 shadow-[0_1px_4px_rgba(32,32,43,0.02)] group">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="receipt_long">receipt_long</span>
+</div>
+<span class="text-caption font-caption font-medium text-on-surface mt-2 text-center">Invoices</span>
+</button>
+<!-- Action 3: Payments -->
+<button class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 active:scale-[0.98] transition-all duration-150 shadow-[0_1px_4px_rgba(32,32,43,0.02)] group">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="credit_card">credit_card</span>
+</div>
+<span class="text-caption font-caption font-medium text-on-surface mt-2 text-center">Payments</span>
+</button>
+<!-- Action 4: Services -->
+<button class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 active:scale-[0.98] transition-all duration-150 shadow-[0_1px_4px_rgba(32,32,43,0.02)] group">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="room_service">room_service</span>
+</div>
+<span class="text-caption font-caption font-medium text-on-surface mt-2 text-center">Services</span>
+</button>
+<!-- Action 5: Portfolio -->
+<button class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 active:scale-[0.98] transition-all duration-150 shadow-[0_1px_4px_rgba(32,32,43,0.02)] group">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="folder_managed">folder_managed</span>
+</div>
+<span class="text-caption font-caption font-medium text-on-surface mt-2 text-center">Portfolio</span>
+</button>
+<!-- Action 6: Support -->
+<button class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 active:scale-[0.98] transition-all duration-150 shadow-[0_1px_4px_rgba(32,32,43,0.02)] group">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="support_agent">support_agent</span>
+</div>
+<span class="text-caption font-caption font-medium text-on-surface mt-2 text-center">Support</span>
+</button>
+<!-- Action 7: Buy Software -->
+<button class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 active:scale-[0.98] transition-all duration-150 shadow-[0_1px_4px_rgba(32,32,43,0.02)] group">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="shopping_cart">shopping_cart</span>
+</div>
+<span class="text-caption font-caption font-medium text-on-surface mt-2 text-center">Software</span>
+</button>
+<!-- Action 8: Request Quote -->
+<button class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 active:scale-[0.98] transition-all duration-150 shadow-[0_1px_4px_rgba(32,32,43,0.02)] group">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+</div>
+<span class="text-caption font-caption font-medium text-on-surface mt-2 text-center">Request</span>
+</button>
+</div>
+</section>
+<!-- 4. FINANCIAL SNAPSHOT & INVOICES -->
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h4 class="text-caption font-caption font-semibold text-outline uppercase tracking-wider">Financial Snapshot</h4>
+<span class="text-caption font-caption text-tertiary font-semibold flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span>
+<span>Encrypted Ledger</span>
+</span>
+</div>
+<!-- Financial Metrics Ribbon -->
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 shadow-[0_2px_8px_rgba(32,32,43,0.04)]">
+<span class="text-caption font-caption text-outline block mb-1">Total Invoiced</span>
+<span class="text-headline-sm font-headline-sm text-on-surface font-semibold">$48,250</span>
+<span class="text-caption font-caption text-outline-variant block mt-1">Fiscal Year 2026</span>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 shadow-[0_2px_8px_rgba(32,32,43,0.04)] border-l-4 border-l-tertiary-fixed-dim">
+<span class="text-caption font-caption text-outline block mb-1">Pending Balance</span>
+<span class="text-headline-sm font-headline-sm text-tertiary font-bold">$12,500</span>
+<span class="text-caption font-caption text-tertiary font-medium block mt-1">1 Action Required</span>
+</div>
+</div>
+<!-- Recent Invoice Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 shadow-[0_2px_8px_rgba(32,32,43,0.04)] space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="text-label-md font-label-md font-semibold text-on-surface">INV-2026-089</span>
+<span class="px-2 py-0.5 rounded-full text-caption font-caption bg-tertiary-fixed text-on-tertiary-fixed font-semibold">Sent</span>
+</div>
+<span class="text-title-md font-title-md text-on-surface font-bold">$12,500</span>
+</div>
+<div class="flex items-center justify-between text-body-md font-body-md text-on-surface-variant">
+<span>Custom Software Sprint 3</span>
+<span class="text-caption font-caption text-outline">Due May 20</span>
+</div>
+<div class="pt-2 border-t border-outline-variant/15 flex items-center justify-between gap-3">
+<button class="text-caption font-caption text-outline hover:text-on-surface flex items-center space-x-1 py-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="visibility">visibility</span>
+<span>View PDF</span>
+</button>
+<button class="bg-secondary hover:bg-secondary/90 text-on-secondary font-label-md text-label-md py-2 px-5 rounded-full flex items-center space-x-1.5 active:scale-[0.98] transition duration-150 shadow-sm">
+<span>Pay Now</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_outward">arrow_outward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 5. RECENT ACTIVITY TIMELINE -->
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h4 class="text-caption font-caption font-semibold text-outline uppercase tracking-wider">Audit &amp; Activity Log</h4>
+<button class="text-caption font-caption text-primary font-semibold hover:underline">Full Log</button>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 shadow-[0_2px_8px_rgba(32,32,43,0.04)] divide-y divide-outline-variant/15">
+<!-- Item 1 -->
+<div class="py-3 first:pt-1 last:pb-1 flex items-start space-x-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed/50 flex items-center justify-center text-secondary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-body-md font-body-md text-on-surface font-medium">Quote #QT-104 accepted</p>
+<p class="text-caption font-caption text-on-surface-variant">Signed by Siddharth · Enterprise Tier</p>
+</div>
+<span class="text-caption font-caption text-outline shrink-0">2h ago</span>
+</div>
+<!-- Item 2 -->
+<div class="py-3 flex items-start space-x-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed/60 flex items-center justify-center text-tertiary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="payments">payments</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-body-md font-body-md text-on-surface font-medium">Payment $14,000 received</p>
+<p class="text-caption font-caption text-on-surface-variant">Cleared via Wire · INV-2026-081</p>
+</div>
+<span class="text-caption font-caption text-outline shrink-0">Yesterday</span>
+</div>
+<!-- Item 3 -->
+<div class="py-3 first:pt-1 last:pb-1 flex items-start space-x-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="flag">flag</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-body-md font-body-md text-on-surface font-medium">New milestone update posted</p>
+<p class="text-caption font-caption text-on-surface-variant">Architecture Sprint Phase 3 signed off</p>
+</div>
+<span class="text-caption font-caption text-outline shrink-0">May 10</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BOTTOM NAVIGATION BAR (Shared Component Execution) -->
+<!-- "Home" is active: applying style_active_navigation directly to Home, style_inactive_navigation to others -->
+<nav aria-label="Bottom Navigation" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-sm py-space-xs bg-surface-container-lowest shadow-[0_-2px_8px_rgba(32,32,43,0.04)]">
+<div class="max-w-md w-full mx-auto flex justify-around items-center">
+<!-- Tab 1: Home (ACTIVE) -->
+<button aria-current="page" class="flex flex-col items-center justify-center bg-primary-fixed text-on-primary-fixed rounded-full px-space-md py-space-xs active:scale-[0.98] transition-transform duration-150">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="text-caption font-caption font-semibold mt-0.5">Home</span>
+</button>
+<!-- Tab 2: Portfolio -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]" data-icon="folder_managed">folder_managed</span>
+<span class="text-caption font-caption mt-0.5">Portfolio</span>
+</button>
+<!-- Tab 3: Services -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]" data-icon="inventory_2">inventory_2</span>
+<span class="text-caption font-caption mt-0.5">Services</span>
+</button>
+<!-- Tab 4: Finance -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]" data-icon="receipt_long">receipt_long</span>
+<span class="text-caption font-caption mt-0.5">Finance</span>
+</button>
+<!-- Tab 5: Hub -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-space-md py-space-xs hover:text-primary transition-colors duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]" data-icon="widgets">widgets</span>
+<span class="text-caption font-caption mt-0.5">Hub</span>
+</button>
+</div>
+</nav>
+</body></html>
