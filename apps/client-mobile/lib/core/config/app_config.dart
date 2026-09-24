@@ -10,12 +10,12 @@ class AppConfig {
   // Supabase Public Configuration (Safe for client apps)
   static const String supabaseUrl = String.fromEnvironment(
     'SUPABASE_URL',
-    defaultValue: 'https://clm-project.supabase.co',
+    defaultValue: 'https://tefgaqtrltpsccqzesmy.supabase.co',
   );
 
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
-    defaultValue: 'public-anon-key-token-client-safe',
+    defaultValue: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZmdhcXRybHRwc2NjcXplc215Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxOTgwNjYsImV4cCI6MjEwNTc3NDA2Nn0.WC3yPSSh2gGGx9tccj6xmAjMMArDlpOq8UNXV-64Jcs',
   );
 
   // Default Session Config
