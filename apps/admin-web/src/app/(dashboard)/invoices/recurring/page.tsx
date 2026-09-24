@@ -14,8 +14,16 @@ import {
   PlayCircle,
   MoreVertical,
   ArrowRight,
-  Receipt
+  Receipt,
+  Trash2,
+  FileSpreadsheet,
+  Save,
+  Send
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/modal';
+import { useToast } from '@/components/feedback/toast';
+import { formatCurrencyWords } from '@/lib/finance/number_to_words';
 
 interface RecurringProfile {
   id: string;
@@ -32,6 +40,16 @@ interface RecurringProfile {
   auto_send: boolean;
 }
 
+interface RecLineItem {
+  id: string;
+  item_details: string;
+  account: string;
+  quantity: number;
+  rate: number;
+  tax_rate: number;
+  amount: number;
+}
+
 export default function RecurringInvoicesPage() {
   const [profiles, setProfiles] = useState<RecurringProfile[]>([
     {
@@ -42,8 +60,8 @@ export default function RecurringInvoicesPage() {
       repeat_interval: 1,
       start_date: '2026-01-01',
       end_condition: 'NEVER',
-      total_amount: 12500.00,
-      currency: 'USD',
+      total_amount: 14750.00,
+      currency: 'INR',
       status: 'ACTIVE',
       next_run_date: '2026-07-01',
       auto_send: true,
@@ -56,8 +74,8 @@ export default function RecurringInvoicesPage() {
       repeat_interval: 1,
       start_date: '2026-03-01',
       end_condition: 'AFTER_OCCURRENCES',
-      total_amount: 4500.00,
-      currency: 'USD',
+      total_amount: 5900.00,
+      currency: 'INR',
       status: 'ACTIVE',
       next_run_date: '2026-07-01',
       auto_send: true,
@@ -65,15 +83,80 @@ export default function RecurringInvoicesPage() {
   ]);
 
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
+  const { showToast } = useToast();
+
   const [newProfile, setNewProfile] = useState({
     profile_name: '',
     customer_name: 'Aero Dynamics Inc',
     repeat_every: 'MONTH',
     repeat_interval: 1,
     start_date: new Date().toISOString().split('T')[0],
-    amount: 5000,
-    auto_send: true,
+    end_date_type: 'NEVER' as 'NEVER' | 'AT_DATE' | 'AFTER_OCCURRENCES',
+    end_date: '',
+    occurrences: 12,
+    payment_terms: 'Due on Receipt',
+    salesperson: 'Aarav Sharma',
+    customer_notes: 'Monthly retainer fee billed automatically according to SLA terms.',
+    terms_conditions: 'Payment due on receipt. Standard SLA uptime commitments apply.',
+    auto_action: 'CREATE_AND_SEND' as 'CREATE_DRAFT' | 'CREATE_AND_SEND' | 'AUTO_CHARGE',
   });
+
+  const [items, setItems] = useState<RecLineItem[]>([
+    {
+      id: 'item_1',
+      item_details: 'Dedicated Engineering & Maintenance Retainer',
+      account: 'Sales',
+      quantity: 1,
+      rate: 12500,
+      tax_rate: 18,
+      amount: 14750,
+    },
+  ]);
+
+  const handleItemChange = (id: string, field: keyof RecLineItem, value: any) => {
+    setItems((prev) =>
+      prev.map((row) => {
+        if (row.id === id) {
+          const updated = { ...row, [field]: value };
+          const qty = Number(updated.quantity) || 0;
+          const rate = Number(updated.rate) || 0;
+          const taxPct = Number(updated.tax_rate) || 0;
+          const taxable = qty * rate;
+          const tax = taxable * (taxPct / 100);
+          updated.amount = taxable + tax;
+          return updated;
+        }
+        return row;
+      })
+    );
+  };
+
+  const handleAddRow = () => {
+    setItems([
+      ...items,
+      {
+        id: `item_${Date.now()}`,
+        item_details: 'Cloud Telemetry & Log Ingestion Retainer',
+        account: 'Sales',
+        quantity: 1,
+        rate: 2500,
+        tax_rate: 18,
+        amount: 2950,
+      },
+    ]);
+  };
+
+  const handleRemoveRow = (id: string) => {
+    if (items.length <= 1) return;
+    setItems(items.filter((r) => r.id !== id));
+  };
+
+  const subtotal = items.reduce((acc, r) => acc + (Number(r.quantity) || 0) * (Number(r.rate) || 0), 0);
+  const totalTax = items.reduce((acc, r) => {
+    const base = (Number(r.quantity) || 0) * (Number(r.rate) || 0);
+    return acc + base * ((Number(r.tax_rate) || 0) / 100);
+  }, 0);
+  const grandTotal = subtotal + totalTax;
 
   const handleCreateProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,35 +169,26 @@ export default function RecurringInvoicesPage() {
       repeat_every: newProfile.repeat_every,
       repeat_interval: newProfile.repeat_interval,
       start_date: newProfile.start_date,
-      end_condition: 'NEVER',
-      total_amount: Number(newProfile.amount),
-      currency: 'USD',
+      end_condition: newProfile.end_date_type,
+      total_amount: grandTotal,
+      currency: 'INR',
       status: 'ACTIVE',
       next_run_date: '2026-08-01',
-      auto_send: newProfile.auto_send,
+      auto_send: newProfile.auto_action === 'CREATE_AND_SEND',
     };
 
     setProfiles([created, ...profiles]);
     setIsNewModalOpen(false);
-    setNewProfile({
-      profile_name: '',
-      customer_name: 'Aero Dynamics Inc',
-      repeat_every: 'MONTH',
-      repeat_interval: 1,
-      start_date: new Date().toISOString().split('T')[0],
-      amount: 5000,
-      auto_send: true,
-    });
+    showToast('success', 'Recurring Profile Created', `${created.profile_name} scheduled for ${created.customer_name}.`);
   };
 
   const toggleStatus = (id: string) => {
     setProfiles(
       profiles.map((p) => {
         if (p.id === id) {
-          return {
-            ...p,
-            status: p.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE',
-          };
+          const next = p.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE';
+          showToast('info', 'Status Updated', `Profile ${p.profile_name} set to ${next}.`);
+          return { ...p, status: next };
         }
         return p;
       })
@@ -191,7 +265,7 @@ export default function RecurringInvoicesPage() {
                     </div>
                   </td>
                   <td className="py-4 px-4 font-bold text-white">
-                    ${profile.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    ₹{profile.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </td>
                   <td className="py-4 px-4">
                     <span
@@ -224,105 +298,282 @@ export default function RecurringInvoicesPage() {
         </div>
       </div>
 
-      {/* New Recurring Profile Modal */}
-      {isNewModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-[#181B24] border border-gray-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-5 border-b border-gray-800 flex justify-between items-center bg-[#20202B]/40">
-              <div className="flex items-center gap-2 text-white font-semibold">
-                <Repeat className="w-5 h-5 text-[#887DB8]" />
-                <span>Create Recurring Invoice Profile</span>
-              </div>
-              <button
-                onClick={() => setIsNewModalOpen(false)}
-                className="text-gray-400 hover:text-white text-sm"
-              >
-                ✕
-              </button>
+      {/* NEW RECURRING PROFILE MODAL */}
+      <Modal
+        isOpen={isNewModalOpen}
+        onClose={() => setIsNewModalOpen(false)}
+        title="Create New Recurring Invoice Profile"
+        description="Configure automated billing frequency, end conditions, itemized line items, and auto-dispatch options"
+        maxWidth="5xl"
+      >
+        <form onSubmit={handleCreateProfile} className="space-y-5 text-xs text-on-surface">
+          {/* Schedule & Customer Details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-surface-container-low rounded-lg border border-outline-variant/40">
+            <div className="md:col-span-2">
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Profile Name *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Monthly Dedicated Engineering Retainer"
+                value={newProfile.profile_name}
+                onChange={(e) => setNewProfile({ ...newProfile, profile_name: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded font-semibold text-on-surface focus:border-primary focus:outline-none"
+              />
             </div>
 
-            <form onSubmit={handleCreateProfile} className="p-6 space-y-4 text-sm">
-              <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Profile Name *</label>
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Customer *</label>
+              <select
+                value={newProfile.customer_name}
+                onChange={(e) => setNewProfile({ ...newProfile, customer_name: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              >
+                <option value="Aero Dynamics Inc">Aero Dynamics Inc</option>
+                <option value="Acme Global Ventures">Acme Global Ventures</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Repeat Every *</label>
+              <div className="grid grid-cols-2 gap-2">
                 <input
-                  type="text"
-                  required
-                  placeholder="e.g. Monthly Dedicated Engineering Retainer"
-                  value={newProfile.profile_name}
-                  onChange={(e) => setNewProfile({ ...newProfile, profile_name: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
+                  type="number"
+                  min="1"
+                  value={newProfile.repeat_interval}
+                  onChange={(e) => setNewProfile({ ...newProfile, repeat_interval: Number(e.target.value) })}
+                  className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
                 />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Repeat Every *</label>
-                  <select
-                    value={newProfile.repeat_every}
-                    onChange={(e) => setNewProfile({ ...newProfile, repeat_every: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  >
-                    <option value="WEEK">Week</option>
-                    <option value="MONTH">Month</option>
-                    <option value="YEAR">Year</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Amount ($ USD) *</label>
-                  <input
-                    type="number"
-                    required
-                    value={newProfile.amount}
-                    onChange={(e) => setNewProfile({ ...newProfile, amount: Number(e.target.value) })}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Customer</label>
                 <select
-                  value={newProfile.customer_name}
-                  onChange={(e) => setNewProfile({ ...newProfile, customer_name: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
+                  value={newProfile.repeat_every}
+                  onChange={(e) => setNewProfile({ ...newProfile, repeat_every: e.target.value })}
+                  className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
                 >
-                  <option value="Aero Dynamics Inc">Aero Dynamics Inc</option>
-                  <option value="Acme Global Ventures">Acme Global Ventures</option>
+                  <option value="WEEK">Week(s)</option>
+                  <option value="MONTH">Month(s)</option>
+                  <option value="YEAR">Year(s)</option>
                 </select>
               </div>
+            </div>
 
-              <div className="flex items-center gap-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="auto_send"
-                  checked={newProfile.auto_send}
-                  onChange={(e) => setNewProfile({ ...newProfile, auto_send: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-700 bg-[#20202B] text-[#887DB8] focus:ring-0"
-                />
-                <label htmlFor="auto_send" className="text-xs text-gray-300">
-                  Automatically send generated invoice to customer email and mobile portal
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Start Date *</label>
+              <input
+                type="date"
+                required
+                value={newProfile.start_date}
+                onChange={(e) => setNewProfile({ ...newProfile, start_date: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Payment Terms</label>
+              <select
+                value={newProfile.payment_terms}
+                onChange={(e) => setNewProfile({ ...newProfile, payment_terms: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              >
+                <option value="Due on Receipt">Due on Receipt</option>
+                <option value="Net 15">Net 15 Days</option>
+                <option value="Net 30">Net 30 Days</option>
+              </select>
+            </div>
+
+            <div className="md:col-span-3">
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">End Condition</label>
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="end_cond"
+                    checked={newProfile.end_date_type === 'NEVER'}
+                    onChange={() => setNewProfile({ ...newProfile, end_date_type: 'NEVER' })}
+                  />
+                  <span>Never Expires</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="end_cond"
+                    checked={newProfile.end_date_type === 'AT_DATE'}
+                    onChange={() => setNewProfile({ ...newProfile, end_date_type: 'AT_DATE' })}
+                  />
+                  <span>At Specific Date</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="end_cond"
+                    checked={newProfile.end_date_type === 'AFTER_OCCURRENCES'}
+                    onChange={() => setNewProfile({ ...newProfile, end_date_type: 'AFTER_OCCURRENCES' })}
+                  />
+                  <span>After Occurrences</span>
                 </label>
               </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
-                <button
-                  type="button"
-                  onClick={() => setIsNewModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-transparent hover:bg-gray-800 text-gray-400 hover:text-white text-sm"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium"
-                >
-                  Save Profile
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
-      )}
+
+          {/* Item Table */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <h4 className="font-bold uppercase tracking-wider text-on-surface flex items-center gap-1.5">
+                <FileSpreadsheet className="w-4 h-4 text-primary" />
+                Line Items
+              </h4>
+              <Button size="sm" variant="outline" type="button" onClick={handleAddRow}>
+                <Plus className="w-3.5 h-3.5 mr-1" />
+                Add Row
+              </Button>
+            </div>
+
+            <div className="border border-outline-variant/60 rounded-lg overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[700px]">
+                <thead>
+                  <tr className="bg-surface-container-low border-b border-outline-variant/40 text-[11px] font-semibold uppercase text-outline">
+                    <th className="p-2.5">Item Details</th>
+                    <th className="p-2.5 w-32">Account</th>
+                    <th className="p-2.5 w-20 text-center">Qty</th>
+                    <th className="p-2.5 w-28 text-right">Rate (₹)</th>
+                    <th className="p-2.5 w-24 text-center">Tax Rate</th>
+                    <th className="p-2.5 w-28 text-right">Amount (₹)</th>
+                    <th className="p-2.5 w-10"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant/30">
+                  {items.map((row) => (
+                    <tr key={row.id}>
+                      <td className="p-2">
+                        <input
+                          type="text"
+                          value={row.item_details}
+                          onChange={(e) => handleItemChange(row.id, 'item_details', e.target.value)}
+                          className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <select
+                          value={row.account}
+                          onChange={(e) => handleItemChange(row.id, 'account', e.target.value)}
+                          className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+                        >
+                          <option value="Sales">Sales</option>
+                          <option value="Retainer Revenue">Retainer Revenue</option>
+                        </select>
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="number"
+                          min="1"
+                          value={row.quantity}
+                          onChange={(e) => handleItemChange(row.id, 'quantity', Number(e.target.value))}
+                          className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-center text-xs"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="number"
+                          value={row.rate}
+                          onChange={(e) => handleItemChange(row.id, 'rate', Number(e.target.value))}
+                          className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-right text-xs"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <select
+                          value={row.tax_rate}
+                          onChange={(e) => handleItemChange(row.id, 'tax_rate', Number(e.target.value))}
+                          className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-center text-xs"
+                        >
+                          <option value={0}>0%</option>
+                          <option value={5}>5%</option>
+                          <option value={12}>12%</option>
+                          <option value={18}>18%</option>
+                          <option value={28}>28%</option>
+                        </select>
+                      </td>
+                      <td className="p-2 text-right font-bold text-on-surface">
+                        ₹{row.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="p-2 text-center">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveRow(row.id)}
+                          className="text-error/70 hover:text-error transition"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Automation Options & Total Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/40 space-y-3">
+              <h4 className="font-bold uppercase tracking-wider text-on-surface">Invoice Automation Action</h4>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="auto_act"
+                    checked={newProfile.auto_action === 'CREATE_DRAFT'}
+                    onChange={() => setNewProfile({ ...newProfile, auto_action: 'CREATE_DRAFT' })}
+                  />
+                  <span>Create Invoice as Draft only</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="auto_act"
+                    checked={newProfile.auto_action === 'CREATE_AND_SEND'}
+                    onChange={() => setNewProfile({ ...newProfile, auto_action: 'CREATE_AND_SEND' })}
+                  />
+                  <span>Create & Dispatch to Customer (Email & Mobile)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="auto_act"
+                    checked={newProfile.auto_action === 'AUTO_CHARGE'}
+                    onChange={() => setNewProfile({ ...newProfile, auto_action: 'AUTO_CHARGE' })}
+                  />
+                  <span>Auto-charge Customer Card / Bank mandate</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/60 space-y-2.5">
+              <div className="flex justify-between py-1 border-b border-outline-variant/30">
+                <span className="text-outline">Sub Total:</span>
+                <span className="font-semibold text-on-surface">₹{subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-outline-variant/30">
+                <span className="text-outline">Tax Amount (GST):</span>
+                <span className="font-semibold text-on-surface">₹{totalTax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between pt-3 border-t-2 border-outline-variant/80 text-sm">
+                <span className="font-bold text-on-surface">Cycle Total (₹):</span>
+                <span className="font-bold text-primary text-base">₹{grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+              </div>
+              <div className="p-2 bg-surface-container-lowest rounded border border-outline-variant/30 text-[11px] text-outline font-medium">
+                <span className="font-semibold text-on-surface">Total in Words:</span> {formatCurrencyWords(grandTotal, 'INR')}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="pt-4 border-t border-outline-variant/60 flex items-center justify-end gap-2">
+            <Button variant="outline" size="sm" type="button" onClick={() => setIsNewModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="sm" type="submit">
+              Save Recurring Profile
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

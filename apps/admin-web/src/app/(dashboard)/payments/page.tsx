@@ -13,7 +13,8 @@ import {
   Calendar,
   Building2,
   Receipt,
-  FileCheck
+  FileCheck,
+  Check
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,15 @@ export interface PaymentItem {
   payment_date: string;
 }
 
+interface UnpaidInvoice {
+  id: string;
+  invoice_number: string;
+  invoice_date: string;
+  invoice_amount: number;
+  amount_due: number;
+  payment_applied: number;
+}
+
 export default function PaymentsPage() {
   const [payments, setPayments] = React.useState<PaymentItem[]>([
     {
@@ -47,9 +57,9 @@ export default function PaymentsPage() {
       customer_name: 'Aero Dynamics Inc',
       payment_type: 'INVOICE_PAYMENT',
       amount: 14000.00,
-      currency: 'USD',
+      currency: 'INR',
       payment_mode: 'RAZORPAY',
-      deposit_to: 'Corporate Operating Account (HDFC)',
+      deposit_to: 'Operating Bank Account (HDFC)',
       reference_number: 'pay_rzp_live_938174829',
       status: 'COMPLETED',
       payment_date: '2026-05-18',
@@ -61,16 +71,15 @@ export default function PaymentsPage() {
       customer_name: 'Acme Global Ventures',
       payment_type: 'INVOICE_PAYMENT',
       amount: 4500.00,
-      currency: 'USD',
+      currency: 'INR',
       payment_mode: 'BANK_TRANSFER',
-      deposit_to: 'Corporate Operating Account (HDFC)',
+      deposit_to: 'Operating Bank Account (HDFC)',
       reference_number: 'NEFT-8839103982',
       status: 'COMPLETED',
       payment_date: '2026-05-20',
     },
   ]);
 
-  const [selectedPayment, setSelectedPayment] = React.useState<PaymentItem | null>(null);
   const [isRecordModalOpen, setIsRecordModalOpen] = React.useState(false);
   const { showToast } = useToast();
 
@@ -78,93 +87,117 @@ export default function PaymentsPage() {
   const [paymentType, setPaymentType] = React.useState<'INVOICE_PAYMENT' | 'CUSTOMER_ADVANCE'>('INVOICE_PAYMENT');
   const [customerName, setCustomerName] = React.useState('Aero Dynamics Inc');
   const [amount, setAmount] = React.useState('12500');
-  const [paymentMode, setPaymentMode] = React.useState<'BANK_TRANSFER' | 'UPI' | 'CASH' | 'CHEQUE'>('BANK_TRANSFER');
-  const [depositTo, setDepositTo] = React.useState('Bank Account');
+  const [bankCharges, setBankCharges] = React.useState('0');
+  const [paymentDate, setPaymentDate] = React.useState(new Date().toISOString().split('T')[0]);
+  const [paymentNumber, setPaymentNumber] = React.useState(`PAY-2026-${Math.floor(100 + Math.random() * 900)}`);
+  const [paymentMode, setPaymentMode] = React.useState<'BANK_TRANSFER' | 'UPI' | 'CASH' | 'CHEQUE' | 'RAZORPAY'>('BANK_TRANSFER');
+  const [depositTo, setDepositTo] = React.useState('Operating Bank Account');
   const [referenceNumber, setReferenceNumber] = React.useState('');
   const [taxDeduction, setTaxDeduction] = React.useState('NO_TAX');
+  const [notes, setNotes] = React.useState('');
+
+  const [unpaidInvoices, setUnpaidInvoices] = React.useState<UnpaidInvoice[]>([
+    {
+      id: 'inv_1',
+      invoice_number: 'INV-2026-081',
+      invoice_date: '2026-05-01',
+      invoice_amount: 15000,
+      amount_due: 7500,
+      payment_applied: 7500,
+    },
+    {
+      id: 'inv_2',
+      invoice_number: 'INV-2026-085',
+      invoice_date: '2026-05-10',
+      invoice_amount: 5000,
+      amount_due: 5000,
+      payment_applied: 5000,
+    },
+  ]);
+
+  const handlePayFull = (id: string) => {
+    setUnpaidInvoices(
+      unpaidInvoices.map((inv) => (inv.id === id ? { ...inv, payment_applied: inv.amount_due } : inv))
+    );
+  };
+
+  const handleClearApplied = (id: string) => {
+    setUnpaidInvoices(
+      unpaidInvoices.map((inv) => (inv.id === id ? { ...inv, payment_applied: 0 } : inv))
+    );
+  };
+
+  const handleAppliedChange = (id: string, val: number) => {
+    setUnpaidInvoices(
+      unpaidInvoices.map((inv) => (inv.id === id ? { ...inv, payment_applied: Math.min(inv.amount_due, Math.max(0, val)) } : inv))
+    );
+  };
 
   const handleRecordPayment = (e: React.FormEvent) => {
     e.preventDefault();
     const newPayment: PaymentItem = {
       id: `pay_${Date.now()}`,
-      payment_number: `PAY-2026-${String(payments.length + 1).padStart(3, '0')}`,
-      invoice_number: paymentType === 'INVOICE_PAYMENT' ? 'INV-2026-089' : undefined,
+      payment_number: paymentNumber,
+      invoice_number: paymentType === 'INVOICE_PAYMENT' ? unpaidInvoices[0]?.invoice_number : undefined,
       customer_name: customerName,
       payment_type: paymentType,
       amount: parseFloat(amount) || 0,
-      currency: 'USD',
+      currency: 'INR',
       payment_mode: paymentMode,
       deposit_to: depositTo,
       reference_number: referenceNumber || `REF-${Date.now()}`,
       status: 'COMPLETED',
-      payment_date: new Date().toISOString().split('T')[0],
+      payment_date: paymentDate,
     };
 
     setPayments([newPayment, ...payments]);
     setIsRecordModalOpen(false);
-    showToast('success', 'Payment Recorded', `Payment of $${newPayment.amount} recorded successfully.`);
+    showToast('success', 'Payment Recorded', `Payment ${newPayment.payment_number} for ₹${newPayment.amount.toLocaleString()} received.`);
   };
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Payments Received & Advance Ledger</h1>
-          <p className="text-xs text-gray-400">
-            Record customer receipts, invoice settlements, bank reconciliation, and advances
-          </p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Payments Received</h1>
+          <p className="text-xs text-gray-400">Manage invoice payment settlements, customer advances, and bank allocations</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="md"
-            onClick={() => showToast('success', 'Ledger Synchronized', 'All gateway transactions reconciled.')}
-          >
-            <RefreshCw className="w-4 h-4 mr-1.5" />
-            <span>Sync Gateways</span>
-          </Button>
-          <button
-            onClick={() => setIsRecordModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium transition shadow-md"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Record Payment</span>
-          </button>
-        </div>
+        <button
+          onClick={() => setIsRecordModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium transition shadow-md"
+        >
+          <Plus className="w-4 h-4" />
+          Record Payment
+        </button>
       </div>
 
-      {/* Summary Stats */}
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-[#181B24] p-4 rounded-xl border border-gray-800">
-          <p className="text-xs text-gray-400">Total Payments Recorded</p>
-          <p className="text-xl font-bold text-white mt-1">
-            ${payments.reduce((acc, p) => acc + p.amount, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-          </p>
-          <p className="text-[11px] text-emerald-400 mt-1">{payments.length} Transactions settled</p>
+        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Received (MTD)</p>
+          <p className="text-2xl font-bold text-white mt-1">₹18,500.00</p>
         </div>
-        <div className="bg-[#181B24] p-4 rounded-xl border border-gray-800">
-          <p className="text-xs text-gray-400">Gateway Settlements (Razorpay/Cashfree)</p>
-          <p className="text-xl font-bold text-[#887DB8] mt-1">$14,000.00</p>
-          <p className="text-[11px] text-gray-400 mt-1">Verified via webhooks</p>
+        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Gateway Collections</p>
+          <p className="text-2xl font-bold text-[#887DB8] mt-1">₹14,000.00</p>
         </div>
-        <div className="bg-[#181B24] p-4 rounded-xl border border-gray-800">
-          <p className="text-xs text-gray-400">Offline & Direct Bank Transfers</p>
-          <p className="text-xl font-bold text-[#D9A441] mt-1">$4,500.00</p>
-          <p className="text-[11px] text-gray-400 mt-1">Manual bank reconciliation</p>
+        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Bank Transfers</p>
+          <p className="text-2xl font-bold text-emerald-400 mt-1">₹4,500.00</p>
         </div>
       </div>
 
       {/* Payments Table */}
-      <div className="bg-[#181B24] rounded-xl border border-gray-800 overflow-hidden shadow-sm">
+      <div className="bg-[#181B24] border border-gray-800 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-800 bg-[#20202B]/40 text-xs font-semibold uppercase text-gray-400 tracking-wider">
+              <tr className="border-b border-gray-800 bg-[#20202B]/60 text-xs font-semibold uppercase text-gray-400 tracking-wider">
                 <th className="py-3.5 px-4">Payment #</th>
-                <th className="py-3.5 px-4">Date</th>
                 <th className="py-3.5 px-4">Customer</th>
-                <th className="py-3.5 px-4">Invoice / Type</th>
+                <th className="py-3.5 px-4">Type</th>
+                <th className="py-3.5 px-4">Date</th>
                 <th className="py-3.5 px-4">Mode</th>
                 <th className="py-3.5 px-4">Amount</th>
                 <th className="py-3.5 px-4">Status</th>
@@ -173,32 +206,15 @@ export default function PaymentsPage() {
             </thead>
             <tbody className="divide-y divide-gray-800 text-sm">
               {payments.map((pay) => (
-                <tr key={pay.id} className="hover:bg-[#20202B]/50 transition">
-                  <td className="py-4 px-4 font-mono font-bold text-white">{pay.payment_number}</td>
-                  <td className="py-4 px-4 text-gray-300">
-                    <div className="flex items-center gap-1.5 text-xs">
-                      <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                      <span>{pay.payment_date}</span>
-                    </div>
-                  </td>
-                  <td className="py-4 px-4 font-medium text-white">{pay.customer_name}</td>
+                <tr key={pay.id} className="hover:bg-[#20202B]/40 transition">
+                  <td className="py-4 px-4 font-mono font-semibold text-[#887DB8]">{pay.payment_number}</td>
+                  <td className="py-4 px-4 text-white font-medium">{pay.customer_name}</td>
                   <td className="py-4 px-4">
-                    {pay.invoice_number ? (
-                      <span className="font-mono text-xs text-[#887DB8] bg-[#887DB8]/10 px-2 py-0.5 rounded border border-[#887DB8]/20">
-                        {pay.invoice_number}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-[#D9A441] bg-[#D9A441]/10 px-2 py-0.5 rounded border border-[#D9A441]/20">
-                        Advance Payment
-                      </span>
-                    )}
+                    <span className="text-xs text-gray-400">{pay.payment_type.replace(/_/g, ' ')}</span>
                   </td>
-                  <td className="py-4 px-4">
-                    <span className="text-xs font-medium text-gray-300">{pay.payment_mode}</span>
-                  </td>
-                  <td className="py-4 px-4 font-bold text-emerald-400">
-                    ${pay.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </td>
+                  <td className="py-4 px-4 text-xs text-gray-300">{pay.payment_date}</td>
+                  <td className="py-4 px-4 text-xs text-gray-300 font-mono">{pay.payment_mode}</td>
+                  <td className="py-4 px-4 font-bold text-white">₹{pay.amount.toLocaleString()}</td>
                   <td className="py-4 px-4">
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                       <CheckCircle2 className="w-3 h-3" />
@@ -207,7 +223,7 @@ export default function PaymentsPage() {
                   </td>
                   <td className="py-4 px-4 text-right">
                     <button
-                      onClick={() => showToast('info', 'Receipt Export', `Downloading ${pay.payment_number} receipt PDF.`)}
+                      onClick={() => showToast('success', 'Receipt Export', `Downloading ${pay.payment_number} receipt PDF.`)}
                       className="p-1.5 rounded-lg bg-[#20202B] hover:bg-[#2E2E37] text-gray-300 hover:text-white transition"
                     >
                       <Download className="w-4 h-4" />
@@ -220,149 +236,254 @@ export default function PaymentsPage() {
         </div>
       </div>
 
-      {/* Record Payment Modal */}
-      {isRecordModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-[#181B24] border border-gray-800 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in duration-200">
-            <div className="p-5 border-b border-gray-800 flex justify-between items-center bg-[#20202B]/40">
-              <div className="flex items-center gap-2 text-white font-semibold">
-                <Receipt className="w-5 h-5 text-[#887DB8]" />
-                <span>Record Payment Received</span>
-              </div>
+      {/* RECORD PAYMENT MODAL */}
+      <Modal
+        isOpen={isRecordModalOpen}
+        onClose={() => setIsRecordModalOpen(false)}
+        title="Record Payment Received"
+        description="Allocate incoming funds to invoices or record customer advance payments with bank deposit accounts"
+        maxWidth="4xl"
+      >
+        <form onSubmit={handleRecordPayment} className="space-y-4 text-xs text-on-surface">
+          {/* Mode Switcher */}
+          <div>
+            <label className="block font-semibold uppercase tracking-wider text-outline mb-1.5">Payment Type</label>
+            <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => setIsRecordModalOpen(false)}
-                className="text-gray-400 hover:text-white text-sm"
+                type="button"
+                onClick={() => setPaymentType('INVOICE_PAYMENT')}
+                className={`py-2 rounded-lg border text-xs font-bold uppercase tracking-wider transition ${
+                  paymentType === 'INVOICE_PAYMENT'
+                    ? 'border-primary bg-primary/15 text-primary'
+                    : 'border-outline-variant bg-surface-container-low text-outline'
+                }`}
               >
-                ✕
+                Invoice Payment
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentType('CUSTOMER_ADVANCE')}
+                className={`py-2 rounded-lg border text-xs font-bold uppercase tracking-wider transition ${
+                  paymentType === 'CUSTOMER_ADVANCE'
+                    ? 'border-primary bg-primary/15 text-primary'
+                    : 'border-outline-variant bg-surface-container-low text-outline'
+                }`}
+              >
+                Customer Advance
               </button>
             </div>
-
-            <form onSubmit={handleRecordPayment} className="p-6 space-y-4 text-sm">
-              <div>
-                <label className="block text-xs font-medium text-gray-300 mb-2">Payment Type</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentType('INVOICE_PAYMENT')}
-                    className={`py-2 rounded-lg border text-xs font-medium transition ${
-                      paymentType === 'INVOICE_PAYMENT'
-                        ? 'border-[#887DB8] bg-[#887DB8]/15 text-white'
-                        : 'border-gray-700 bg-[#20202B] text-gray-400'
-                    }`}
-                  >
-                    Invoice Settlement
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentType('CUSTOMER_ADVANCE')}
-                    className={`py-2 rounded-lg border text-xs font-medium transition ${
-                      paymentType === 'CUSTOMER_ADVANCE'
-                        ? 'border-[#D9A441] bg-[#D9A441]/15 text-white'
-                        : 'border-gray-700 bg-[#20202B] text-gray-400'
-                    }`}
-                  >
-                    Customer Advance
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Customer *</label>
-                <select
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                >
-                  <option value="Aero Dynamics Inc">Aero Dynamics Inc</option>
-                  <option value="Acme Global Ventures">Acme Global Ventures</option>
-                </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Amount Received ($ USD) *</label>
-                  <input
-                    type="number"
-                    required
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Payment Mode *</label>
-                  <select
-                    value={paymentMode}
-                    onChange={(e) => setPaymentMode(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  >
-                    <option value="BANK_TRANSFER">Bank Transfer (NEFT/RTGS)</option>
-                    <option value="UPI">UPI</option>
-                    <option value="CHEQUE">Cheque</option>
-                    <option value="CASH">Cash</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Deposit To</label>
-                  <select
-                    value={depositTo}
-                    onChange={(e) => setDepositTo(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  >
-                    <option value="Bank Account">Operating Bank Account</option>
-                    <option value="Petty Cash">Petty Cash</option>
-                    <option value="Undeposited Funds">Undeposited Funds</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Reference / Transaction #</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. UTR-9988771122"
-                    value={referenceNumber}
-                    onChange={(e) => setReferenceNumber(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  />
-                </div>
-              </div>
-
-              {paymentType === 'CUSTOMER_ADVANCE' && (
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Tax Deduction on Advance</label>
-                  <select
-                    value={taxDeduction}
-                    onChange={(e) => setTaxDeduction(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  >
-                    <option value="NO_TAX">No Tax Deduction</option>
-                    <option value="TDS">TDS Deducted</option>
-                    <option value="GST_ON_ADVANCE">GST on Advance</option>
-                  </select>
-                </div>
-              )}
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
-                <button
-                  type="button"
-                  onClick={() => setIsRecordModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-transparent hover:bg-gray-800 text-gray-400 hover:text-white text-sm"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium"
-                >
-                  Record Payment
-                </button>
-              </div>
-            </form>
           </div>
-        </div>
-      )}
+
+          {/* Primary Details */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-surface-container-low rounded-lg border border-outline-variant/40">
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Customer Name *</label>
+              <select
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              >
+                <option value="Aero Dynamics Inc">Aero Dynamics Inc</option>
+                <option value="Acme Global Ventures">Acme Global Ventures</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Amount Received (₹) *</label>
+              <input
+                type="number"
+                required
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded font-semibold text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Bank Charges (if any)</label>
+              <input
+                type="number"
+                value={bankCharges}
+                onChange={(e) => setBankCharges(e.target.value)}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Payment Date *</label>
+              <input
+                type="date"
+                required
+                value={paymentDate}
+                onChange={(e) => setPaymentDate(e.target.value)}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Payment # *</label>
+              <input
+                type="text"
+                required
+                value={paymentNumber}
+                onChange={(e) => setPaymentNumber(e.target.value)}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded font-mono text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Payment Mode *</label>
+              <select
+                value={paymentMode}
+                onChange={(e) => setPaymentMode(e.target.value as any)}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              >
+                <option value="BANK_TRANSFER">Bank Transfer (NEFT/RTGS)</option>
+                <option value="UPI">UPI</option>
+                <option value="RAZORPAY">Razorpay / Cashfree</option>
+                <option value="CHEQUE">Cheque</option>
+                <option value="CASH">Cash</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Deposit To *</label>
+              <select
+                value={depositTo}
+                onChange={(e) => setDepositTo(e.target.value)}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              >
+                <option value="Operating Bank Account">Operating Bank Account (HDFC)</option>
+                <option value="Petty Cash">Petty Cash</option>
+                <option value="Undeposited Funds">Undeposited Funds</option>
+              </select>
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Reference / UTR #</label>
+              <input
+                type="text"
+                placeholder="e.g. UTR-9988771122"
+                value={referenceNumber}
+                onChange={(e) => setReferenceNumber(e.target.value)}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded font-mono text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Mode 1: Unpaid Invoices Allocation Table */}
+          {paymentType === 'INVOICE_PAYMENT' && (
+            <div className="space-y-2 p-4 bg-surface-container-low rounded-lg border border-outline-variant/40">
+              <h4 className="font-bold uppercase tracking-wider text-on-surface">Unpaid Invoices Allocation</h4>
+              <div className="border border-outline-variant/60 rounded overflow-hidden">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-surface-container-lowest border-b border-outline-variant/40 text-[11px] text-outline font-semibold uppercase">
+                      <th className="p-2">Invoice #</th>
+                      <th className="p-2">Date</th>
+                      <th className="p-2 text-right">Invoice Amount</th>
+                      <th className="p-2 text-right">Amount Due</th>
+                      <th className="p-2 text-right w-32">Payment Amount (₹)</th>
+                      <th className="p-2 text-right">Quick Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/30">
+                    {unpaidInvoices.map((inv) => (
+                      <tr key={inv.id}>
+                        <td className="p-2 font-mono text-primary font-semibold">{inv.invoice_number}</td>
+                        <td className="p-2 text-outline">{inv.invoice_date}</td>
+                        <td className="p-2 text-right">₹{inv.invoice_amount.toLocaleString()}</td>
+                        <td className="p-2 text-right font-semibold text-error">₹{inv.amount_due.toLocaleString()}</td>
+                        <td className="p-2 text-right">
+                          <input
+                            type="number"
+                            value={inv.payment_applied}
+                            onChange={(e) => handleAppliedChange(inv.id, Number(e.target.value))}
+                            className="w-full p-1 bg-surface-container-lowest border border-outline-variant rounded text-right font-semibold"
+                          />
+                        </td>
+                        <td className="p-2 text-right space-x-2">
+                          <button
+                            type="button"
+                            onClick={() => handlePayFull(inv.id)}
+                            className="text-primary hover:underline text-[11px] font-semibold"
+                          >
+                            Pay Full
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleClearApplied(inv.id)}
+                            className="text-outline hover:underline text-[11px]"
+                          >
+                            Clear
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Mode 2: Customer Advance Tax Options */}
+          {paymentType === 'CUSTOMER_ADVANCE' && (
+            <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/40 space-y-2">
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Tax Deduction on Advance</label>
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="tax_ded"
+                    checked={taxDeduction === 'NO_TAX'}
+                    onChange={() => setTaxDeduction('NO_TAX')}
+                  />
+                  <span>No Tax</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="tax_ded"
+                    checked={taxDeduction === 'TDS'}
+                    onChange={() => setTaxDeduction('TDS')}
+                  />
+                  <span>TDS Deducted</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="tax_ded"
+                    checked={taxDeduction === 'GST_ON_ADVANCE'}
+                    onChange={() => setTaxDeduction('GST_ON_ADVANCE')}
+                  />
+                  <span>GST on Advance</span>
+                </label>
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Notes / Remarks</label>
+            <textarea
+              rows={2}
+              placeholder="Internal payment notes, cheque clearance details..."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="pt-4 border-t border-outline-variant/60 flex items-center justify-end gap-2">
+            <Button variant="outline" size="sm" type="button" onClick={() => setIsRecordModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="sm" type="submit">
+              Save Payment
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

@@ -16,7 +16,9 @@ import {
   Search,
   Filter,
   Archive,
-  BarChart2
+  BarChart2,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -45,6 +47,8 @@ export interface ItemRecord {
   inter_state_tax_rate: number;
   track_inventory: boolean;
   opening_stock: number;
+  opening_stock_rate: number;
+  reorder_point: number;
   current_stock: number;
   status: 'ACTIVE' | 'ARCHIVED';
 }
@@ -68,6 +72,8 @@ export default function CatalogPage() {
       inter_state_tax_rate: 18.00,
       track_inventory: false,
       opening_stock: 0,
+      opening_stock_rate: 0,
+      reorder_point: 0,
       current_stock: 0,
       status: 'ACTIVE',
     },
@@ -88,6 +94,8 @@ export default function CatalogPage() {
       inter_state_tax_rate: 18.00,
       track_inventory: false,
       opening_stock: 0,
+      opening_stock_rate: 0,
+      reorder_point: 0,
       current_stock: 0,
       status: 'ACTIVE',
     },
@@ -101,201 +109,218 @@ export default function CatalogPage() {
       tax_preference: 'TAXABLE',
       selling_price: 120.00,
       sales_account: 'Hardware Sales',
+      sales_description: 'Cryptographic security token for zero-trust IAM authentication.',
       cost_price: 65.00,
-      purchase_account: 'Cost of Goods Sold',
-      preferred_vendor: 'Yubico Distributor',
+      purchase_account: 'Hardware Inventory Asset',
+      preferred_vendor: 'Yubico Supply Partner',
       intra_state_tax_rate: 18.00,
       inter_state_tax_rate: 18.00,
       track_inventory: true,
-      opening_stock: 100,
-      current_stock: 84,
+      opening_stock: 500,
+      opening_stock_rate: 65,
+      reorder_point: 50,
+      current_stock: 420,
       status: 'ACTIVE',
     },
   ]);
 
-  const [typeFilter, setTypeFilter] = React.useState<'ALL' | 'GOODS' | 'SERVICE'>('ALL');
+  const [filterType, setFilterType] = React.useState<'ALL' | 'GOODS' | 'SERVICE'>('ALL');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
-  const { showToast } = useToast();
 
-  // New item form state
-  const [newItem, setNewItem] = React.useState<Partial<ItemRecord>>({
+  const [newItem, setNewItem] = React.useState<Omit<ItemRecord, 'id' | 'current_stock' | 'status'>>({
     item_type: 'SERVICE',
     name: '',
     sku: '',
-    unit: 'hrs',
-    hsn_sac_code: '9983',
+    unit: 'project',
+    hsn_sac_code: '998313',
     tax_preference: 'TAXABLE',
-    selling_price: 1000,
+    exemption_reason: '',
+    selling_price: 5000,
     sales_account: 'Sales',
-    cost_price: 500,
+    sales_description: '',
+    cost_price: 2500,
     purchase_account: 'Cost of Goods Sold',
+    preferred_vendor: '',
     intra_state_tax_rate: 18,
     inter_state_tax_rate: 18,
     track_inventory: false,
     opening_stock: 0,
+    opening_stock_rate: 0,
+    reorder_point: 10,
   });
 
-  const filteredItems = items.filter((item) => {
-    if (typeFilter !== 'ALL' && item.item_type !== typeFilter) return false;
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      return (
-        item.name.toLowerCase().includes(q) ||
-        item.sku.toLowerCase().includes(q) ||
-        item.hsn_sac_code.includes(q)
-      );
-    }
-    return true;
-  });
+  const { showToast } = useToast();
 
   const handleCreateItem = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newItem.name || !newItem.sku) {
-      showToast('error', 'Validation Error', 'Item Name and SKU are required.');
-      return;
-    }
+    if (!newItem.name || !newItem.sku) return;
 
     const created: ItemRecord = {
+      ...newItem,
       id: `itm_${Date.now()}`,
-      item_type: newItem.item_type || 'SERVICE',
-      name: newItem.name,
-      sku: newItem.sku,
-      unit: newItem.unit || 'unit',
-      hsn_sac_code: newItem.hsn_sac_code || '9983',
-      tax_preference: newItem.tax_preference || 'TAXABLE',
-      exemption_reason: newItem.exemption_reason,
-      selling_price: Number(newItem.selling_price) || 0,
-      sales_account: newItem.sales_account || 'Sales',
-      sales_description: newItem.sales_description,
-      cost_price: Number(newItem.cost_price) || 0,
-      purchase_account: newItem.purchase_account || 'Cost of Goods Sold',
-      preferred_vendor: newItem.preferred_vendor,
-      intra_state_tax_rate: Number(newItem.intra_state_tax_rate) || 18,
-      inter_state_tax_rate: Number(newItem.inter_state_tax_rate) || 18,
-      track_inventory: Boolean(newItem.track_inventory),
-      opening_stock: Number(newItem.opening_stock) || 0,
-      current_stock: Number(newItem.opening_stock) || 0,
+      current_stock: newItem.opening_stock || 0,
       status: 'ACTIVE',
     };
 
     setItems([created, ...items]);
     setCreateModalOpen(false);
-    showToast('success', 'Item Created', `${created.name} (${created.sku}) is now active.`);
+    showToast('success', 'Item Created', `${created.name} (${created.sku}) added to catalog.`);
     setNewItem({
       item_type: 'SERVICE',
       name: '',
       sku: '',
-      unit: 'hrs',
-      hsn_sac_code: '9983',
+      unit: 'project',
+      hsn_sac_code: '998313',
       tax_preference: 'TAXABLE',
-      selling_price: 1000,
+      exemption_reason: '',
+      selling_price: 5000,
       sales_account: 'Sales',
-      cost_price: 500,
+      sales_description: '',
+      cost_price: 2500,
       purchase_account: 'Cost of Goods Sold',
+      preferred_vendor: '',
       intra_state_tax_rate: 18,
       inter_state_tax_rate: 18,
       track_inventory: false,
       opening_stock: 0,
+      opening_stock_rate: 0,
+      reorder_point: 10,
     });
   };
 
+  const filteredItems = items.filter((item) => {
+    const matchesType = filterType === 'ALL' || item.item_type === filterType;
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.sku.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesType && matchesSearch;
+  });
+
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Items & Services Catalog</h1>
-          <p className="text-xs text-gray-400">
-            Manage goods, professional services, pricing, HSN/SAC codes, and tax preferences
-          </p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Items & Catalog</h1>
+          <p className="text-xs text-gray-400">Manage goods, billable services, tax classifications, and inventory accounts</p>
         </div>
         <button
           onClick={() => setCreateModalOpen(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium transition shadow-md"
         >
           <Plus className="w-4 h-4" />
-          <span>New Item / Service</span>
+          New Item
         </button>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-[#181B24] p-4 rounded-xl border border-gray-800">
-        <div className="relative flex-1 max-w-md w-full">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Catalog Items</p>
+          <p className="text-2xl font-bold text-white mt-1">{items.length}</p>
+        </div>
+        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Active Services</p>
+          <p className="text-2xl font-bold text-[#887DB8] mt-1">
+            {items.filter((i) => i.item_type === 'SERVICE').length}
+          </p>
+        </div>
+        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Inventory Goods</p>
+          <p className="text-2xl font-bold text-[#D9A441] mt-1">
+            {items.filter((i) => i.item_type === 'GOODS').length}
+          </p>
+        </div>
+      </div>
+
+      {/* Filter and Search Bar */}
+      <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <button
+            onClick={() => setFilterType('ALL')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              filterType === 'ALL'
+                ? 'bg-[#887DB8] text-white'
+                : 'bg-[#20202B] text-gray-400 hover:text-white'
+            }`}
+          >
+            All Items
+          </button>
+          <button
+            onClick={() => setFilterType('SERVICE')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              filterType === 'SERVICE'
+                ? 'bg-[#887DB8] text-white'
+                : 'bg-[#20202B] text-gray-400 hover:text-white'
+            }`}
+          >
+            Services
+          </button>
+          <button
+            onClick={() => setFilterType('GOODS')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              filterType === 'GOODS'
+                ? 'bg-[#887DB8] text-white'
+                : 'bg-[#20202B] text-gray-400 hover:text-white'
+            }`}
+          >
+            Goods
+          </button>
+        </div>
+
+        <div className="relative w-full sm:w-72">
           <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by name, SKU, or HSN/SAC..."
+            placeholder="Search items by name or SKU..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-[#887DB8]"
           />
         </div>
-
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          {(['ALL', 'SERVICE', 'GOODS'] as const).map((type) => (
-            <button
-              key={type}
-              onClick={() => setTypeFilter(type)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                typeFilter === type
-                  ? 'bg-[#887DB8] text-white'
-                  : 'bg-[#20202B] text-gray-400 hover:text-white border border-gray-700'
-              }`}
-            >
-              {type === 'ALL' ? 'All Items' : type === 'SERVICE' ? 'Services' : 'Goods'}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Items Table */}
-      <div className="bg-[#181B24] rounded-xl border border-gray-800 overflow-hidden shadow-sm">
+      <div className="bg-[#181B24] border border-gray-800 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-800 bg-[#20202B]/40 text-xs font-semibold uppercase text-gray-400 tracking-wider">
-                <th className="py-3.5 px-4">Item Details</th>
+              <tr className="border-b border-gray-800 bg-[#20202B]/60 text-xs font-semibold uppercase text-gray-400 tracking-wider">
+                <th className="py-3.5 px-4">Item & SKU</th>
                 <th className="py-3.5 px-4">Type</th>
-                <th className="py-3.5 px-4">SKU / HSN</th>
+                <th className="py-3.5 px-4">HSN / SAC</th>
                 <th className="py-3.5 px-4">Selling Price</th>
                 <th className="py-3.5 px-4">Cost Price</th>
-                <th className="py-3.5 px-4">Tax %</th>
+                <th className="py-3.5 px-4">Tax (GST)</th>
                 <th className="py-3.5 px-4">Stock</th>
                 <th className="py-3.5 px-4 text-right">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800 text-sm">
               {filteredItems.map((item) => (
-                <tr key={item.id} className="hover:bg-[#20202B]/50 transition">
+                <tr key={item.id} className="hover:bg-[#20202B]/40 transition">
                   <td className="py-4 px-4">
                     <p className="font-semibold text-white">{item.name}</p>
-                    <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{item.sales_description || 'Standard catalog item'}</p>
+                    <p className="text-xs font-mono text-[#887DB8] mt-0.5">{item.sku}</p>
                   </td>
                   <td className="py-4 px-4">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-medium bg-[#20202B] border border-gray-700 text-gray-300">
-                      {item.item_type === 'SERVICE' ? (
-                        <Wrench className="w-3 h-3 text-[#887DB8]" />
-                      ) : (
-                        <Package className="w-3 h-3 text-[#D9A441]" />
-                      )}
+                    <span
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-medium border ${
+                        item.item_type === 'GOODS'
+                          ? 'bg-[#D9A441]/10 text-[#D9A441] border-[#D9A441]/20'
+                          : 'bg-[#887DB8]/10 text-[#887DB8] border-[#887DB8]/20'
+                      }`}
+                    >
+                      {item.item_type === 'GOODS' ? <Package className="w-3 h-3" /> : <Wrench className="w-3 h-3" />}
                       {item.item_type}
                     </span>
                   </td>
-                  <td className="py-4 px-4 font-mono text-xs text-gray-300">
-                    <p className="font-semibold text-white">{item.sku}</p>
-                    <p className="text-gray-400">HSN: {item.hsn_sac_code}</p>
-                  </td>
-                  <td className="py-4 px-4 font-bold text-white">
-                    ${item.selling_price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </td>
-                  <td className="py-4 px-4 text-gray-400 font-mono">
-                    ${item.cost_price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </td>
-                  <td className="py-4 px-4 text-gray-300">
-                    {item.tax_preference === 'TAXABLE' ? `${item.intra_state_tax_rate}%` : item.tax_preference}
-                  </td>
-                  <td className="py-4 px-4 text-gray-300">
+                  <td className="py-4 px-4 text-xs font-mono text-gray-300">{item.hsn_sac_code || '—'}</td>
+                  <td className="py-4 px-4 font-bold text-white">₹{item.selling_price.toLocaleString()}</td>
+                  <td className="py-4 px-4 text-gray-300">₹{item.cost_price.toLocaleString()}</td>
+                  <td className="py-4 px-4 text-xs text-gray-300">{item.intra_state_tax_rate}% GST</td>
+                  <td className="py-4 px-4">
                     {item.track_inventory ? (
                       <span className="font-mono font-medium text-white">{item.current_stock} {item.unit}</span>
                     ) : (
@@ -314,212 +339,265 @@ export default function CatalogPage() {
         </div>
       </div>
 
-      {/* New Item Modal */}
-      {createModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-[#181B24] border border-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in duration-200">
-            <div className="p-5 border-b border-gray-800 flex justify-between items-center bg-[#20202B]/40 sticky top-0 z-10 backdrop-blur">
-              <div className="flex items-center gap-2 text-white font-semibold">
-                <Package className="w-5 h-5 text-[#887DB8]" />
-                <span>Create New Item / Service</span>
-              </div>
+      {/* NEW ITEM MODAL */}
+      <Modal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        title="Create New Item / Service"
+        description="Configure item details, HSN/SAC codes, multi-tax rates, sales/purchase accounts, and inventory controls"
+        maxWidth="4xl"
+      >
+        <form onSubmit={handleCreateItem} className="space-y-5 text-xs text-on-surface">
+          {/* Item Type */}
+          <div>
+            <label className="block font-semibold uppercase tracking-wider text-outline mb-1.5">Type *</label>
+            <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => setCreateModalOpen(false)}
-                className="text-gray-400 hover:text-white text-sm"
+                type="button"
+                onClick={() => setNewItem({ ...newItem, item_type: 'GOODS' })}
+                className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border text-xs font-bold uppercase tracking-wider transition ${
+                  newItem.item_type === 'GOODS'
+                    ? 'border-primary bg-primary/15 text-primary'
+                    : 'border-outline-variant bg-surface-container-low text-outline hover:bg-surface-container-high'
+                }`}
               >
-                ✕
+                <Package className="w-4 h-4" />
+                Goods
+              </button>
+              <button
+                type="button"
+                onClick={() => setNewItem({ ...newItem, item_type: 'SERVICE' })}
+                className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border text-xs font-bold uppercase tracking-wider transition ${
+                  newItem.item_type === 'SERVICE'
+                    ? 'border-primary bg-primary/15 text-primary'
+                    : 'border-outline-variant bg-surface-container-low text-outline hover:bg-surface-container-high'
+                }`}
+              >
+                <Wrench className="w-4 h-4" />
+                Service
               </button>
             </div>
+          </div>
 
-            <form onSubmit={handleCreateItem} className="p-6 space-y-5 text-sm">
-              {/* Type Selection */}
+          {/* Main Details */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-surface-container-low rounded-lg border border-outline-variant/40">
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Name *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Dedicated Engineering Retainer"
+                value={newItem.name}
+                onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">SKU</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. SRV-ENG-01"
+                value={newItem.sku}
+                onChange={(e) => setNewItem({ ...newItem, sku: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded font-mono text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Unit</label>
+              <input
+                type="text"
+                placeholder="pcs, box, kg, hrs, project"
+                value={newItem.unit}
+                onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">HSN / SAC Code</label>
+              <input
+                type="text"
+                placeholder="HSN for Goods / SAC for Services"
+                value={newItem.hsn_sac_code}
+                onChange={(e) => setNewItem({ ...newItem, hsn_sac_code: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded font-mono text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Tax Preference *</label>
+              <select
+                value={newItem.tax_preference}
+                onChange={(e) => setNewItem({ ...newItem, tax_preference: e.target.value as any })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              >
+                <option value="TAXABLE">Taxable</option>
+                <option value="NON_TAXABLE">Non-Taxable</option>
+                <option value="OUT_OF_SCOPE">Out of Scope</option>
+                <option value="NON_GST">Non-GST</option>
+              </select>
+            </div>
+
+            {newItem.tax_preference === 'NON_TAXABLE' && (
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-2">Item Type *</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setNewItem({ ...newItem, item_type: 'SERVICE' })}
-                    className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition ${
-                      newItem.item_type === 'SERVICE'
-                        ? 'border-[#887DB8] bg-[#887DB8]/15 text-white'
-                        : 'border-gray-700 bg-[#20202B] text-gray-400'
-                    }`}
-                  >
-                    <Wrench className="w-4 h-4 text-[#887DB8]" />
-                    Service
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewItem({ ...newItem, item_type: 'GOODS' })}
-                    className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition ${
-                      newItem.item_type === 'GOODS'
-                        ? 'border-[#D9A441] bg-[#D9A441]/15 text-white'
-                        : 'border-gray-700 bg-[#20202B] text-gray-400'
-                    }`}
-                  >
-                    <Package className="w-4 h-4 text-[#D9A441]" />
-                    Goods
-                  </button>
-                </div>
+                <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Exemption Reason</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Export of Services under LUT"
+                  value={newItem.exemption_reason}
+                  onChange={(e) => setNewItem({ ...newItem, exemption_reason: e.target.value })}
+                  className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Sales Information */}
+          <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/40 space-y-3">
+            <h4 className="font-bold uppercase tracking-wider text-on-surface">Sales Information</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Selling Price (₹) *</label>
+                <input
+                  type="number"
+                  required
+                  value={newItem.selling_price}
+                  onChange={(e) => setNewItem({ ...newItem, selling_price: Number(e.target.value) })}
+                  className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none font-semibold"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Sales Account *</label>
+                <select
+                  value={newItem.sales_account}
+                  onChange={(e) => setNewItem({ ...newItem, sales_account: e.target.value })}
+                  className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+                >
+                  <option value="Sales">Sales</option>
+                  <option value="Consulting Revenue">Consulting Revenue</option>
+                  <option value="Software Subscription">Software Subscription</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Description</label>
+              <textarea
+                rows={2}
+                placeholder="Description rendered on customer quotes and invoices..."
+                value={newItem.sales_description}
+                onChange={(e) => setNewItem({ ...newItem, sales_description: e.target.value })}
+                className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Purchase Information & Tax Rates */}
+          <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/40 space-y-3">
+            <h4 className="font-bold uppercase tracking-wider text-on-surface">Purchase & Tax Rates</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Cost Price (₹)</label>
+                <input
+                  type="number"
+                  value={newItem.cost_price}
+                  onChange={(e) => setNewItem({ ...newItem, cost_price: Number(e.target.value) })}
+                  className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Intra State Tax (GST)</label>
+                <select
+                  value={newItem.intra_state_tax_rate}
+                  onChange={(e) => setNewItem({ ...newItem, intra_state_tax_rate: Number(e.target.value) })}
+                  className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+                >
+                  <option value={0}>GST 0%</option>
+                  <option value={5}>GST 5%</option>
+                  <option value={12}>GST 12%</option>
+                  <option value={18}>GST 18%</option>
+                  <option value={28}>GST 28%</option>
+                </select>
+              </div>
+              <div>
+                <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Inter State Tax (IGST)</label>
+                <select
+                  value={newItem.inter_state_tax_rate}
+                  onChange={(e) => setNewItem({ ...newItem, inter_state_tax_rate: Number(e.target.value) })}
+                  className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+                >
+                  <option value={0}>IGST 0%</option>
+                  <option value={5}>IGST 5%</option>
+                  <option value={12}>IGST 12%</option>
+                  <option value={18}>IGST 18%</option>
+                  <option value={28}>IGST 28%</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Track Inventory (for Goods) */}
+          {newItem.item_type === 'GOODS' && (
+            <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/40 space-y-3">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="inv_track"
+                  checked={newItem.track_inventory}
+                  onChange={(e) => setNewItem({ ...newItem, track_inventory: e.target.checked })}
+                  className="rounded border-outline-variant text-primary"
+                />
+                <label htmlFor="inv_track" className="font-bold uppercase tracking-wider text-on-surface cursor-pointer">
+                  Track Inventory for this item
+                </label>
               </div>
 
-              {/* Basic Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Enterprise Architecture Design"
-                    value={newItem.name}
-                    onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">SKU Code *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. SRV-ENG-001"
-                    value={newItem.sku}
-                    onChange={(e) => setNewItem({ ...newItem, sku: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Unit</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. hrs, pcs, project"
-                    value={newItem.unit}
-                    onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">HSN / SAC Code</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 998313"
-                    value={newItem.hsn_sac_code}
-                    onChange={(e) => setNewItem({ ...newItem, hsn_sac_code: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Tax Preference</label>
-                  <select
-                    value={newItem.tax_preference}
-                    onChange={(e) => setNewItem({ ...newItem, tax_preference: e.target.value as any })}
-                    className="w-full px-3 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  >
-                    <option value="TAXABLE">Taxable</option>
-                    <option value="NON_TAXABLE">Non-Taxable</option>
-                    <option value="OUT_OF_SCOPE">Out of Scope</option>
-                    <option value="NON_GST">Non-GST</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Sales & Purchase Pricing */}
-              <div className="p-4 bg-[#20202B]/60 rounded-xl border border-gray-800 space-y-4">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">Commercial & Accounts</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {newItem.track_inventory && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                   <div>
-                    <label className="block text-xs font-medium text-gray-300 mb-1">Selling Price ($ USD) *</label>
+                    <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Opening Stock</label>
                     <input
                       type="number"
-                      required
-                      value={newItem.selling_price}
-                      onChange={(e) => setNewItem({ ...newItem, selling_price: Number(e.target.value) })}
-                      className="w-full px-3 py-2 bg-[#181B24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
+                      value={newItem.opening_stock}
+                      onChange={(e) => setNewItem({ ...newItem, opening_stock: Number(e.target.value) })}
+                      className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-300 mb-1">Cost Price ($ USD)</label>
+                    <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Opening Stock Rate / Unit (₹)</label>
                     <input
                       type="number"
-                      value={newItem.cost_price}
-                      onChange={(e) => setNewItem({ ...newItem, cost_price: Number(e.target.value) })}
-                      className="w-full px-3 py-2 bg-[#181B24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
+                      value={newItem.opening_stock_rate}
+                      onChange={(e) => setNewItem({ ...newItem, opening_stock_rate: Number(e.target.value) })}
+                      className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Sales Description</label>
-                  <textarea
-                    rows={2}
-                    placeholder="Description rendered on Quotes and Invoices..."
-                    value={newItem.sales_description}
-                    onChange={(e) => setNewItem({ ...newItem, sales_description: e.target.value })}
-                    className="w-full px-3 py-2 bg-[#181B24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                  />
-                </div>
-              </div>
-
-              {/* Inventory toggle for Goods */}
-              {newItem.item_type === 'GOODS' && (
-                <div className="p-4 bg-[#20202B]/60 rounded-xl border border-gray-800 space-y-3">
-                  <div className="flex items-center gap-2">
+                  <div>
+                    <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Reorder Point</label>
                     <input
-                      type="checkbox"
-                      id="track_inv"
-                      checked={newItem.track_inventory}
-                      onChange={(e) => setNewItem({ ...newItem, track_inventory: e.target.checked })}
-                      className="w-4 h-4 rounded border-gray-700 bg-[#181B24] text-[#887DB8]"
+                      type="number"
+                      value={newItem.reorder_point}
+                      onChange={(e) => setNewItem({ ...newItem, reorder_point: Number(e.target.value) })}
+                      className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
                     />
-                    <label htmlFor="track_inv" className="text-xs font-medium text-white">
-                      Track Inventory for this item
-                    </label>
                   </div>
-                  {newItem.track_inventory && (
-                    <div className="grid grid-cols-2 gap-4 pt-2">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-300 mb-1">Opening Stock Quantity</label>
-                        <input
-                          type="number"
-                          value={newItem.opening_stock}
-                          onChange={(e) => setNewItem({ ...newItem, opening_stock: Number(e.target.value) })}
-                          className="w-full px-3 py-2 bg-[#181B24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-300 mb-1">Reorder Point</label>
-                        <input
-                          type="number"
-                          placeholder="e.g. 10"
-                          className="w-full px-3 py-2 bg-[#181B24] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#887DB8]"
-                        />
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
+            </div>
+          )}
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
-                <button
-                  type="button"
-                  onClick={() => setCreateModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-transparent hover:bg-gray-800 text-gray-400 hover:text-white text-sm"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium"
-                >
-                  Save Item
-                </button>
-              </div>
-            </form>
+          {/* Action Buttons */}
+          <div className="pt-4 border-t border-outline-variant/60 flex items-center justify-end gap-2">
+            <Button variant="outline" size="sm" type="button" onClick={() => setCreateModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="sm" type="submit">
+              Save Item
+            </Button>
           </div>
-        </div>
-      )}
+        </form>
+      </Modal>
     </div>
   );
 }
