@@ -19,7 +19,12 @@ import {
   Plus,
   Trash2,
   CheckCircle2,
-  ShieldCheck
+  ShieldCheck,
+  Paperclip,
+  Globe,
+  Share2,
+  Upload,
+  MessageSquare
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -43,16 +48,57 @@ interface ContactPerson {
   designation: string;
 }
 
+const INDIAN_STATES_AND_UTS = [
+  'Andaman and Nicobar Islands',
+  'Andhra Pradesh',
+  'Arunachal Pradesh',
+  'Assam',
+  'Bihar',
+  'Chandigarh',
+  'Chhattisgarh',
+  'Dadra and Nagar Haveli and Daman and Diu',
+  'Delhi',
+  'Goa',
+  'Gujarat',
+  'Haryana',
+  'Himachal Pradesh',
+  'Jammu and Kashmir',
+  'Jharkhand',
+  'Karnataka',
+  'Kerala',
+  'Ladakh',
+  'Lakshadweep',
+  'Madhya Pradesh',
+  'Maharashtra',
+  'Manipur',
+  'Meghalaya',
+  'Mizoram',
+  'Nagaland',
+  'Odisha',
+  'Puducherry',
+  'Punjab',
+  'Rajasthan',
+  'Sikkim',
+  'Tamil Nadu',
+  'Telangana',
+  'Tripura',
+  'Uttar Pradesh',
+  'Uttarakhand',
+  'West Bengal',
+  'Overseas'
+];
+
 export default function CustomersPage() {
   const [customers, setCustomers] = React.useState<UserProfile[]>([]);
   const [search, setSearch] = React.useState('');
-  const [vipFilter, setVipFilter] = React.useState('all');
   const [selectedCustomer, setSelectedCustomer] = React.useState<UserProfile | null>(null);
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const { showToast } = useToast();
 
-  // New Customer Form State
-  const [activeTab, setActiveTab] = React.useState<'details' | 'address' | 'contacts' | 'remarks'>('details');
+  // Tab State
+  const [activeTab, setActiveTab] = React.useState<'details' | 'address' | 'contacts' | 'social_docs' | 'remarks'>('details');
+
+  // Customer Form State
   const [customerForm, setCustomerForm] = React.useState({
     customer_type: 'Business' as 'Business' | 'Individual',
     salutation: 'Mr.',
@@ -63,6 +109,8 @@ export default function CustomersPage() {
     customer_email: '',
     work_phone: '',
     mobile: '',
+    comm_email: true,
+    comm_sms: true,
     gst_treatment: 'Registered Business - Regular',
     gstin: '',
     place_of_supply: 'Rajasthan',
@@ -92,6 +140,13 @@ export default function CustomersPage() {
     shipping_zip: '',
     shipping_phone: '',
     shipping_fax: '',
+    // Social & Additional Details
+    website: 'https://henu-build.netlify.app/',
+    department: 'Engineering & Product',
+    designation: 'Managing Director',
+    twitter: '',
+    skype: '',
+    facebook: '',
     remarks: '',
   });
 
@@ -104,6 +159,20 @@ export default function CustomersPage() {
   React.useEffect(() => {
     loadCustomers();
   }, [loadCustomers]);
+
+  // Auto-derive PAN when GSTIN is entered
+  const handleGstinChange = (val: string) => {
+    const uppercaseGstin = val.toUpperCase();
+    let derivedPan = customerForm.pan;
+    if (uppercaseGstin.length >= 12) {
+      derivedPan = uppercaseGstin.substring(2, 12);
+    }
+    setCustomerForm((prev) => ({
+      ...prev,
+      gstin: uppercaseGstin,
+      pan: derivedPan,
+    }));
+  };
 
   const handleCopyBillingToShipping = () => {
     setCustomerForm((prev) => ({
@@ -180,7 +249,7 @@ export default function CustomersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold text-on-surface">Customer Lifecycle Management</h1>
-          <p className="text-xs text-outline">Manage enterprise client accounts, GST treatments, dual addresses, and contact persons.</p>
+          <p className="text-xs text-outline">Manage enterprise client accounts, 10 GST treatments, place of supply, PAN, and multi-contact persons.</p>
         </div>
         <Button onClick={() => setCreateModalOpen(true)} variant="primary" size="md">
           <UserPlus className="w-4 h-4 mr-1.5" />
@@ -264,16 +333,16 @@ export default function CustomersPage() {
         isOpen={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         title="Enroll New Customer"
-        description="Configure client profile, GST taxation, registered addresses, multiple contacts, and automated mobile credentials"
+        description="Configure client profile, 10 GST treatments, PAN derivation, place of supply, payment terms, and mobile access"
         maxWidth="5xl"
       >
         <form onSubmit={handleCreateCustomer} className="space-y-5 text-xs text-on-surface">
           {/* Tabs */}
-          <div className="flex gap-2 border-b border-outline-variant/40 pb-2">
+          <div className="flex gap-2 border-b border-outline-variant/40 pb-2 overflow-x-auto">
             <button
               type="button"
               onClick={() => setActiveTab('details')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition whitespace-nowrap ${
                 activeTab === 'details'
                   ? 'bg-primary text-on-primary'
                   : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
@@ -284,7 +353,7 @@ export default function CustomersPage() {
             <button
               type="button"
               onClick={() => setActiveTab('address')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition whitespace-nowrap ${
                 activeTab === 'address'
                   ? 'bg-primary text-on-primary'
                   : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
@@ -295,7 +364,7 @@ export default function CustomersPage() {
             <button
               type="button"
               onClick={() => setActiveTab('contacts')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition whitespace-nowrap ${
                 activeTab === 'contacts'
                   ? 'bg-primary text-on-primary'
                   : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
@@ -305,8 +374,19 @@ export default function CustomersPage() {
             </button>
             <button
               type="button"
+              onClick={() => setActiveTab('social_docs')}
+              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition whitespace-nowrap ${
+                activeTab === 'social_docs'
+                  ? 'bg-primary text-on-primary'
+                  : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
+              }`}
+            >
+              Documents & Socials
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab('remarks')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition whitespace-nowrap ${
                 activeTab === 'remarks'
                   ? 'bg-primary text-on-primary'
                   : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
@@ -319,29 +399,53 @@ export default function CustomersPage() {
           {/* TAB 1: Primary & Tax Details */}
           {activeTab === 'details' && (
             <div className="space-y-4 animate-in fade-in duration-150">
-              {/* Customer Type */}
-              <div className="flex items-center gap-4">
-                <span className="font-semibold uppercase tracking-wider text-outline">Customer Type:</span>
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="cust_type"
-                    checked={customerForm.customer_type === 'Business'}
-                    onChange={() => setCustomerForm({ ...customerForm, customer_type: 'Business' })}
-                    className="text-primary"
-                  />
-                  <span>Business</span>
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="cust_type"
-                    checked={customerForm.customer_type === 'Individual'}
-                    onChange={() => setCustomerForm({ ...customerForm, customer_type: 'Individual' })}
-                    className="text-primary"
-                  />
-                  <span>Individual</span>
-                </label>
+              {/* Customer Type & Communication Channels */}
+              <div className="flex flex-wrap items-center justify-between gap-4 p-3 bg-surface-container-low rounded-lg border border-outline-variant/40">
+                <div className="flex items-center gap-4">
+                  <span className="font-semibold uppercase tracking-wider text-outline">Customer Type:</span>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="cust_type"
+                      checked={customerForm.customer_type === 'Business'}
+                      onChange={() => setCustomerForm({ ...customerForm, customer_type: 'Business' })}
+                      className="text-primary"
+                    />
+                    <span>Business</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="cust_type"
+                      checked={customerForm.customer_type === 'Individual'}
+                      onChange={() => setCustomerForm({ ...customerForm, customer_type: 'Individual' })}
+                      className="text-primary"
+                    />
+                    <span>Individual</span>
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold uppercase tracking-wider text-outline">Communication Channels:</span>
+                  <label className="flex items-center gap-1 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={customerForm.comm_email}
+                      onChange={(e) => setCustomerForm({ ...customerForm, comm_email: e.target.checked })}
+                      className="text-primary rounded"
+                    />
+                    <span>Email</span>
+                  </label>
+                  <label className="flex items-center gap-1 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={customerForm.comm_sms}
+                      onChange={(e) => setCustomerForm({ ...customerForm, comm_sms: e.target.checked })}
+                      className="text-primary rounded"
+                    />
+                    <span>SMS</span>
+                  </label>
+                </div>
               </div>
 
               {/* Primary Contact & Company */}
@@ -419,7 +523,7 @@ export default function CustomersPage() {
                 </div>
               </div>
 
-              {/* Tax & Financial Details */}
+              {/* 10 GST Treatments & Tax Details */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-surface-container-low rounded-lg border border-outline-variant/40">
                 <div>
                   <label className="block font-semibold uppercase tracking-wider text-outline mb-1">GST Treatment *</label>
@@ -428,12 +532,16 @@ export default function CustomersPage() {
                     onChange={(e) => setCustomerForm({ ...customerForm, gst_treatment: e.target.value })}
                     className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
                   >
-                    <option value="Registered Business - Regular">Registered Business - Regular</option>
-                    <option value="Registered Business - Composition">Registered Business - Composition</option>
-                    <option value="Unregistered Business">Unregistered Business</option>
-                    <option value="Consumer">Consumer</option>
-                    <option value="Overseas">Overseas / Export</option>
-                    <option value="SEZ">Special Economic Zone (SEZ)</option>
+                    <option value="Registered Business - Regular">1. Registered Business - Regular</option>
+                    <option value="Registered Business - Composition">2. Registered Business - Composition</option>
+                    <option value="Unregistered Business">3. Unregistered Business</option>
+                    <option value="Consumer">4. Consumer</option>
+                    <option value="Overseas">5. Overseas (Exports)</option>
+                    <option value="SEZ (Special Economic Zone)">6. SEZ (Special Economic Zone)</option>
+                    <option value="Deemed Export">7. Deemed Export</option>
+                    <option value="Tax Deductor">8. Tax Deductor</option>
+                    <option value="SEZ Developer">9. SEZ Developer</option>
+                    <option value="Government Entity">10. Government Entity</option>
                   </select>
                 </div>
 
@@ -443,28 +551,33 @@ export default function CustomersPage() {
                     type="text"
                     placeholder="e.g. 08AAICH3195C1ZL"
                     value={customerForm.gstin}
-                    onChange={(e) => setCustomerForm({ ...customerForm, gstin: e.target.value })}
+                    onChange={(e) => handleGstinChange(e.target.value)}
                     className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded font-mono uppercase text-on-surface focus:border-primary focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Place of Supply *</label>
-                  <input
-                    type="text"
+                  <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Place of Supply * (State / UT)</label>
+                  <select
                     value={customerForm.place_of_supply}
                     onChange={(e) => setCustomerForm({ ...customerForm, place_of_supply: e.target.value })}
                     className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
-                  />
+                  >
+                    {INDIAN_STATES_AND_UTS.map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
-                  <label className="block font-semibold uppercase tracking-wider text-outline mb-1">PAN</label>
+                  <label className="block font-semibold uppercase tracking-wider text-outline mb-1">PAN (Permanent Account Number)</label>
                   <input
                     type="text"
                     placeholder="e.g. AAICH3195C"
                     value={customerForm.pan}
-                    onChange={(e) => setCustomerForm({ ...customerForm, pan: e.target.value })}
+                    onChange={(e) => setCustomerForm({ ...customerForm, pan: e.target.value.toUpperCase() })}
                     className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded font-mono uppercase text-on-surface focus:border-primary focus:outline-none"
                   />
                 </div>
@@ -479,7 +592,28 @@ export default function CustomersPage() {
                     <option value="Due on Receipt">Due on Receipt</option>
                     <option value="Net 15">Net 15</option>
                     <option value="Net 30">Net 30</option>
+                    <option value="Net 45">Net 45</option>
                     <option value="Net 60">Net 60</option>
+                    <option value="Due end of the month">Due end of the month</option>
+                    <option value="Due end of next month">Due end of next month</option>
+                    <option value="Custom / Custom Date">Custom / Custom Date</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold uppercase tracking-wider text-outline mb-1">Currency</label>
+                  <select
+                    value={customerForm.currency}
+                    onChange={(e) => setCustomerForm({ ...customerForm, currency: e.target.value })}
+                    className="w-full p-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface focus:border-primary focus:outline-none"
+                  >
+                    <option value="INR">INR — Indian Rupee (₹)</option>
+                    <option value="USD">USD — United States Dollar ($)</option>
+                    <option value="EUR">EUR — Euro (€)</option>
+                    <option value="GBP">GBP — British Pound Sterling (£)</option>
+                    <option value="AED">AED — UAE Dirham (AED)</option>
+                    <option value="SGD">SGD — Singapore Dollar (S$)</option>
+                    <option value="AUD">AUD — Australian Dollar (A$)</option>
                   </select>
                 </div>
 
@@ -499,8 +633,8 @@ export default function CustomersPage() {
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-primary" />
                   <div>
-                    <span className="font-bold text-on-surface">Automated Client Portal Account</span>
-                    <p className="text-[11px] text-outline">Provision Supabase client credentials and grant access to Flutter Mobile app</p>
+                    <span className="font-bold text-on-surface">Allow portal access for this customer</span>
+                    <p className="text-[11px] text-outline">Grants the customer login access to view invoices, make online payments, and accept quotes via Client Mobile</p>
                   </div>
                 </div>
                 <input
@@ -694,7 +828,7 @@ export default function CustomersPage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {contactPersons.map((cp, idx) => (
+                  {contactPersons.map((cp) => (
                     <div key={cp.id} className="p-3 bg-surface-container-low rounded-lg border border-outline-variant/40 grid grid-cols-1 sm:grid-cols-6 gap-2 items-center">
                       <input
                         type="text"
@@ -747,7 +881,91 @@ export default function CustomersPage() {
             </div>
           )}
 
-          {/* TAB 4: Remarks */}
+          {/* TAB 4: Documents & Socials */}
+          {activeTab === 'social_docs' && (
+            <div className="space-y-4 animate-in fade-in duration-150">
+              {/* Document Attachments (10 files, 10MB limit) */}
+              <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/40 space-y-3">
+                <h4 className="font-bold uppercase tracking-wider text-on-surface flex items-center gap-1.5">
+                  <Paperclip className="w-4 h-4 text-primary" />
+                  Documents & Tax Certificates
+                </h4>
+                <div className="p-6 border-2 border-dashed border-outline-variant rounded-lg text-center hover:border-primary transition cursor-pointer bg-surface-container-lowest">
+                  <Upload className="w-6 h-6 text-outline mx-auto mb-2" />
+                  <p className="font-semibold text-on-surface">Drag & Drop KYC, GST Certificate, or Company PAN here</p>
+                  <p className="text-[11px] text-outline mt-1">Maximum 10 files, up to 10MB each (PDF, PNG, JPG, DOCX)</p>
+                </div>
+              </div>
+
+              {/* Additional Details & Socials */}
+              <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/40 space-y-3">
+                <h4 className="font-bold uppercase tracking-wider text-on-surface flex items-center gap-1.5">
+                  <Globe className="w-4 h-4 text-secondary" />
+                  Additional Details & Social Profiles
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-outline mb-0.5">Website URL</label>
+                    <input
+                      type="url"
+                      value={customerForm.website}
+                      onChange={(e) => setCustomerForm({ ...customerForm, website: e.target.value })}
+                      className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-outline mb-0.5">Department</label>
+                    <input
+                      type="text"
+                      value={customerForm.department}
+                      onChange={(e) => setCustomerForm({ ...customerForm, department: e.target.value })}
+                      className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-outline mb-0.5">Designation</label>
+                    <input
+                      type="text"
+                      value={customerForm.designation}
+                      onChange={(e) => setCustomerForm({ ...customerForm, designation: e.target.value })}
+                      className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-outline mb-0.5">X (Twitter) Profile URL</label>
+                    <input
+                      type="text"
+                      placeholder="https://x.com/username"
+                      value={customerForm.twitter}
+                      onChange={(e) => setCustomerForm({ ...customerForm, twitter: e.target.value })}
+                      className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-outline mb-0.5">Skype Name / Number</label>
+                    <input
+                      type="text"
+                      value={customerForm.skype}
+                      onChange={(e) => setCustomerForm({ ...customerForm, skype: e.target.value })}
+                      className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-outline mb-0.5">Facebook Profile URL</label>
+                    <input
+                      type="text"
+                      placeholder="https://facebook.com/username"
+                      value={customerForm.facebook}
+                      onChange={(e) => setCustomerForm({ ...customerForm, facebook: e.target.value })}
+                      className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: Remarks */}
           {activeTab === 'remarks' && (
             <div className="space-y-3 animate-in fade-in duration-150">
               <label className="block font-semibold uppercase tracking-wider text-outline">Internal Operational Remarks</label>

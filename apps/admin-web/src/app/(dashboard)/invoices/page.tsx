@@ -15,7 +15,14 @@ import {
   Send,
   CreditCard,
   Building,
-  QrCode
+  QrCode,
+  Layers,
+  MoreVertical,
+  Printer,
+  Edit3,
+  Check,
+  DollarSign,
+  Search
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,9 +34,11 @@ import { type Invoice } from '@henu/shared';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { useToast } from '@/components/feedback/toast';
 import { formatCurrencyWords } from '@/lib/finance/number_to_words';
+import { CATALOG_PRESET_ITEMS } from '@/features/catalog/items.data';
 
 interface InvoiceLineItem {
   id: string;
+  item_id?: string;
   item_details: string;
   account: string;
   quantity: number;
@@ -41,6 +50,11 @@ interface InvoiceLineItem {
 export default function InvoicesPage() {
   const [invoices, setInvoices] = React.useState<Invoice[]>([]);
   const { showToast } = useToast();
+
+  const [activeActionMenuId, setActiveActionMenuId] = React.useState<string | null>(null);
+  const [isBulkModalOpen, setIsBulkModalOpen] = React.useState(false);
+  const [selectedBulkItemIds, setSelectedBulkItemIds] = React.useState<string[]>([]);
+  const [bulkSearchQuery, setBulkSearchQuery] = React.useState('');
 
   // New Invoice Modal State
   const [isNewInvoiceOpen, setIsNewInvoiceOpen] = React.useState(false);
@@ -71,6 +85,7 @@ export default function InvoicesPage() {
   const [invoiceItems, setInvoiceItems] = React.useState<InvoiceLineItem[]>([
     {
       id: 'item_1',
+      item_id: 'itm_001',
       item_details: 'Core Cloud Infrastructure Engineering & Telemetry Setup',
       account: 'Sales',
       quantity: 1,
@@ -80,6 +95,7 @@ export default function InvoicesPage() {
     },
     {
       id: 'item_2',
+      item_id: 'itm_002',
       item_details: 'Realtime WebSocket Synchronization & Broker Optimization',
       account: 'Sales',
       quantity: 1,
@@ -95,6 +111,33 @@ export default function InvoicesPage() {
 
   const handleDownloadPDF = (invoiceNumber: string) => {
     showToast('success', 'PDF Invoice Generated', `Downloading official tax invoice ${invoiceNumber}...`);
+  };
+
+  const handleSelectItem = (rowId: string, itemId: string) => {
+    const preset = CATALOG_PRESET_ITEMS.find((p) => p.id === itemId);
+    if (!preset) return;
+
+    setInvoiceItems((prev) =>
+      prev.map((row) => {
+        if (row.id === rowId) {
+          const qty = row.quantity || 1;
+          const rate = preset.default_rate;
+          const taxPct = preset.default_tax_rate;
+          const taxable = qty * rate;
+          const tax = taxable * (taxPct / 100);
+          return {
+            ...row,
+            item_id: preset.id,
+            item_details: preset.name,
+            account: preset.default_account,
+            rate: rate,
+            tax_rate: taxPct,
+            amount: taxable + tax,
+          };
+        }
+        return row;
+      })
+    );
   };
 
   const handleItemChange = (id: string, field: keyof InvoiceLineItem, value: any) => {
@@ -116,14 +159,16 @@ export default function InvoicesPage() {
   };
 
   const handleAddRow = () => {
+    const defaultPreset = CATALOG_PRESET_ITEMS[0];
     const newItem: InvoiceLineItem = {
       id: `item_${Date.now()}`,
-      item_details: 'Consulting & Implementation Services',
-      account: 'Sales',
+      item_id: defaultPreset.id,
+      item_details: defaultPreset.name,
+      account: defaultPreset.default_account,
       quantity: 1,
-      rate: 2000,
-      tax_rate: 18,
-      amount: 2360,
+      rate: defaultPreset.default_rate,
+      tax_rate: defaultPreset.default_tax_rate,
+      amount: defaultPreset.default_rate * (1 + defaultPreset.default_tax_rate / 100),
     };
     setInvoiceItems([...invoiceItems, newItem]);
   };
@@ -131,6 +176,29 @@ export default function InvoicesPage() {
   const handleRemoveRow = (id: string) => {
     if (invoiceItems.length <= 1) return;
     setInvoiceItems(invoiceItems.filter((r) => r.id !== id));
+  };
+
+  const handleConfirmBulkAdd = () => {
+    const newRows: InvoiceLineItem[] = selectedBulkItemIds.map((id, idx) => {
+      const preset = CATALOG_PRESET_ITEMS.find((p) => p.id === id)!;
+      const taxable = preset.default_rate;
+      const tax = taxable * (preset.default_tax_rate / 100);
+      return {
+        id: `bulk_inv_${Date.now()}_${idx}`,
+        item_id: preset.id,
+        item_details: preset.name,
+        account: preset.default_account,
+        quantity: 1,
+        rate: preset.default_rate,
+        tax_rate: preset.default_tax_rate,
+        amount: taxable + tax,
+      };
+    });
+
+    setInvoiceItems([...invoiceItems, ...newRows]);
+    setSelectedBulkItemIds([]);
+    setIsBulkModalOpen(false);
+    showToast('success', 'Items Added', `Added ${newRows.length} items from catalog to invoice.`);
   };
 
   // Calculations
@@ -224,7 +292,7 @@ export default function InvoicesPage() {
               <TableHead>Amount Due</TableHead>
               <TableHead>Due Date</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -260,10 +328,62 @@ export default function InvoicesPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(inv.invoice_number)}>
-                      <Download className="w-3.5 h-3.5 mr-1" />
-                      <span>PDF</span>
-                    </Button>
+                    <div className="relative inline-block text-left">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(inv.invoice_number)}>
+                          <Download className="w-3.5 h-3.5 mr-1" />
+                          <span>PDF</span>
+                        </Button>
+                        <button
+                          onClick={() => setActiveActionMenuId(activeActionMenuId === inv.id ? null : inv.id)}
+                          className="p-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container-high transition text-on-surface"
+                        >
+                          <MoreVertical className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {activeActionMenuId === inv.id && (
+                        <div className="absolute right-0 mt-1 w-48 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-xl py-1 z-30 text-xs text-left">
+                          <button
+                            onClick={() => {
+                              showToast('success', 'Invoice Dispatched', `Invoice ${inv.invoice_number} sent to ${inv.client_name}`);
+                              setActiveActionMenuId(null);
+                            }}
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2"
+                          >
+                            <Send className="w-3.5 h-3.5 text-primary" />
+                            <span>Send to Client</span>
+                          </button>
+                          <a
+                            href="/payments"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2"
+                          >
+                            <DollarSign className="w-3.5 h-3.5 text-secondary" />
+                            <span>Record Payment</span>
+                          </a>
+                          <button
+                            onClick={() => {
+                              handleDownloadPDF(inv.invoice_number);
+                              setActiveActionMenuId(null);
+                            }}
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2"
+                          >
+                            <Download className="w-3.5 h-3.5 text-outline" />
+                            <span>Download PDF</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              window.print();
+                              setActiveActionMenuId(null);
+                            }}
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 border-t border-outline-variant/40"
+                          >
+                            <Printer className="w-3.5 h-3.5 text-outline" />
+                            <span>Print Invoice</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
@@ -372,10 +492,16 @@ export default function InvoicesPage() {
                 <FileSpreadsheet className="w-4 h-4 text-primary" />
                 Line Items
               </h4>
-              <Button size="sm" variant="outline" onClick={handleAddRow}>
-                <Plus className="w-3.5 h-3.5 mr-1" />
-                Add Row
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" onClick={() => setIsBulkModalOpen(true)}>
+                  <Layers className="w-3.5 h-3.5 mr-1" />
+                  Add Items in Bulk
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleAddRow}>
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Add Row
+                </Button>
+              </div>
             </div>
 
             <div className="border border-outline-variant/60 rounded-lg overflow-x-auto">
@@ -383,7 +509,7 @@ export default function InvoicesPage() {
                 <thead>
                   <tr className="bg-surface-container-low border-b border-outline-variant/40 text-[11px] font-semibold uppercase text-outline">
                     <th className="p-2.5 w-8 text-center">#</th>
-                    <th className="p-2.5">Item Details</th>
+                    <th className="p-2.5">Item Details (Catalog Select)</th>
                     <th className="p-2.5 w-32">Account</th>
                     <th className="p-2.5 w-20 text-center">Qty</th>
                     <th className="p-2.5 w-28 text-right">Rate (₹)</th>
@@ -397,12 +523,18 @@ export default function InvoicesPage() {
                     <tr key={row.id} className="hover:bg-surface-container-low/50">
                       <td className="p-2 text-center text-outline font-mono">{idx + 1}</td>
                       <td className="p-2">
-                        <input
-                          type="text"
-                          value={row.item_details}
-                          onChange={(e) => handleItemChange(row.id, 'item_details', e.target.value)}
+                        <select
+                          value={row.item_id || ''}
+                          onChange={(e) => handleSelectItem(row.id, e.target.value)}
                           className="w-full p-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs text-on-surface focus:border-primary focus:outline-none"
-                        />
+                        >
+                          <option value="" disabled>-- Select Catalog Item --</option>
+                          {CATALOG_PRESET_ITEMS.map((item) => (
+                            <option key={item.id} value={item.id}>
+                              {item.name} ({item.sku}) - ₹{item.default_rate}
+                            </option>
+                          ))}
+                        </select>
                       </td>
                       <td className="p-2">
                         <select
@@ -607,6 +739,89 @@ export default function InvoicesPage() {
               <Send className="w-3.5 h-3.5 mr-1" />
               Save and Send
             </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* BULK ITEM SELECTION MODAL */}
+      <Modal
+        isOpen={isBulkModalOpen}
+        onClose={() => setIsBulkModalOpen(false)}
+        title="Add Items in Bulk from Catalog"
+        description="Select multiple catalog items to add directly into the tax invoice"
+        maxWidth="3xl"
+      >
+        <div className="space-y-4 text-xs text-on-surface">
+          <div className="relative">
+            <Search className="w-4 h-4 text-outline absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search catalog items..."
+              value={bulkSearchQuery}
+              onChange={(e) => setBulkSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 bg-surface-container-low border border-outline-variant rounded text-xs"
+            />
+          </div>
+
+          <div className="max-h-[350px] overflow-y-auto space-y-2 border border-outline-variant/40 rounded-lg p-2">
+            {CATALOG_PRESET_ITEMS.filter((item) =>
+              item.name.toLowerCase().includes(bulkSearchQuery.toLowerCase()) ||
+              item.sku.toLowerCase().includes(bulkSearchQuery.toLowerCase())
+            ).map((item) => {
+              const isSelected = selectedBulkItemIds.includes(item.id);
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    if (isSelected) {
+                      setSelectedBulkItemIds(selectedBulkItemIds.filter((id) => id !== item.id));
+                    } else {
+                      setSelectedBulkItemIds([...selectedBulkItemIds, item.id]);
+                    }
+                  }}
+                  className={`p-3 rounded-lg border cursor-pointer transition flex items-center justify-between ${
+                    isSelected
+                      ? 'bg-primary/10 border-primary text-on-surface'
+                      : 'bg-surface-container-lowest border-outline-variant/50 hover:bg-surface-container-low'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-4 h-4 rounded border flex items-center justify-center ${
+                        isSelected ? 'bg-primary border-primary text-on-primary' : 'border-outline-variant'
+                      }`}
+                    >
+                      {isSelected && <Check className="w-3 h-3" />}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-on-surface">{item.name}</p>
+                      <p className="text-[11px] text-outline font-mono">SKU: {item.sku} | SAC/HSN: {item.hsn_sac_code}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-on-surface">₹{item.default_rate.toLocaleString()}</p>
+                    <p className="text-[10px] text-outline">{item.default_tax_rate}% GST</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center justify-between pt-3 border-t border-outline-variant/40">
+            <span className="text-outline">{selectedBulkItemIds.length} items selected</span>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setIsBulkModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                disabled={selectedBulkItemIds.length === 0}
+                onClick={handleConfirmBulkAdd}
+              >
+                Add {selectedBulkItemIds.length} Items
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>
