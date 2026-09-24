@@ -11,6 +11,7 @@ import 'package:client_mobile/shared/models/client_profile.dart';
 import 'package:client_mobile/shared/models/invoice_item.dart';
 import 'package:client_mobile/shared/models/order_item.dart';
 import 'package:client_mobile/shared/models/quote_item.dart';
+import 'package:client_mobile/shared/models/mobile_home_config.dart';
 
 void assertTrue(bool condition, String message) {
   if (!condition) {
@@ -184,6 +185,31 @@ Future<void> main() async {
     assertEquals(order.progressPercent, 72, 'progress percent');
     assertEquals(order.milestones.length, 2, 'milestones count');
     assertTrue(order.milestones.first.isCompleted, 'first milestone is completed');
+  });
+
+  runTest('MobileHomeConfig dynamic priority ordering and offer expiry filtering', () {
+    final config = MobileHomeConfig(
+      greeting: const GreetingConfig(priority: 1, enabled: true),
+      heroBanner: const HeroBannerConfig(priority: 3, enabled: true),
+      primaryCta: const PrimaryCtaConfig(priority: 2, enabled: true),
+      quickActions: const QuickActionsConfig(priority: 4, enabled: true),
+      offerSection: OfferSectionConfig(
+        priority: 5,
+        enabled: true,
+        expiryDate: DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
+        showExpired: false,
+      ),
+      recentActivity: const RecentActivityConfig(priority: 6, enabled: true),
+      upcoming: const UpcomingConfig(priority: 7, enabled: true),
+    );
+
+    final orderedKeys = config.orderedSectionKeys;
+    // Offer is expired with showExpired = false, so it must NOT be in orderedKeys
+    assertTrue(!orderedKeys.contains('offer_section'), 'Expired offer excluded');
+    assertEquals(orderedKeys[0], 'greeting', 'First is greeting (priority 1)');
+    assertEquals(orderedKeys[1], 'primary_cta', 'Second is primary_cta (priority 2)');
+    assertEquals(orderedKeys[2], 'hero_banner', 'Third is hero_banner (priority 3)');
+    assertEquals(orderedKeys[3], 'quick_actions', 'Fourth is quick_actions (priority 4)');
   });
 
   print('\n4. Repository & Service Integration:');

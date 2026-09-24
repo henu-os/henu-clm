@@ -290,6 +290,123 @@ export interface AIAssistantConfig {
   last_tested_at?: string;
 }
 
+export interface GreetingConfig {
+  enabled: boolean;
+  priority: number;
+  title: string;
+  sub_title: string;
+  show_client_name: boolean;
+  show_avatar: boolean;
+  custom_text: string;
+  alignment: 'left' | 'center' | 'right';
+}
+
+export interface HeroBannerConfig {
+  enabled: boolean;
+  priority: number;
+  heading: string;
+  description: string;
+  image_url: string;
+  badge_text: string;
+  cta_text: string;
+  cta_route: string;
+  secondary_cta_text?: string;
+  secondary_cta_route?: string;
+  start_date?: string;
+  expiry_date?: string;
+  is_active: boolean;
+}
+
+export interface PrimaryCtaConfig {
+  enabled: boolean;
+  priority: number;
+  label: string;
+  icon: string;
+  destination: string;
+  is_external: boolean;
+  button_style: 'primary' | 'secondary' | 'outline';
+}
+
+export interface QuickActionTile {
+  id: string;
+  title: string;
+  icon: string;
+  route: string;
+  is_enabled: boolean;
+  badge_text?: string;
+  is_external?: boolean;
+}
+
+export interface QuickActionsConfig {
+  enabled: boolean;
+  priority: number;
+  title: string;
+  actions: QuickActionTile[];
+}
+
+export interface OfferSectionConfig {
+  enabled: boolean;
+  priority: number;
+  title: string;
+  description: string;
+  badge: string;
+  image_url: string;
+  cta_text: string;
+  cta_route: string;
+  start_date?: string;
+  expiry_date?: string;
+  show_expired: boolean;
+  background_color?: string;
+  is_active: boolean;
+}
+
+export interface RecentActivityConfig {
+  enabled: boolean;
+  priority: number;
+  title: string;
+  limit: number;
+  display_type: 'timeline' | 'cards' | 'compact';
+  is_active: boolean;
+}
+
+export interface UpcomingConfig {
+  enabled: boolean;
+  priority: number;
+  title: string;
+  limit: number;
+  is_active: boolean;
+}
+
+export interface BottomNavItem {
+  id: string;
+  label: string;
+  icon: string;
+  route: string;
+  is_enabled: boolean;
+}
+
+export interface BottomNavConfig {
+  items: BottomNavItem[];
+}
+
+export interface MobileHomeConfiguration {
+  id: string;
+  organization_id?: string;
+  client_id?: string;
+  name: string;
+  is_active: boolean;
+  greeting_config: GreetingConfig;
+  hero_banner_config: HeroBannerConfig;
+  primary_cta_config: PrimaryCtaConfig;
+  quick_actions_config: QuickActionsConfig;
+  offer_section_config: OfferSectionConfig;
+  recent_activity_config: RecentActivityConfig;
+  upcoming_config: UpcomingConfig;
+  bottom_nav_config: BottomNavConfig;
+  created_at?: string;
+  updated_at?: string;
+}
+
 // ==========================================
 // 4. API UNIFORM ENVELOPE & ZOD SCHEMAS
 // ==========================================
