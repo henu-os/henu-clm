@@ -35,6 +35,7 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import { useToast } from '@/components/feedback/toast';
 import { formatCurrencyWords } from '@/lib/finance/number_to_words';
 import { CATALOG_PRESET_ITEMS } from '@/features/catalog/items.data';
+import { downloadDocumentFile } from '@/lib/download';
 
 interface InvoiceLineItem {
   id: string;
@@ -109,8 +110,22 @@ export default function InvoicesPage() {
     InvoiceService.getInvoices().then(setInvoices);
   }, []);
 
-  const handleDownloadPDF = (invoiceNumber: string) => {
-    showToast('success', 'PDF Invoice Generated', `Downloading official tax invoice ${invoiceNumber}...`);
+  const handleDownloadPDF = (inv: Invoice) => {
+    downloadDocumentFile('Commercial Tax Invoice', inv.invoice_number, {
+      client: inv.client_company || inv.client_name,
+      date: inv.created_at,
+      amount: inv.total_amount,
+      status: inv.status,
+      items: inv.items?.map(it => ({
+        name: it.description,
+        quantity: it.quantity,
+        rate: it.unit_rate,
+        tax: it.tax_rate_percentage,
+        total: it.line_total
+      })),
+      notes: 'Terms: Due on receipt. Standard bank payment remittance rules apply.'
+    });
+    showToast('success', 'PDF Invoice Generated', `Downloaded tax invoice ${inv.invoice_number}`);
   };
 
   const handleSelectItem = (rowId: string, itemId: string) => {
@@ -330,7 +345,7 @@ export default function InvoicesPage() {
                   <TableCell className="text-right">
                     <div className="relative inline-block text-left">
                       <div className="flex items-center justify-end gap-1.5">
-                        <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(inv.invoice_number)}>
+                        <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(inv)}>
                           <Download className="w-3.5 h-3.5 mr-1" />
                           <span>PDF</span>
                         </Button>
@@ -343,30 +358,30 @@ export default function InvoicesPage() {
                       </div>
 
                       {activeActionMenuId === inv.id && (
-                        <div className="absolute right-0 mt-1 w-48 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-xl py-1 z-30 text-xs text-left">
+                        <div className="absolute right-0 mt-1 w-48 bg-surface-container-lowest border border-outline-variant/80 rounded-lg shadow-xl py-1 z-30 animate-in fade-in zoom-in-95 text-xs text-left">
                           <button
                             onClick={() => {
                               showToast('success', 'Invoice Dispatched', `Invoice ${inv.invoice_number} sent to ${inv.client_name}`);
                               setActiveActionMenuId(null);
                             }}
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
                           >
                             <Send className="w-3.5 h-3.5 text-primary" />
                             <span>Send to Client</span>
                           </button>
                           <a
                             href="/payments"
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
                           >
                             <DollarSign className="w-3.5 h-3.5 text-secondary" />
                             <span>Record Payment</span>
                           </a>
                           <button
                             onClick={() => {
-                              handleDownloadPDF(inv.invoice_number);
+                              handleDownloadPDF(inv);
                               setActiveActionMenuId(null);
                             }}
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
                           >
                             <Download className="w-3.5 h-3.5 text-outline" />
                             <span>Download PDF</span>
@@ -376,10 +391,21 @@ export default function InvoicesPage() {
                               window.print();
                               setActiveActionMenuId(null);
                             }}
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 border-t border-outline-variant/40"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
                           >
                             <Printer className="w-3.5 h-3.5 text-outline" />
                             <span>Print Invoice</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setInvoices(invoices.filter(i => i.id !== inv.id));
+                              setActiveActionMenuId(null);
+                              showToast('info', 'Invoice Deleted', `Invoice ${inv.invoice_number} was deleted.`);
+                            }}
+                            className="w-full px-3 py-2 hover:bg-red-500/10 text-red-600 flex items-center gap-2 text-xs border-t border-outline-variant/40"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Delete Invoice</span>
                           </button>
                         </div>
                       )}

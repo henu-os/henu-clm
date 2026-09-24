@@ -42,6 +42,7 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import { useToast } from '@/components/feedback/toast';
 import { formatCurrencyWords } from '@/lib/finance/number_to_words';
 import { CATALOG_PRESET_ITEMS, type CatalogPresetItem } from '@/features/catalog/items.data';
+import { downloadDocumentFile } from '@/lib/download';
 
 interface LineItemRow {
   id: string;
@@ -427,6 +428,13 @@ export default function QuotesPage() {
                           </button>
                           <button
                             onClick={() => {
+                              downloadDocumentFile('Quotation Proposal', q.quote_number, {
+                                client: q.client_name,
+                                date: q.created_at,
+                                amount: q.total_amount,
+                                status: q.status,
+                                notes: 'Official proposal quotation submitted via HENU OS CLM.'
+                              });
                               showToast('success', 'PDF Export', `Downloading ${q.quote_number} PDF...`);
                               setActiveActionMenuId(null);
                             }}
@@ -460,10 +468,21 @@ export default function QuotesPage() {
                               window.print();
                               setActiveActionMenuId(null);
                             }}
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface border-t border-outline-variant/40"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
                           >
                             <Printer className="w-3.5 h-3.5 text-outline" />
                             <span>Print Document</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setQuotes(quotes.filter(item => item.id !== q.id));
+                              setActiveActionMenuId(null);
+                              showToast('info', 'Quote Deleted', `Proposal ${q.quote_number} was deleted.`);
+                            }}
+                            className="w-full px-3 py-2 hover:bg-red-500/10 text-red-600 flex items-center gap-2 text-xs border-t border-outline-variant/40"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Delete Proposal</span>
                           </button>
                         </div>
                       )}

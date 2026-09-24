@@ -37,6 +37,7 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import { useToast } from '@/components/feedback/toast';
 import { formatCurrencyWords } from '@/lib/finance/number_to_words';
 import { CATALOG_PRESET_ITEMS } from '@/features/catalog/items.data';
+import { downloadDocumentFile } from '@/lib/download';
 
 interface OrderLineItem {
   id: string;
@@ -331,6 +332,13 @@ export default function OrdersPage() {
                           </a>
                           <button
                             onClick={() => {
+                              downloadDocumentFile('Commercial Sales Order', order.order_number, {
+                                client: order.client_company || order.client_name,
+                                date: order.started_at,
+                                amount: order.total_amount,
+                                status: order.status,
+                                notes: 'Sales order confirmed and registered for delivery.'
+                              });
                               showToast('success', 'PDF Export', `Downloading ${order.order_number} PDF...`);
                               setActiveActionMenuId(null);
                             }}
@@ -349,13 +357,17 @@ export default function OrdersPage() {
                             <Printer className="w-3.5 h-3.5 text-outline" />
                             <span>Print Sales Order</span>
                           </button>
-                          <a
-                            href="/settings/templates"
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface border-t border-outline-variant/40"
+                          <button
+                            onClick={() => {
+                              setOrders(orders.filter(o => o.id !== order.id));
+                              setActiveActionMenuId(null);
+                              showToast('info', 'Order Deleted', `Sales Order ${order.order_number} was deleted.`);
+                            }}
+                            className="w-full px-3 py-2 hover:bg-red-500/10 text-red-600 flex items-center gap-2 text-xs border-t border-outline-variant/40"
                           >
-                            <FileSpreadsheet className="w-3.5 h-3.5 text-outline" />
-                            <span>Customize Template</span>
-                          </a>
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Delete Sales Order</span>
+                          </button>
                         </div>
                       )}
                     </div>
