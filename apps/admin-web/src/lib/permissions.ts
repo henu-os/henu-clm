@@ -1,0 +1,52 @@
+import { type UserRole, type PermissionCode, PERMISSIONS } from '@henu/shared';
+
+// Role to permissions mapping matrix
+const ROLE_PERMISSIONS_MAP: Record<UserRole, PermissionCode[]> = {
+  super_admin: Object.values(PERMISSIONS),
+  admin: [
+    PERMISSIONS.CUSTOMERS_VIEW_ALL,
+    PERMISSIONS.CUSTOMERS_UPDATE_ALL,
+    PERMISSIONS.QUOTES_VIEW_ALL,
+    PERMISSIONS.QUOTES_MODIFY_PRICING,
+    PERMISSIONS.QUOTES_UPDATE_STATUS,
+    PERMISSIONS.INVOICES_VIEW_ALL,
+    PERMISSIONS.INVOICES_CREATE,
+    PERMISSIONS.INVOICES_VOID,
+    PERMISSIONS.PAYMENTS_VIEW_ALL,
+    PERMISSIONS.CATALOG_SERVICE_MANAGE,
+    PERMISSIONS.CATALOG_OFFER_MANAGE,
+    PERMISSIONS.CMS_CONTENT_MANAGE,
+  ],
+  sales: [
+    PERMISSIONS.CUSTOMERS_VIEW_ALL,
+    PERMISSIONS.QUOTES_VIEW_ALL,
+    PERMISSIONS.QUOTES_MODIFY_PRICING,
+    PERMISSIONS.QUOTES_UPDATE_STATUS,
+  ],
+  finance: [
+    PERMISSIONS.CUSTOMERS_VIEW_ALL,
+    PERMISSIONS.INVOICES_VIEW_ALL,
+    PERMISSIONS.INVOICES_CREATE,
+    PERMISSIONS.INVOICES_VOID,
+    PERMISSIONS.PAYMENTS_VIEW_ALL,
+    PERMISSIONS.PAYMENTS_REFUND,
+  ],
+  support: [
+    PERMISSIONS.CUSTOMERS_VIEW_ALL,
+    PERMISSIONS.QUOTES_VIEW_ALL,
+    PERMISSIONS.INVOICES_VIEW_ALL,
+  ],
+  content_manager: [
+    PERMISSIONS.CATALOG_SERVICE_MANAGE,
+    PERMISSIONS.CATALOG_OFFER_MANAGE,
+    PERMISSIONS.CMS_CONTENT_MANAGE,
+  ],
+  client: [],
+};
+
+export function hasPermission(role: UserRole | undefined, permission: PermissionCode): boolean {
+  if (!role) return false;
+  if (role === 'super_admin') return true;
+  const permissions = ROLE_PERMISSIONS_MAP[role] || [];
+  return permissions.includes(permission);
+}

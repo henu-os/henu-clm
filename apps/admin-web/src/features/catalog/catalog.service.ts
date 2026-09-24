@@ -1,0 +1,98 @@
+import { type ServiceItem, type ServiceAddon } from '@henu/shared';
+
+export const mockServices: ServiceItem[] = [
+  {
+    id: 's-1',
+    slug: 'bespoke-clm-architecture',
+    title: 'Enterprise CLM & Workflow Architecture',
+    tagline: 'Custom customer lifecycle and billing infrastructure',
+    description: 'High-availability bespoke client portal, quotes workbench, and real-time payment gateway integration.',
+    category: 'Engineering',
+    icon_name: 'hub',
+    base_price: 2499,
+    currency: 'USD',
+    turnaround_time: '2-3 weeks',
+    is_featured: true,
+    display_order: 1,
+    status: 'published',
+    addons: [
+      {
+        id: 'sa-1',
+        service_id: 's-1',
+        title: 'Realtime Biometric Auth Module',
+        description: 'Native FaceID and Android BiometricPrompt security layer',
+        price: 499,
+        currency: 'USD',
+        is_mandatory: false,
+        display_order: 1,
+        status: 'published',
+      },
+      {
+        id: 'sa-2',
+        service_id: 's-1',
+        title: 'Multi-Gateway Smart Invoicing',
+        description: 'Automated Razorpay and Cashfree webhook reconciliation',
+        price: 799,
+        currency: 'USD',
+        is_mandatory: false,
+        display_order: 2,
+        status: 'published',
+      },
+    ],
+    created_at: '2026-01-10T10:00:00Z',
+    updated_at: '2026-09-18T12:00:00Z',
+  },
+  {
+    id: 's-2',
+    slug: '3d-particle-experience',
+    title: 'Interactive 3D WebGL / Shader Experience',
+    tagline: 'Luxury ambient particle and dragon visualizations',
+    description: 'Custom GPU-accelerated interactive canvas responding to touch gestures and gyroscope parallax.',
+    category: 'Creative Design',
+    icon_name: 'view_in_ar',
+    base_price: 1899,
+    currency: 'USD',
+    turnaround_time: '1-2 weeks',
+    is_featured: true,
+    display_order: 2,
+    status: 'published',
+    addons: [
+      {
+        id: 'sa-3',
+        service_id: 's-2',
+        title: 'Custom Shaders & Ethereal Trails',
+        description: 'Bespoke GLSL vertex and fragment shader engineering',
+        price: 350,
+        currency: 'USD',
+        is_mandatory: false,
+        display_order: 1,
+        status: 'published',
+      },
+    ],
+    created_at: '2026-02-01T09:00:00Z',
+    updated_at: '2026-09-20T11:00:00Z',
+  },
+  {
+    id: 's-3',
+    slug: 'cloud-infrastructure-security',
+    title: 'Zero-Trust Supabase & Cloud Security Hardening',
+    tagline: 'Database RLS, audit logs and secret shielding',
+    description: 'Comprehensive security hardening including PostgreSQL Row Level Security and tamper-proof audit trails.',
+    category: 'Security & DevOps',
+    icon_name: 'security',
+    base_price: 3200,
+    currency: 'USD',
+    turnaround_time: '3 weeks',
+    is_featured: false,
+    display_order: 3,
+    status: 'published',
+    created_at: '2026-03-15T14:00:00Z',
+    updated_at: '2026-09-21T15:00:00Z',
+  },
+];
+
+export class CatalogService {
+  static async getServices(): Promise<ServiceItem[]> {
+    return new Promise((resolve) => setTimeout(() => resolve(mockServices), 100));
+  }
+}
