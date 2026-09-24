@@ -221,6 +221,15 @@ Future<void> main() async {
     assertEquals(res.data?.status, 'APPROVED', 'Quote status is APPROVED');
   });
 
+  await runAsyncTest('QuotesRepository rejection workflow with reason validation', () async {
+    final res = await QuotesRepository.instance.rejectQuote(
+      'qt_104',
+      reason: 'Scope adjustments required for phase 2 timeline',
+    );
+    assertTrue(res.success, 'Quote rejection success');
+    assertEquals(res.data?.status, 'REJECTED', 'Quote status is REJECTED');
+  });
+
   await runAsyncTest('InvoicesRepository payment settlement', () async {
     final res = await InvoicesRepository.instance.recordMockPayment('inv_089');
     assertTrue(res.success, 'Payment settlement success');
