@@ -16,7 +16,7 @@ import {
   FileCheck,
   Check
 } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
@@ -160,40 +160,47 @@ export default function PaymentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Payments Received</h1>
-          <p className="text-xs text-gray-400">Manage invoice payment settlements, customer advances, and bank allocations</p>
+          <h1 className="text-2xl font-bold text-on-surface tracking-tight">Payments Received</h1>
+          <p className="text-xs text-on-surface-variant">Manage invoice payment settlements, customer advances, and bank allocations</p>
         </div>
-        <button
+        <Button
+          variant="primary"
           onClick={() => setIsRecordModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium transition shadow-md"
+          className="flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          Record Payment
-        </button>
+          <span>Record Payment</span>
+        </Button>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Received (MTD)</p>
-          <p className="text-2xl font-bold text-white mt-1">₹18,500.00</p>
-        </div>
-        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Gateway Collections</p>
-          <p className="text-2xl font-bold text-[#887DB8] mt-1">₹14,000.00</p>
-        </div>
-        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Bank Transfers</p>
-          <p className="text-2xl font-bold text-emerald-400 mt-1">₹4,500.00</p>
-        </div>
+        <Card className="bg-surface-container-lowest border-outline-variant/50 shadow-xs">
+          <CardContent className="p-4">
+            <p className="text-xs font-semibold text-outline uppercase tracking-wider">Total Received (MTD)</p>
+            <p className="text-2xl font-bold text-on-surface mt-1">₹18,500.00</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-surface-container-lowest border-outline-variant/50 shadow-xs">
+          <CardContent className="p-4">
+            <p className="text-xs font-semibold text-outline uppercase tracking-wider">Gateway Collections</p>
+            <p className="text-2xl font-bold text-primary mt-1">₹14,000.00</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-surface-container-lowest border-outline-variant/50 shadow-xs">
+          <CardContent className="p-4">
+            <p className="text-xs font-semibold text-outline uppercase tracking-wider">Bank Transfers</p>
+            <p className="text-2xl font-bold text-secondary mt-1">₹4,500.00</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Payments Table */}
-      <div className="bg-[#181B24] border border-gray-800 rounded-xl overflow-hidden shadow-sm">
+      <Card className="bg-surface-container-lowest border-outline-variant/50 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-800 bg-[#20202B]/60 text-xs font-semibold uppercase text-gray-400 tracking-wider">
+              <tr className="border-b border-outline-variant/50 bg-surface-container-low/60 text-xs font-semibold uppercase text-on-surface-variant tracking-wider">
                 <th className="py-3.5 px-4">Payment #</th>
                 <th className="py-3.5 px-4">Customer</th>
                 <th className="py-3.5 px-4">Type</th>
@@ -204,27 +211,26 @@ export default function PaymentsPage() {
                 <th className="py-3.5 px-4 text-right">Receipt</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800 text-sm">
+            <tbody className="divide-y divide-outline-variant/30 text-xs">
               {payments.map((pay) => (
-                <tr key={pay.id} className="hover:bg-[#20202B]/40 transition">
-                  <td className="py-4 px-4 font-mono font-semibold text-[#887DB8]">{pay.payment_number}</td>
-                  <td className="py-4 px-4 text-white font-medium">{pay.customer_name}</td>
-                  <td className="py-4 px-4">
-                    <span className="text-xs text-gray-400">{pay.payment_type.replace(/_/g, ' ')}</span>
+                <tr key={pay.id} className="hover:bg-surface-container-low/40 transition">
+                  <td className="py-3.5 px-4 font-mono font-semibold text-primary">{pay.payment_number}</td>
+                  <td className="py-3.5 px-4 text-on-surface font-semibold">{pay.customer_name}</td>
+                  <td className="py-3.5 px-4">
+                    <span className="text-xs text-outline">{pay.payment_type.replace(/_/g, ' ')}</span>
                   </td>
-                  <td className="py-4 px-4 text-xs text-gray-300">{pay.payment_date}</td>
-                  <td className="py-4 px-4 text-xs text-gray-300 font-mono">{pay.payment_mode}</td>
-                  <td className="py-4 px-4 font-bold text-white">₹{pay.amount.toLocaleString()}</td>
-                  <td className="py-4 px-4">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                      <CheckCircle2 className="w-3 h-3" />
+                  <td className="py-3.5 px-4 text-xs text-on-surface-variant">{pay.payment_date}</td>
+                  <td className="py-3.5 px-4 text-xs text-on-surface font-mono">{pay.payment_mode}</td>
+                  <td className="py-3.5 px-4 font-bold text-on-surface font-mono">₹{pay.amount.toLocaleString()}</td>
+                  <td className="py-3.5 px-4">
+                    <Badge variant="success">
                       {pay.status}
-                    </span>
+                    </Badge>
                   </td>
-                  <td className="py-4 px-4 text-right">
+                  <td className="py-3.5 px-4 text-right">
                     <button
                       onClick={() => showToast('success', 'Receipt Export', `Downloading ${pay.payment_number} receipt PDF.`)}
-                      className="p-1.5 rounded-lg bg-[#20202B] hover:bg-[#2E2E37] text-gray-300 hover:text-white transition"
+                      className="p-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container-high text-on-surface transition"
                     >
                       <Download className="w-4 h-4" />
                     </button>
@@ -234,7 +240,7 @@ export default function PaymentsPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* RECORD PAYMENT MODAL */}
       <Modal

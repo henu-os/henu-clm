@@ -21,6 +21,8 @@ import {
   Send
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/feedback/toast';
 import { formatCurrencyWords } from '@/lib/finance/number_to_words';
@@ -196,46 +198,47 @@ export default function RecurringInvoicesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-200">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <Link href="/invoices" className="text-gray-400 hover:text-white text-sm">Invoices</Link>
-            <span className="text-gray-600">/</span>
-            <span className="text-white text-sm font-medium">Recurring</span>
+          <div className="flex items-center gap-2 text-xs text-outline mb-1">
+            <Link href="/invoices" className="hover:text-primary transition">Invoices</Link>
+            <span>/</span>
+            <span className="text-on-surface font-medium">Recurring</span>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight mt-1">Recurring Invoices</h1>
-          <p className="text-xs text-gray-400">Automate recurring billing cycles and scheduled invoice generation</p>
+          <h1 className="text-2xl font-bold text-on-surface tracking-tight mt-1">Recurring Invoices</h1>
+          <p className="text-xs text-on-surface-variant">Automate recurring billing cycles and scheduled invoice generation</p>
         </div>
 
-        <button
+        <Button
+          variant="primary"
           onClick={() => setIsNewModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium transition shadow-md"
+          className="flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          New Recurring Profile
-        </button>
+          <span>New Recurring Profile</span>
+        </Button>
       </div>
 
       {/* Profiles Table */}
-      <div className="bg-[#181B24] rounded-xl border border-gray-800 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-gray-800 flex items-center justify-between gap-4">
+      <Card className="bg-surface-container-lowest border-outline-variant/50 overflow-hidden shadow-xs">
+        <div className="p-3 border-b border-outline-variant/50 bg-surface-container-low/30 flex items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-outline absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search recurring profiles..."
-              className="w-full pl-9 pr-4 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-[#887DB8]"
+              className="w-full pl-9 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg text-xs text-on-surface focus:outline-none focus:border-primary"
             />
           </div>
-          <span className="text-xs text-gray-400 font-medium">{profiles.length} Total Profiles</span>
+          <span className="text-xs text-outline font-medium">{profiles.length} Total Profiles</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-800 bg-[#20202B]/40 text-xs font-semibold uppercase text-gray-400 tracking-wider">
+              <tr className="border-b border-outline-variant/50 bg-surface-container-low/60 text-xs font-semibold uppercase text-on-surface-variant tracking-wider">
                 <th className="py-3.5 px-4">Profile Details</th>
                 <th className="py-3.5 px-4">Customer</th>
                 <th className="py-3.5 px-4">Frequency</th>
@@ -245,48 +248,37 @@ export default function RecurringInvoicesPage() {
                 <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800 text-sm">
+            <tbody className="divide-y divide-outline-variant/30 text-xs">
               {profiles.map((profile) => (
-                <tr key={profile.id} className="hover:bg-[#20202B]/50 transition">
-                  <td className="py-4 px-4">
-                    <p className="font-semibold text-white">{profile.profile_name}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                <tr key={profile.id} className="hover:bg-surface-container-low/40 transition">
+                  <td className="py-3.5 px-4">
+                    <p className="font-semibold text-on-surface">{profile.profile_name}</p>
+                    <p className="text-[11px] text-outline mt-0.5">
                       Auto-send: {profile.auto_send ? 'Enabled' : 'Draft only'}
                     </p>
                   </td>
-                  <td className="py-4 px-4 text-gray-300">{profile.customer_name}</td>
-                  <td className="py-4 px-4 text-gray-300">
+                  <td className="py-3.5 px-4 text-on-surface font-semibold">{profile.customer_name}</td>
+                  <td className="py-3.5 px-4 text-on-surface-variant">
                     Every {profile.repeat_interval} {profile.repeat_every.toLowerCase()}
                   </td>
-                  <td className="py-4 px-4 text-gray-300">
+                  <td className="py-3.5 px-4 text-outline font-mono">
                     <div className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-[#887DB8]" />
+                      <Calendar className="w-3.5 h-3.5 text-primary" />
                       <span>{profile.next_run_date}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4 font-bold text-white">
+                  <td className="py-3.5 px-4 font-bold text-on-surface font-mono">
                     ₹{profile.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </td>
-                  <td className="py-4 px-4">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                        profile.status === 'ACTIVE'
-                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                          : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                      }`}
-                    >
-                      {profile.status === 'ACTIVE' ? (
-                        <CheckCircle2 className="w-3 h-3" />
-                      ) : (
-                        <PauseCircle className="w-3 h-3" />
-                      )}
+                  <td className="py-3.5 px-4">
+                    <Badge variant={profile.status === 'ACTIVE' ? 'success' : 'warning'}>
                       {profile.status}
-                    </span>
+                    </Badge>
                   </td>
-                  <td className="py-4 px-4 text-right">
+                  <td className="py-3.5 px-4 text-right">
                     <button
                       onClick={() => toggleStatus(profile.id)}
-                      className="px-2.5 py-1 rounded bg-[#20202B] hover:bg-[#2E2E37] text-xs font-medium text-gray-300 hover:text-white border border-gray-700 transition"
+                      className="text-xs text-primary hover:underline font-semibold"
                     >
                       {profile.status === 'ACTIVE' ? 'Pause' : 'Resume'}
                     </button>
@@ -296,7 +288,7 @@ export default function RecurringInvoicesPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* NEW RECURRING PROFILE MODAL */}
       <Modal

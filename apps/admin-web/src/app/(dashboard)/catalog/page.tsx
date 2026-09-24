@@ -198,71 +198,78 @@ export default function CatalogPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-200">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Items & Catalog</h1>
-          <p className="text-xs text-gray-400">Manage goods, billable services, tax classifications, and inventory accounts</p>
+          <h1 className="text-2xl font-bold text-on-surface tracking-tight">Items & Catalog</h1>
+          <p className="text-xs text-on-surface-variant">Manage goods, billable services, tax classifications, and inventory accounts</p>
         </div>
-        <button
+        <Button
+          variant="primary"
           onClick={() => setCreateModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#887DB8] hover:bg-[#776ca7] text-white text-sm font-medium transition shadow-md"
+          className="flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          New Item
-        </button>
+          <span>New Item</span>
+        </Button>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Catalog Items</p>
-          <p className="text-2xl font-bold text-white mt-1">{items.length}</p>
-        </div>
-        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Active Services</p>
-          <p className="text-2xl font-bold text-[#887DB8] mt-1">
-            {items.filter((i) => i.item_type === 'SERVICE').length}
-          </p>
-        </div>
-        <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Inventory Goods</p>
-          <p className="text-2xl font-bold text-[#D9A441] mt-1">
-            {items.filter((i) => i.item_type === 'GOODS').length}
-          </p>
-        </div>
+        <Card className="bg-surface-container-lowest border-outline-variant/50 shadow-xs">
+          <CardContent className="p-4">
+            <p className="text-xs font-semibold text-outline uppercase tracking-wider">Total Catalog Items</p>
+            <p className="text-2xl font-bold text-on-surface mt-1">{items.length}</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-surface-container-lowest border-outline-variant/50 shadow-xs">
+          <CardContent className="p-4">
+            <p className="text-xs font-semibold text-outline uppercase tracking-wider">Active Services</p>
+            <p className="text-2xl font-bold text-primary mt-1">
+              {items.filter((i) => i.item_type === 'SERVICE').length}
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="bg-surface-container-lowest border-outline-variant/50 shadow-xs">
+          <CardContent className="p-4">
+            <p className="text-xs font-semibold text-outline uppercase tracking-wider">Inventory Goods</p>
+            <p className="text-2xl font-bold text-secondary mt-1">
+              {items.filter((i) => i.item_type === 'GOODS').length}
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-[#181B24] border border-gray-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-surface-container-lowest border border-outline-variant/50 rounded-xl p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
             onClick={() => setFilterType('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               filterType === 'ALL'
-                ? 'bg-[#887DB8] text-white'
-                : 'bg-[#20202B] text-gray-400 hover:text-white'
+                ? 'bg-primary text-on-primary shadow-xs'
+                : 'bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-high'
             }`}
           >
             All Items
           </button>
           <button
             onClick={() => setFilterType('SERVICE')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               filterType === 'SERVICE'
-                ? 'bg-[#887DB8] text-white'
-                : 'bg-[#20202B] text-gray-400 hover:text-white'
+                ? 'bg-primary text-on-primary shadow-xs'
+                : 'bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-high'
             }`}
           >
             Services
           </button>
           <button
             onClick={() => setFilterType('GOODS')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               filterType === 'GOODS'
-                ? 'bg-[#887DB8] text-white'
-                : 'bg-[#20202B] text-gray-400 hover:text-white'
+                ? 'bg-primary text-on-primary shadow-xs'
+                : 'bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-high'
             }`}
           >
             Goods
@@ -270,23 +277,23 @@ export default function CatalogPage() {
         </div>
 
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-outline absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search items by name or SKU..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-[#20202B] border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-[#887DB8]"
+            className="w-full pl-9 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg text-xs text-on-surface focus:outline-none focus:border-primary"
           />
         </div>
       </div>
 
       {/* Items Table */}
-      <div className="bg-[#181B24] border border-gray-800 rounded-xl overflow-hidden shadow-sm">
+      <Card className="bg-surface-container-lowest border-outline-variant/50 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-800 bg-[#20202B]/60 text-xs font-semibold uppercase text-gray-400 tracking-wider">
+              <tr className="border-b border-outline-variant/50 bg-surface-container-low/60 text-xs font-semibold uppercase text-on-surface-variant tracking-wider">
                 <th className="py-3.5 px-4">Item & SKU</th>
                 <th className="py-3.5 px-4">Type</th>
                 <th className="py-3.5 px-4">HSN / SAC</th>
@@ -297,47 +304,47 @@ export default function CatalogPage() {
                 <th className="py-3.5 px-4 text-right">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800 text-sm">
+            <tbody className="divide-y divide-outline-variant/30 text-xs">
               {filteredItems.map((item) => (
-                <tr key={item.id} className="hover:bg-[#20202B]/40 transition">
-                  <td className="py-4 px-4">
-                    <p className="font-semibold text-white">{item.name}</p>
-                    <p className="text-xs font-mono text-[#887DB8] mt-0.5">{item.sku}</p>
+                <tr key={item.id} className="hover:bg-surface-container-low/40 transition">
+                  <td className="py-3.5 px-4">
+                    <p className="font-semibold text-on-surface">{item.name}</p>
+                    <p className="text-[11px] font-mono text-primary mt-0.5">{item.sku}</p>
                   </td>
-                  <td className="py-4 px-4">
+                  <td className="py-3.5 px-4">
                     <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-medium border ${
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[11px] font-medium border ${
                         item.item_type === 'GOODS'
-                          ? 'bg-[#D9A441]/10 text-[#D9A441] border-[#D9A441]/20'
-                          : 'bg-[#887DB8]/10 text-[#887DB8] border-[#887DB8]/20'
+                          ? 'bg-secondary/10 text-secondary border-secondary/20'
+                          : 'bg-primary/10 text-primary border-primary/20'
                       }`}
                     >
                       {item.item_type === 'GOODS' ? <Package className="w-3 h-3" /> : <Wrench className="w-3 h-3" />}
                       {item.item_type}
                     </span>
                   </td>
-                  <td className="py-4 px-4 text-xs font-mono text-gray-300">{item.hsn_sac_code || '—'}</td>
-                  <td className="py-4 px-4 font-bold text-white">₹{item.selling_price.toLocaleString()}</td>
-                  <td className="py-4 px-4 text-gray-300">₹{item.cost_price.toLocaleString()}</td>
-                  <td className="py-4 px-4 text-xs text-gray-300">{item.intra_state_tax_rate}% GST</td>
-                  <td className="py-4 px-4">
+                  <td className="py-3.5 px-4 font-mono text-outline">{item.hsn_sac_code || '—'}</td>
+                  <td className="py-3.5 px-4 font-bold text-on-surface font-mono">₹{item.selling_price.toLocaleString()}</td>
+                  <td className="py-3.5 px-4 text-on-surface-variant font-mono">₹{item.cost_price.toLocaleString()}</td>
+                  <td className="py-3.5 px-4 text-outline">{item.intra_state_tax_rate}% GST</td>
+                  <td className="py-3.5 px-4">
                     {item.track_inventory ? (
-                      <span className="font-mono font-medium text-white">{item.current_stock} {item.unit}</span>
+                      <span className="font-mono font-medium text-on-surface">{item.current_stock} {item.unit}</span>
                     ) : (
-                      <span className="text-xs text-gray-400">N/A (Service)</span>
+                      <span className="text-outline">N/A (Service)</span>
                     )}
                   </td>
-                  <td className="py-4 px-4 text-right">
-                    <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <td className="py-3.5 px-4 text-right">
+                    <Badge variant="success">
                       {item.status}
-                    </span>
+                    </Badge>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* NEW ITEM MODAL */}
       <Modal

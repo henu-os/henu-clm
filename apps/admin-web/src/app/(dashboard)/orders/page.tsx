@@ -222,8 +222,8 @@ export default function OrdersPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-on-surface">Sales Orders & Delivery</h1>
-          <p className="text-xs text-outline">Monitor project delivery progress, milestones, itemized contracts, and invoice settlement linkages.</p>
+          <h1 className="text-2xl font-bold text-on-surface tracking-tight">Sales Orders</h1>
+          <p className="text-xs text-on-surface-variant">Create, manage, and dispatch commercial sales orders, track fulfillment statuses, and link to deliveries and invoices.</p>
         </div>
         <Button variant="primary" size="md" onClick={() => setIsNewOrderOpen(true)}>
           <Plus className="w-4 h-4 mr-1.5" />
@@ -232,103 +232,109 @@ export default function OrdersPage() {
       </div>
 
       {/* Orders Table */}
-      <Card>
+      <Card className="bg-surface-container-lowest border-outline-variant/50 overflow-hidden shadow-xs">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Order Number</TableHead>
-              <TableHead>Project Title / Client</TableHead>
-              <TableHead>Contract Value</TableHead>
-              <TableHead>Progress</TableHead>
-              <TableHead>Milestones</TableHead>
-              <TableHead>Linked Invoice</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+            <TableRow className="bg-surface-container-low/60">
+              <TableHead className="text-xs uppercase font-semibold">Sales Order #</TableHead>
+              <TableHead className="text-xs uppercase font-semibold">Customer Name</TableHead>
+              <TableHead className="text-xs uppercase font-semibold">Reference #</TableHead>
+              <TableHead className="text-xs uppercase font-semibold">Order Date</TableHead>
+              <TableHead className="text-xs uppercase font-semibold">Expected Shipment</TableHead>
+              <TableHead className="text-xs uppercase font-semibold">Salesperson</TableHead>
+              <TableHead className="text-xs uppercase font-semibold">Amount</TableHead>
+              <TableHead className="text-xs uppercase font-semibold">Status</TableHead>
+              <TableHead className="text-xs uppercase font-semibold text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orders.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-xs text-outline">
-                  No active orders in progress.
+                <TableCell colSpan={9} className="text-center py-8 text-xs text-outline">
+                  No sales orders found. Click "+ New Sales Order" to create one.
                 </TableCell>
               </TableRow>
             ) : (
-              orders.map((order) => (
-                <TableRow key={order.id}>
+              orders.map((order, idx) => (
+                <TableRow key={order.id} className="hover:bg-surface-container-low/40 transition">
                   <TableCell className="font-mono text-xs text-primary font-semibold">{order.order_number}</TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="font-semibold text-on-surface text-xs">{order.title}</span>
-                      <span className="text-[11px] text-outline">
-                        {order.client_name} ({order.client_company})
-                      </span>
+                      <span className="font-semibold text-on-surface text-xs">{order.client_company || order.client_name}</span>
+                      <span className="text-[11px] text-outline">{order.client_name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="font-semibold text-xs text-on-surface">
+                  <TableCell className="font-mono text-xs text-outline">
+                    REF-2026-00{idx + 88}
+                  </TableCell>
+                  <TableCell className="text-xs text-on-surface-variant">
+                    {formatDate(order.started_at || order.created_at)}
+                  </TableCell>
+                  <TableCell className="text-xs text-on-surface-variant">
+                    {formatDate(order.updated_at || new Date().toISOString())}
+                  </TableCell>
+                  <TableCell className="text-xs text-on-surface-variant">
+                    Aarav Sharma
+                  </TableCell>
+                  <TableCell className="font-bold text-xs text-on-surface font-mono">
                     {formatCurrency(order.total_amount, order.currency)}
                   </TableCell>
                   <TableCell>
-                    <div className="w-32 space-y-1">
-                      <div className="flex justify-between text-[10px] font-semibold text-outline">
-                        <span>{order.progress_percentage}% Complete</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary rounded-full transition-all duration-300"
-                          style={{ width: `${order.progress_percentage}%` }}
-                        />
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-xs text-on-surface-variant">
-                    {order.milestones.filter((m) => m.completed).length} of {order.milestones.length} Completed
-                  </TableCell>
-                  <TableCell>
-                    {order.linked_invoice_number ? (
-                      <a
-                        href="/invoices"
-                        className="inline-flex items-center gap-1 font-mono text-xs text-primary font-semibold hover:underline"
-                      >
-                        <span>{order.linked_invoice_number}</span>
-                        <ArrowUpRight className="w-3 h-3" />
-                      </a>
-                    ) : (
-                      <span className="text-xs text-outline">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
                     <Badge variant={order.status === 'in_progress' ? 'warning' : 'success'}>
-                      {order.status.replace(/_/g, ' ')}
+                      {order.status === 'in_progress' ? 'CONFIRMED' : order.status.toUpperCase()}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="relative inline-block text-left">
-                      <button
-                        onClick={() => setActiveActionMenuId(activeActionMenuId === order.id ? null : order.id)}
-                        className="p-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container-high transition text-on-surface"
-                      >
-                        <MoreVertical className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => showToast('info', 'Sales Order Preview', `Opening document view for ${order.order_number}`)}
+                        >
+                          <Eye className="w-3.5 h-3.5 mr-1 text-primary" />
+                          <span>Preview</span>
+                        </Button>
+                        <button
+                          onClick={() => setActiveActionMenuId(activeActionMenuId === order.id ? null : order.id)}
+                          className="p-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container-high transition text-on-surface"
+                        >
+                          <MoreVertical className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
 
                       {activeActionMenuId === order.id && (
-                        <div className="absolute right-0 mt-1 w-48 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-xl py-1 z-30 text-xs text-left">
+                        <div className="absolute right-0 mt-1 w-52 bg-surface-container-lowest border border-outline-variant/80 rounded-lg shadow-xl py-1 z-30 animate-in fade-in zoom-in-95 text-xs text-left">
                           <button
                             onClick={() => {
                               showToast('success', 'Order Dispatch', `Order confirmation sent for ${order.order_number}`);
                               setActiveActionMenuId(null);
                             }}
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
                           >
                             <Send className="w-3.5 h-3.5 text-primary" />
-                            <span>Send Confirmation</span>
+                            <span>Send to Customer</span>
                           </button>
+                          <a
+                            href="/delivery"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
+                          >
+                            <Layers className="w-3.5 h-3.5 text-secondary" />
+                            <span>Track in Delivery Module</span>
+                          </a>
+                          <a
+                            href="/invoices"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
+                          >
+                            <FileText className="w-3.5 h-3.5 text-primary" />
+                            <span>Convert to Invoice</span>
+                          </a>
                           <button
                             onClick={() => {
                               showToast('success', 'PDF Export', `Downloading ${order.order_number} PDF...`);
                               setActiveActionMenuId(null);
                             }}
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
                           >
                             <Download className="w-3.5 h-3.5 text-outline" />
                             <span>Download PDF</span>
@@ -338,11 +344,18 @@ export default function OrdersPage() {
                               window.print();
                               setActiveActionMenuId(null);
                             }}
-                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 border-t border-outline-variant/40"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface"
                           >
                             <Printer className="w-3.5 h-3.5 text-outline" />
-                            <span>Print Order</span>
+                            <span>Print Sales Order</span>
                           </button>
+                          <a
+                            href="/settings/templates"
+                            className="w-full px-3 py-2 hover:bg-surface-container-high flex items-center gap-2 text-on-surface border-t border-outline-variant/40"
+                          >
+                            <FileSpreadsheet className="w-3.5 h-3.5 text-outline" />
+                            <span>Customize Template</span>
+                          </a>
                         </div>
                       )}
                     </div>

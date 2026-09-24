@@ -18,6 +18,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
+  Repeat,
+  FileMinus,
+  KanbanSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -26,8 +29,11 @@ const navItems = [
   { label: 'Customers', href: '/customers', icon: Users },
   { label: 'Catalog', href: '/catalog', icon: Layers },
   { label: 'Quotes', href: '/quotes', icon: FileText },
-  { label: 'Orders', href: '/orders', icon: ShoppingBag },
+  { label: 'Sales Orders', href: '/orders', icon: ShoppingBag },
+  { label: 'Project Delivery', href: '/delivery', icon: KanbanSquare },
   { label: 'Invoices', href: '/invoices', icon: Receipt },
+  { label: 'Recurring Invoices', href: '/recurring-invoices', icon: Repeat },
+  { label: 'Credit Notes', href: '/credit-notes', icon: FileMinus },
   { label: 'Payments', href: '/payments', icon: CreditCard },
   { label: 'Support', href: '/support', icon: MessageSquare },
   { label: 'App CMS', href: '/cms', icon: Globe },
@@ -79,7 +85,7 @@ export function Sidebar() {
         )}
 
         {/* Navigation Links */}
-        <nav className="space-y-1">
+        <nav className="space-y-1 max-h-[calc(100vh-230px)] overflow-y-auto pr-1 scrollbar-none">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
