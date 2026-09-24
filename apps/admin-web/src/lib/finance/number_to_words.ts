@@ -60,7 +60,7 @@ export function numberToWordsIndian(amount: number, currencyPrefix = ''): string
   const hundredPart = num;
 
   if (crore) {
-    parts.push(`${convertTwoDigits(crore)} Crore`);
+    parts.push(`${convertThreeDigits(crore)} Crore`);
   }
   if (lakh) {
     parts.push(`${convertTwoDigits(lakh)} Lakh`);
