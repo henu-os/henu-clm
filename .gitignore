@@ -14,6 +14,14 @@ dist/
 *.tsbuildinfo
 next-env.d.ts
 
+# Flutter / Dart
+.dart_tool/
+.packages
+*.flutter-plugins
+*.flutter-plugins-dependencies
+.flutter-plugins
+.flutter-plugins-dependencies
+
 # Environment & Secrets (NEVER COMMIT)
 .env
 .env.local
