@@ -1,10 +1,34 @@
 'use client';
 
 import * as React from 'react';
-import { Settings, CreditCard, Sparkles, Shield, Users, Bell, Database } from 'lucide-react';
+import { Settings, CreditCard, Sparkles, Shield, Users, FileSpreadsheet, Building2, FileText, Sliders } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 const settingsSections = [
+  {
+    title: 'Document Designer & Templates',
+    description: 'Customize layout, typography, line-item tables, and authorized signatures for Quotes and Invoices.',
+    href: '/settings/templates',
+    icon: FileSpreadsheet,
+  },
+  {
+    title: 'Organization Profile',
+    description: 'Manage legal entity name, GSTIN, PAN, registered addresses, website, and company logo branding.',
+    href: '/settings/organization',
+    icon: Building2,
+  },
+  {
+    title: 'Default Notes & Terms',
+    description: 'Set global default customer notes, add-on pricing tables, and commercial terms & conditions.',
+    href: '/settings/document-defaults',
+    icon: FileText,
+  },
+  {
+    title: 'Custom Fields & Preferences',
+    description: 'Configure custom transaction attributes, input types, and mandatory/PDF visibility settings.',
+    href: '/settings/custom-fields',
+    icon: Sliders,
+  },
   {
     title: 'Payment Gateways',
     description: 'Configure Razorpay and Cashfree API keys, webhook secrets, and auto-collect environments.',
