@@ -1,0 +1,15 @@
+{
+  "name": "HENU OS CLM",
+  "short_name": "HENU CLM",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#887DB8",
+  "background_color": "#11131A",
+  "display": "standalone",
+  "start_url": "/dashboard"
+}

@@ -1,0 +1,5 @@
+# HENU OS CLM robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /settings/
