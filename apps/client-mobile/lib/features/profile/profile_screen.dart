@@ -12,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = AuthRepository.instance.currentProfile;
-    final avatarAsset = profile?.avatarAssetPath ?? 'assets/images/maledp.png';
+    final avatarAsset = profile.avatarAssetPath;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -38,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Center(
                         child: Text(
-                          profile != null && profile.fullName.isNotEmpty
+                          profile.fullName.isNotEmpty
                               ? profile.fullName.substring(0, 1)
                               : 'H',
                           style: HenuTypography.titleMedium.copyWith(
@@ -55,9 +55,9 @@ class ProfileScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(profile?.fullName ?? 'Siddharth Rao', style: HenuTypography.titleMedium),
+                      Text(profile.fullName, style: HenuTypography.titleMedium),
                       const SizedBox(height: 2),
-                      Text(profile?.companyName ?? 'Aero Dynamics Global', style: HenuTypography.bodyMedium),
+                      Text(profile.companyName, style: HenuTypography.bodyMedium),
                       const SizedBox(height: 6),
                       Row(
                         children: [
@@ -68,19 +68,19 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: HenuSpacing.roundedFull,
                             ),
                             child: Text(
-                              profile?.tier ?? 'Enterprise VIP',
+                              profile.tier,
                               style: HenuTypography.captionBold.copyWith(color: HenuColors.secondary, fontSize: 10),
                             ),
                           ),
                           const SizedBox(width: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: HenuColors.surfaceContainer,
                               borderRadius: HenuSpacing.roundedFull,
                             ),
                             child: Text(
-                              profile?.gender.toUpperCase() ?? 'MALE',
+                              profile.gender.toUpperCase(),
                               style: HenuTypography.captionBold.copyWith(color: HenuColors.onSurfaceVariant, fontSize: 10),
                             ),
                           ),
@@ -105,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(profile?.clientId ?? 'HENU-CL-2026-000001', style: HenuTypography.labelMedium),
+                    Text(profile.clientId, style: HenuTypography.labelMedium),
                     const Icon(Icons.copy, size: 16, color: HenuColors.primary),
                   ],
                 ),
@@ -115,14 +115,14 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const Text('PRIMARY WORK EMAIL', style: HenuTypography.caption),
                 const SizedBox(height: 4),
-                Text(profile?.email ?? 'siddharth@folio.enterprise', style: HenuTypography.bodyMedium),
+                Text(profile.email, style: HenuTypography.bodyMedium),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: Divider(),
                 ),
                 const Text('AUTHORIZED PHONE', style: HenuTypography.caption),
                 const SizedBox(height: 4),
-                Text(profile?.phone ?? '+1 (555) 019-2834', style: HenuTypography.bodyMedium),
+                Text(profile.phone ?? '+1 (555) 019-2834', style: HenuTypography.bodyMedium),
               ],
             ),
           ),

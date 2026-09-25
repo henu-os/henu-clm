@@ -1,8 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { Search, Bell, HelpCircle, User, LogOut } from 'lucide-react';
+import { Search, Bell, HelpCircle, User, LogOut, Settings } from 'lucide-react';
 import { CommandPalette } from '../command-palette';
+import { ThemeSwitcher, ThemeSegmentedControl } from '../theme/theme-switcher';
 import { useRouter } from 'next/navigation';
 
 export function Header() {
@@ -11,13 +12,12 @@ export function Header() {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Phase 2 logout redirect
     router.push('/login');
   };
 
   return (
     <>
-      <header className="sticky top-0 right-0 h-14 z-20 border-b border-outline-variant/40 bg-surface-container-lowest flex items-center justify-between px-space-lg w-full">
+      <header className="sticky top-0 right-0 h-14 z-20 border-b border-outline-variant/40 bg-surface-container-lowest flex items-center justify-between px-space-lg w-full transition-colors duration-200">
         {/* Search & Cmd+K Trigger */}
         <div className="flex items-center gap-4 w-72 md:w-96">
           <button
@@ -59,6 +59,9 @@ export function Header() {
           {/* Divider */}
           <div className="h-5 w-[1px] bg-outline-variant/50 mx-1" />
 
+          {/* Theme Switcher */}
+          <ThemeSwitcher />
+
           {/* Notification & Help Icons */}
           <div className="flex items-center gap-1">
             <a
@@ -69,12 +72,13 @@ export function Header() {
               <Bell className="w-4 h-4" />
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-error" />
             </a>
-            <button
+            <a
+              href="/settings"
               className="p-1.5 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-high/40 transition-colors"
-              title="Help Desk"
+              title="System Settings"
             >
-              <HelpCircle className="w-4 h-4" />
-            </button>
+              <Settings className="w-4 h-4" />
+            </a>
           </div>
 
           {/* Admin Profile Dropdown */}
@@ -93,18 +97,25 @@ export function Header() {
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-surface-container-lowest rounded-md border border-outline-variant/60 shadow-lg py-1 z-30 animate-in fade-in duration-100">
+              <div className="absolute right-0 mt-2 w-56 bg-surface-container-lowest rounded-md border border-outline-variant/60 shadow-lg py-1 z-30 animate-in fade-in zoom-in-95 duration-100">
                 <div className="px-3 py-2 border-b border-outline-variant/30">
                   <p className="text-xs font-semibold text-on-surface">Aarav Sharma</p>
                   <p className="text-[10px] text-outline truncate">aarav.sharma@henuos.com</p>
                 </div>
+                
+                {/* Theme Selector in Profile */}
+                <div className="px-3 py-2 border-b border-outline-variant/30">
+                  <p className="text-[10px] font-semibold text-outline uppercase tracking-wider mb-1.5">Theme</p>
+                  <ThemeSegmentedControl className="w-full justify-between" />
+                </div>
+
                 <a
                   href="/settings"
                   className="flex items-center gap-2 px-3 py-2 text-xs text-on-surface-variant hover:bg-surface-container-high/50 hover:text-on-surface"
                   onClick={() => setProfileOpen(false)}
                 >
                   <User className="w-3.5 h-3.5" />
-                  <span>My Profile</span>
+                  <span>My Profile & Settings</span>
                 </a>
                 <button
                   onClick={handleLogout}

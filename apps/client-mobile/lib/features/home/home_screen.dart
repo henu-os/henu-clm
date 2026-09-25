@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import '../../core/constants/henu_colors.dart';
 import '../../core/constants/henu_spacing.dart';
 import '../../core/constants/henu_typography.dart';
-import '../../core/utils/formatters.dart';
-import '../../shared/models/mobile_home_config.dart';
 import '../../shared/widgets/henu_app_bar.dart';
-import '../../shared/widgets/henu_badge.dart';
 import '../../shared/widgets/henu_button.dart';
 import '../../shared/widgets/henu_card.dart';
+import '../../shared/widgets/state_views.dart';
 import '../auth/auth_repository.dart';
 import '../catalog/catalog_screen.dart';
 import '../invoices/invoices_screen.dart';
@@ -165,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: HenuAppBar(
         title: _getTabTitle(_currentTabIndex),
         subtitle: _getTabSubtitle(_currentTabIndex),
-        avatarAsset: clientProfile?.avatarAssetPath,
+        avatarAsset: clientProfile.avatarAssetPath,
         onNotificationTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const NotificationsScreen()),
@@ -360,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
         : (greetingConfig.alignment == 'right' ? CrossAxisAlignment.end : CrossAxisAlignment.start);
 
     final clientProfile = AuthRepository.instance.currentProfile;
-    final avatarAsset = clientProfile?.avatarAssetPath ?? 'assets/images/maledp.png';
+    final avatarAsset = clientProfile.avatarAssetPath;
 
     return Column(
       crossAxisAlignment: align,
@@ -515,7 +513,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: HenuColors.surfaceContainerLowest,
       child: HenuButton(
         text: cta.label,
-        leadingIcon: _resolveIcon(cta.icon),
+        icon: _resolveIcon(cta.icon),
         variant: variant,
         onPressed: () => _handleRouteNavigation(cta.destination),
       ),
@@ -585,7 +583,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: HenuColors.tertiaryFixed,
                   borderRadius: HenuSpacing.roundedFull,
                 ),

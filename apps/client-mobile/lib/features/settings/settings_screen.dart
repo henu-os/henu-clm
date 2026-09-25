@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/henu_colors.dart';
+import '../../core/constants/henu_spacing.dart';
 import '../../core/constants/henu_typography.dart';
+import '../../core/theme/theme_controller.dart';
 import '../../shared/widgets/henu_button.dart';
 import '../../shared/widgets/henu_card.dart';
 import '../auth/auth_repository.dart';
@@ -20,17 +21,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final themeController = ThemeController.instance;
+
     return Scaffold(
-      backgroundColor: HenuColors.surfaceFolio,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Settings & Security'),
+        title: const Text('Settings & Preferences'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('SECURITY & ACCESS', style: HenuTypography.captionBold.copyWith(color: HenuColors.outline, letterSpacing: 0.8)),
+            // Appearance & Theme Selector
+            Text('APPEARANCE & THEME', style: HenuTypography.captionBold.copyWith(color: theme.colorScheme.outline, letterSpacing: 0.8)),
+            const SizedBox(height: 8),
+            HenuCard(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Theme Mode', style: HenuTypography.labelMedium),
+                  const SizedBox(height: 4),
+                  const Text('Select your preferred interface appearance', style: HenuTypography.caption),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _buildThemeOption(
+                        context,
+                        title: 'Light',
+                        icon: Icons.light_mode_outlined,
+                        mode: ThemeMode.light,
+                        isSelected: themeController.themeMode == ThemeMode.light,
+                      ),
+                      const SizedBox(width: 8),
+                      _buildThemeOption(
+                        context,
+                        title: 'Dark',
+                        icon: Icons.dark_mode_outlined,
+                        mode: ThemeMode.dark,
+                        isSelected: themeController.themeMode == ThemeMode.dark,
+                      ),
+                      const SizedBox(width: 8),
+                      _buildThemeOption(
+                        context,
+                        title: 'System',
+                        icon: Icons.settings_brightness_outlined,
+                        mode: ThemeMode.system,
+                        isSelected: themeController.themeMode == ThemeMode.system,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Text('SECURITY & ACCESS', style: HenuTypography.captionBold.copyWith(color: theme.colorScheme.outline, letterSpacing: 0.8)),
             const SizedBox(height: 8),
             HenuCard(
               padding: EdgeInsets.zero,
@@ -39,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SwitchListTile(
                     title: const Text('Biometric Authentication', style: HenuTypography.labelMedium),
                     subtitle: const Text('FaceID / TouchID for approvals and payments', style: HenuTypography.caption),
-                    activeColor: HenuColors.primary,
+                    activeColor: theme.colorScheme.primary,
                     value: _biometricEnabled,
                     onChanged: (val) => setState(() => _biometricEnabled = val),
                   ),
@@ -49,9 +98,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     trailing: const Icon(Icons.chevron_right, size: 18),
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Password change verification token dispatched to your work email.'),
-                          backgroundColor: HenuColors.primary,
+                        SnackBar(
+                          content: const Text('Password change verification token dispatched to your work email.'),
+                          backgroundColor: theme.colorScheme.primary,
                         ),
                       );
                     },
@@ -62,7 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 20),
 
-            Text('NOTIFICATIONS & DISPATCH', style: HenuTypography.captionBold.copyWith(color: HenuColors.outline, letterSpacing: 0.8)),
+            Text('NOTIFICATIONS & DISPATCH', style: HenuTypography.captionBold.copyWith(color: theme.colorScheme.outline, letterSpacing: 0.8)),
             const SizedBox(height: 8),
             HenuCard(
               padding: EdgeInsets.zero,
@@ -71,7 +120,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SwitchListTile(
                     title: const Text('Push Notifications', style: HenuTypography.labelMedium),
                     subtitle: const Text('Real-time milestone alerts and approval prompts', style: HenuTypography.caption),
-                    activeColor: HenuColors.primary,
+                    activeColor: theme.colorScheme.primary,
                     value: _pushNotifications,
                     onChanged: (val) => setState(() => _pushNotifications = val),
                   ),
@@ -79,7 +128,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SwitchListTile(
                     title: const Text('Weekly Digest & Financial Statement', style: HenuTypography.labelMedium),
                     subtitle: const Text('Consolidated ledger summary to authorized email', style: HenuTypography.caption),
-                    activeColor: HenuColors.primary,
+                    activeColor: theme.colorScheme.primary,
                     value: _emailSummaries,
                     onChanged: (val) => setState(() => _emailSummaries = val),
                   ),
@@ -89,7 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 20),
 
-            Text('LEGAL & FOLIO POLICIES', style: HenuTypography.captionBold.copyWith(color: HenuColors.outline, letterSpacing: 0.8)),
+            Text('LEGAL & FOLIO POLICIES', style: HenuTypography.captionBold.copyWith(color: theme.colorScheme.outline, letterSpacing: 0.8)),
             const SizedBox(height: 8),
             HenuCard(
               padding: EdgeInsets.zero,
@@ -127,6 +176,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeOption(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required ThemeMode mode,
+    required bool isSelected,
+  }) {
+    final theme = Theme.of(context);
+
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          ThemeController.instance.setThemeMode(mode);
+          setState(() {});
+        },
+        borderRadius: HenuSpacing.roundedMd,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? theme.colorScheme.primary.withOpacity(0.12) : theme.colorScheme.surface,
+            borderRadius: HenuSpacing.roundedMd,
+            border: Border.all(
+              color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outlineVariant,
+              width: isSelected ? 1.5 : 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                title,
+                style: HenuTypography.captionBold.copyWith(
+                  color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

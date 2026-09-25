@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/config/app_config.dart';
 import 'core/theme/henu_theme.dart';
+import 'core/theme/theme_controller.dart';
 import 'routing/app_router.dart';
 
 void main() {
@@ -25,12 +26,19 @@ class HenuClmMobileApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConfig.appName,
-      debugShowCheckedModeBanner: false,
-      theme: HenuTheme.lightTheme,
-      initialRoute: AppRoutes.splash,
-      onGenerateRoute: AppRoutes.onGenerateRoute,
+    return ListenableBuilder(
+      listenable: ThemeController.instance,
+      builder: (context, _) {
+        return MaterialApp(
+          title: AppConfig.appName,
+          debugShowCheckedModeBanner: false,
+          theme: HenuTheme.lightTheme,
+          darkTheme: HenuTheme.darkTheme,
+          themeMode: ThemeController.instance.themeMode,
+          initialRoute: AppRoutes.splash,
+          onGenerateRoute: AppRoutes.onGenerateRoute,
+        );
+      },
     );
   }
 }
