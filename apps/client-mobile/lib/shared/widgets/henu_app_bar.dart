@@ -3,12 +3,13 @@ import '../../core/constants/henu_colors.dart';
 import '../../core/constants/henu_spacing.dart';
 import '../../core/constants/henu_typography.dart';
 
-/// Top App Bar matching approved Stitch mobile design
+/// Top App Bar matching approved Stitch mobile design with dynamic Avatar DP
 class HenuAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? subtitle;
   final bool showLeadingAvatar;
   final String avatarInitials;
+  final String? avatarAsset;
   final VoidCallback? onNotificationTap;
   final int unreadNotificationsCount;
   final List<Widget>? actions;
@@ -19,6 +20,7 @@ class HenuAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.subtitle = 'Client Lifecycle Management',
     this.showLeadingAvatar = true,
     this.avatarInitials = 'HN',
+    this.avatarAsset,
     this.onNotificationTap,
     this.unreadNotificationsCount = 2,
     this.actions,
@@ -52,12 +54,28 @@ class HenuAppBar extends StatelessWidget implements PreferredSizeWidget {
                     border: Border.all(color: const Color(0x4DC9C4D0), width: 1),
                     boxShadow: HenuSpacing.cardShadow,
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    avatarInitials,
-                    style: HenuTypography.captionBold.copyWith(
-                      color: HenuColors.onPrimaryFixed,
-                    ),
+                  child: ClipOval(
+                    child: avatarAsset != null
+                        ? Image.asset(
+                            avatarAsset!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Center(
+                              child: Text(
+                                avatarInitials,
+                                style: HenuTypography.captionBold.copyWith(
+                                  color: HenuColors.onPrimaryFixed,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Center(
+                            child: Text(
+                              avatarInitials,
+                              style: HenuTypography.captionBold.copyWith(
+                                color: HenuColors.onPrimaryFixed,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(width: 12),

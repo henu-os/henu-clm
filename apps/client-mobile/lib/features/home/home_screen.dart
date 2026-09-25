@@ -8,7 +8,7 @@ import '../../shared/widgets/henu_app_bar.dart';
 import '../../shared/widgets/henu_badge.dart';
 import '../../shared/widgets/henu_button.dart';
 import '../../shared/widgets/henu_card.dart';
-import '../../shared/widgets/state_views.dart';
+import '../auth/auth_repository.dart';
 import '../catalog/catalog_screen.dart';
 import '../invoices/invoices_screen.dart';
 import '../notifications/notifications_screen.dart';
@@ -158,11 +158,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final navItems = _dashboardData?.config.bottomNav.items.where((e) => e.isEnabled).toList() ?? [];
 
+    final clientProfile = AuthRepository.instance.currentProfile;
+
     return Scaffold(
       backgroundColor: HenuColors.surfaceFolio,
       appBar: HenuAppBar(
         title: _getTabTitle(_currentTabIndex),
         subtitle: _getTabSubtitle(_currentTabIndex),
+        avatarAsset: clientProfile?.avatarAssetPath,
         onNotificationTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const NotificationsScreen()),
@@ -356,14 +359,54 @@ class _HomeScreenState extends State<HomeScreen> {
         ? CrossAxisAlignment.center
         : (greetingConfig.alignment == 'right' ? CrossAxisAlignment.end : CrossAxisAlignment.start);
 
+    final clientProfile = AuthRepository.instance.currentProfile;
+    final avatarAsset = clientProfile?.avatarAssetPath ?? 'assets/images/maledp.png';
+
     return Column(
       crossAxisAlignment: align,
       children: [
-        Text(greetingTitle, style: HenuTypography.headlineMedium),
-        if (greetingConfig.subTitle.isNotEmpty) ...[
-          const SizedBox(height: 2),
-          Text(greetingConfig.subTitle, style: HenuTypography.bodyMedium),
-        ],
+        Row(
+          mainAxisAlignment: greetingConfig.alignment == 'center'
+              ? MainAxisAlignment.center
+              : (greetingConfig.alignment == 'right' ? MainAxisAlignment.end : MainAxisAlignment.start),
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (greetingConfig.showAvatar) ...[
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: HenuColors.primary, width: 1.5),
+                  boxShadow: HenuSpacing.cardShadow,
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    avatarAsset,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: HenuColors.surfaceContainerHigh,
+                      child: const Icon(Icons.person, size: 24, color: HenuColors.primary),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: align,
+                children: [
+                  Text(greetingTitle, style: HenuTypography.headlineMedium),
+                  if (greetingConfig.subTitle.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(greetingConfig.subTitle, style: HenuTypography.bodyMedium),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 10),
         // Client ID Badge Pill
         Container(

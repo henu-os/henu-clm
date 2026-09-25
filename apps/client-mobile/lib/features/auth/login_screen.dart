@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController(text: 'Password123!');
   bool _obscurePassword = true;
   bool _isLoading = false;
+  String _selectedGender = 'male'; // 'male' or 'female'
   String? _errorMessage;
 
   @override
@@ -38,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final res = await AuthRepository.instance.login(
       email: _emailController.text,
       password: _passwordController.text,
+      gender: _selectedGender,
     );
 
     if (!mounted) return;
@@ -56,6 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final avatarAsset = _selectedGender == 'female'
+        ? 'assets/images/femaldp.png'
+        : 'assets/images/maledp.png';
+
     return Scaffold(
       backgroundColor: HenuColors.surfaceFolio,
       body: SafeArea(
@@ -99,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
 
                   // Hero Card Enclosure matching Stitch
                   Container(
@@ -113,33 +119,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Advisor Portal Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: HenuColors.surfaceContainerHigh.withOpacity(0.6),
-                            borderRadius: HenuSpacing.roundedFull,
-                            border: Border.all(color: const Color(0x33C9C4D0)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                        // Dynamic Avatar DP Preview Based on Gender
+                        Center(
+                          child: Column(
                             children: [
                               Container(
-                                width: 5,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                  color: HenuColors.primary,
+                                width: 72,
+                                height: 72,
+                                decoration: BoxDecoration(
                                   shape: BoxShape.circle,
+                                  border: Border.all(color: HenuColors.primary, width: 2),
+                                  boxShadow: HenuSpacing.cardShadow,
+                                ),
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    avatarAsset,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => Container(
+                                      color: HenuColors.surfaceContainerHigh,
+                                      child: Icon(
+                                        _selectedGender == 'female' ? Icons.woman : Icons.man,
+                                        size: 40,
+                                        color: HenuColors.primary,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(height: 8),
                               Text(
-                                'CLIENT PORTAL',
-                                style: HenuTypography.captionBold.copyWith(
-                                  color: HenuColors.primary,
-                                  fontSize: 10,
-                                  letterSpacing: 0.8,
-                                ),
+                                _selectedGender == 'female' ? 'Client Profile: Female' : 'Client Profile: Male',
+                                style: HenuTypography.captionBold.copyWith(color: HenuColors.outline),
                               ),
                             ],
                           ),
@@ -147,15 +157,120 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         const SizedBox(height: 16),
 
-                        const Text('Welcome back', style: HenuTypography.headlineLarge),
+                        // Gender Selection Toggle
+                        const Text('Select Profile Gender', style: HenuTypography.captionBold),
                         const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedGender = 'male';
+                                    _emailController.text = 'siddharth@folio.enterprise';
+                                  });
+                                },
+                                borderRadius: HenuSpacing.roundedMd,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: _selectedGender == 'male'
+                                        ? HenuColors.primary
+                                        : HenuColors.surfaceContainer,
+                                    borderRadius: HenuSpacing.roundedMd,
+                                    border: Border.all(
+                                      color: _selectedGender == 'male'
+                                          ? HenuColors.primary
+                                          : const Color(0x33C9C4D0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.male,
+                                        size: 18,
+                                        color: _selectedGender == 'male'
+                                            ? Colors.white
+                                            : HenuColors.onSurface,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Male (Siddharth)',
+                                        style: HenuTypography.captionBold.copyWith(
+                                          color: _selectedGender == 'male'
+                                              ? Colors.white
+                                              : HenuColors.onSurface,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedGender = 'female';
+                                    _emailController.text = 'priya@folio.enterprise';
+                                  });
+                                },
+                                borderRadius: HenuSpacing.roundedMd,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: _selectedGender == 'female'
+                                        ? HenuColors.primary
+                                        : HenuColors.surfaceContainer,
+                                    borderRadius: HenuSpacing.roundedMd,
+                                    border: Border.all(
+                                      color: _selectedGender == 'female'
+                                          ? HenuColors.primary
+                                          : const Color(0x33C9C4D0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.female,
+                                        size: 18,
+                                        color: _selectedGender == 'female'
+                                            ? Colors.white
+                                            : HenuColors.onSurface,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Female (Priya)',
+                                        style: HenuTypography.captionBold.copyWith(
+                                          color: _selectedGender == 'female'
+                                              ? Colors.white
+                                              : HenuColors.onSurface,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        const Text('Welcome back', style: HenuTypography.headlineLarge),
+                        const SizedBox(height: 4),
                         const Text(
                           'Access your active advisory folios, milestones, and encrypted statements.',
                           style: HenuTypography.bodyMedium,
                         ),
 
                         if (_errorMessage != null) ...[
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 14),
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
@@ -178,7 +293,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
 
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 18),
 
                         // Email Input
                         HenuInput(
@@ -190,7 +305,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           suffixIcon: const Icon(Icons.verified_user_outlined, color: HenuColors.secondary, size: 18),
                         ),
 
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
 
                         // Password Input
                         HenuInput(
@@ -212,7 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
 
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 6),
 
                         // Forgot Password Link
                         Align(
@@ -230,7 +345,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
 
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
 
                         // Sign In CTA
                         HenuButton(

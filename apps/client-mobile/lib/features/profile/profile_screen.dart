@@ -12,28 +12,42 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = AuthRepository.instance.currentProfile;
+    final avatarAsset = profile?.avatarAssetPath ?? 'assets/images/maledp.png';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Profile Header Card
+          // Profile Header Card with Dynamic Gender Avatar
           HenuCard(
             child: Row(
               children: [
                 Container(
-                  width: 56,
-                  height: 56,
-                  decoration: const BoxDecoration(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
                     color: HenuColors.primaryFixed,
                     shape: BoxShape.circle,
+                    border: Border.all(color: HenuColors.primary, width: 2),
                     boxShadow: HenuSpacing.cardShadow,
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    'HN',
-                    style: HenuTypography.titleMedium.copyWith(color: HenuColors.onPrimaryFixed, fontWeight: FontWeight.bold),
+                  child: ClipOval(
+                    child: Image.asset(
+                      avatarAsset,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Center(
+                        child: Text(
+                          profile != null && profile.fullName.isNotEmpty
+                              ? profile.fullName.substring(0, 1)
+                              : 'H',
+                          style: HenuTypography.titleMedium.copyWith(
+                            color: HenuColors.onPrimaryFixed,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -45,16 +59,32 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(profile?.companyName ?? 'Aero Dynamics Global', style: HenuTypography.bodyMedium),
                       const SizedBox(height: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: HenuColors.secondaryContainer.withOpacity(0.5),
-                          borderRadius: HenuSpacing.roundedFull,
-                        ),
-                        child: Text(
-                          profile?.tier ?? 'Enterprise VIP',
-                          style: HenuTypography.captionBold.copyWith(color: HenuColors.secondary, fontSize: 10),
-                        ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: HenuColors.secondaryContainer.withOpacity(0.5),
+                              borderRadius: HenuSpacing.roundedFull,
+                            ),
+                            child: Text(
+                              profile?.tier ?? 'Enterprise VIP',
+                              style: HenuTypography.captionBold.copyWith(color: HenuColors.secondary, fontSize: 10),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: HenuColors.surfaceContainer,
+                              borderRadius: HenuSpacing.roundedFull,
+                            ),
+                            child: Text(
+                              profile?.gender.toUpperCase() ?? 'MALE',
+                              style: HenuTypography.captionBold.copyWith(color: HenuColors.onSurfaceVariant, fontSize: 10),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

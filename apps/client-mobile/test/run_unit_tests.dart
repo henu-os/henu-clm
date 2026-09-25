@@ -102,8 +102,8 @@ Future<void> main() async {
   });
 
   print('\n3. Model Serialization & Logic:');
-  runTest('ClientProfile JSON parsing', () {
-    final profile = ClientProfile.fromJson({
+  runTest('ClientProfile JSON parsing and gender avatar resolution', () {
+    final profileMale = ClientProfile.fromJson({
       'id': 'usr_1',
       'client_id': 'HENU-CL-2026-000001',
       'full_name': 'Siddharth Rao',
@@ -112,11 +112,28 @@ Future<void> main() async {
       'phone': '+15550192834',
       'status': 'ACTIVE',
       'tier': 'Enterprise VIP',
+      'gender': 'male',
       'created_at': '2026-01-15T00:00:00Z',
     });
-    assertEquals(profile.id, 'usr_1', 'profile id');
-    assertEquals(profile.clientId, 'HENU-CL-2026-000001', 'client id');
-    assertEquals(profile.tier, 'Enterprise VIP', 'tier');
+    assertEquals(profileMale.id, 'usr_1', 'profile id');
+    assertEquals(profileMale.clientId, 'HENU-CL-2026-000001', 'client id');
+    assertEquals(profileMale.tier, 'Enterprise VIP', 'tier');
+    assertEquals(profileMale.gender, 'male', 'gender male');
+    assertEquals(profileMale.avatarAssetPath, 'assets/images/maledp.png', 'male avatar asset');
+
+    final profileFemale = ClientProfile.fromJson({
+      'id': 'usr_2',
+      'client_id': 'HENU-CL-2026-000002',
+      'full_name': 'Priya Sharma',
+      'company_name': 'Aero Dynamics',
+      'email': 'priya@folio.enterprise',
+      'gender': 'female',
+      'status': 'ACTIVE',
+      'tier': 'Enterprise VIP',
+      'created_at': '2026-01-15T00:00:00Z',
+    });
+    assertEquals(profileFemale.gender, 'female', 'gender female');
+    assertEquals(profileFemale.avatarAssetPath, 'assets/images/femaldp.png', 'female avatar asset');
   });
 
   runTest('QuoteItem line item calculations & status', () {
